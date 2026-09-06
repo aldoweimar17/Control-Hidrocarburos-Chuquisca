@@ -42,7 +42,7 @@
         .toast { transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; }
     </style>
 </head>
-<body class="bg-background text-white h-screen flex overflow-hidden">
+<body class="bg-background text-white h-screen flex overflow-hidden relative">
 
     <!-- ==================== VISTA DE AUTENTICACIÓN (LOGIN) ==================== -->
     <div id="view-login" class="fixed inset-0 bg-[#13151a] z-50 flex items-center justify-center">
@@ -73,13 +73,19 @@
         </div>
     </div>
 
-    <!-- ==================== SIDEBAR ==================== -->
-    <aside class="w-72 bg-[#0f1115] h-full flex flex-col shadow-2xl border-r border-gray-800 z-20 flex-shrink-0">
+    <!-- TELÓN DE FONDO (BACKDROP) PARA CERRAR EL MENÚ AL TOCAR AFUERA -->
+    <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-30 hidden transition-opacity"></div>
+
+    <!-- ==================== SIDEBAR COLAPSABLE ==================== -->
+    <aside id="main-sidebar" class="fixed top-0 bottom-0 left-0 w-72 bg-[#0f1115] h-full flex flex-col shadow-2xl border-r border-gray-800 z-40 transition-transform duration-300 ease-in-out -translate-x-full">
         <div class="p-5 border-b border-gray-800 flex flex-col items-center justify-center relative">
-            <button id="btn-logout" title="Cerrar Sesión" class="absolute top-3 right-3 text-gray-500 hover:text-red-400 transition-colors text-xs">
+            <button onclick="toggleSidebar()" title="Minimizar Menú" class="absolute top-3 left-3 text-gray-400 hover:text-white transition-colors p-1">
+                <i class="fas fa-times text-base"></i>
+            </button>
+            <button id="btn-logout" title="Cerrar Sesión" class="absolute top-3 right-3 text-gray-500 hover:text-red-400 transition-colors text-xs p-1">
                 <i class="fas fa-power-off text-sm"></i>
             </button>
-            <div class="bg-white p-2 rounded-xl w-full flex justify-center mb-3">
+            <div class="bg-white p-2 rounded-xl w-full flex justify-center mb-3 mt-4">
                 <i class="fas fa-gas-pump text-2xl text-red-600"></i>
             </div>
             <h2 class="text-[11px] font-bold text-center text-red-500 tracking-wide">SECRETARÍA DE HIDROCARBUROS<br>GOBERNACIÓN DE CHUQUISACA</h2>
@@ -147,13 +153,16 @@
     </aside>
 
     <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
-    <main class="flex-1 overflow-y-auto bg-[#13151a] relative">
+    <main class="flex-1 overflow-y-auto bg-[#13151a] relative w-full">
         
         <!-- VISTA 1: TABLERO GENERAL -->
         <div id="view-dashboard" class="block p-6">
             <header class="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                <div>
-                    <h1 class="text-2xl font-bold tracking-wide">Análisis de Rendimiento: <span id="title-field" class="text-[#00d2ff]">Monteagudo</span></h1>
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleSidebar()" class="bg-[#1e212b] border border-gray-700 hover:border-[#00d2ff] p-2.5 rounded-lg text-white transition-colors" title="Abrir Menú">
+                        <i class="fas fa-bars text-lg"></i>
+                    </button>
+                    <h1 class="text-xl md:text-2xl font-bold tracking-wide">Análisis de Rendimiento: <span id="title-field" class="text-[#00d2ff]">Monteagudo</span></h1>
                 </div>
             </header>
 
@@ -245,14 +254,18 @@
         <!-- VISTA 2: CARGA DE DATOS MANUALES -->
         <div id="view-entry" class="hidden h-full flex flex-col">
             <header class="p-6 border-b border-gray-800 bg-[#1e212b] flex justify-between items-center sticky top-0 z-10">
-                <div>
-                    <h1 class="text-xl font-bold tracking-wide text-white"><i class="fas fa-file-import text-[#3b82f6] mr-2"></i> Módulo de Transcripción Operativa</h1>
-                    <p class="text-xs text-gray-400 mt-1">Ingreso manual de reportes de producción directo a la base de datos Supabase.</p>
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleSidebar()" class="bg-[#13151a] border border-gray-700 hover:border-[#00d2ff] p-2.5 rounded-lg text-white transition-colors" title="Abrir Menú">
+                        <i class="fas fa-bars text-lg"></i>
+                    </button>
+                    <div>
+                        <h1 class="text-xl font-bold tracking-wide text-white"><i class="fas fa-file-import text-[#3b82f6] mr-2"></i> Módulo de Transcripción Operativa</h1>
+                        <p class="text-xs text-gray-400 mt-1">Ingreso manual de reportes de producción directo a Supabase.</p>
+                    </div>
                 </div>
             </header>
 
             <div class="p-6 max-w-5xl w-full mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1">
-                
                 <div class="lg:col-span-1">
                     <div class="bg-[#1e212b] rounded-xl border border-gray-800 shadow-lg overflow-hidden">
                         <div class="bg-gray-800/50 p-4 border-b border-gray-800">
@@ -331,9 +344,14 @@
         <!-- VISTA 3: ADMINISTRACIÓN DE POZOS -->
         <div id="view-wells" class="hidden h-full flex flex-col">
             <header class="p-6 border-b border-gray-800 bg-[#1e212b] flex justify-between items-center sticky top-0 z-10">
-                <div>
-                    <h1 class="text-xl font-bold tracking-wide text-white"><i class="fas fa-oil-well text-[#00d2ff] mr-2"></i> Gestión de Fichas Técnicas de Pozos</h1>
-                    <p class="text-xs text-gray-400 mt-1">Alta y actualización de la infraestructura de extracción por campo.</p>
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleSidebar()" class="bg-[#13151a] border border-gray-700 hover:border-[#00d2ff] p-2.5 rounded-lg text-white transition-colors" title="Abrir Menú">
+                        <i class="fas fa-bars text-lg"></i>
+                    </button>
+                    <div>
+                        <h1 class="text-xl font-bold tracking-wide text-white"><i class="fas fa-oil-well text-[#00d2ff] mr-2"></i> Gestión de Fichas Técnicas de Pozos</h1>
+                        <p class="text-xs text-gray-400 mt-1">Alta y actualización de la infraestructura de extracción por campo.</p>
+                    </div>
                 </div>
             </header>
 
@@ -466,6 +484,21 @@
         let consTime = 'dia';
         const charts = {};
 
+        // CONTROL DEL MENÚ COLAPSABLE
+        function toggleSidebar() {
+            const sidebar = document.getElementById('main-sidebar');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            const isClosed = sidebar.classList.contains('-translate-x-full');
+
+            if (isClosed) {
+                sidebar.classList.remove('-translate-x-full');
+                backdrop.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                backdrop.classList.add('hidden');
+            }
+        }
+
         function switchView(viewId) {
             document.getElementById('view-dashboard').classList.add('hidden');
             document.getElementById('view-entry').classList.add('hidden');
@@ -492,6 +525,9 @@
                 document.getElementById('btn-menu-wells').className = activeClass;
                 cargarTablaPozosAdmin();
             }
+
+            // Ocultar menú tras seleccionar una vista
+            toggleSidebar();
         }
 
         function createChart(ctxId, type, title, color, isCurrency = false) {
