@@ -57,6 +57,10 @@
                             <line x1="43" y1="40" x2="57" y2="40" stroke="#C81D25" stroke-width="2.5"/>
                             <line x1="40" y1="52" x2="60" y2="52" stroke="#C81D25" stroke-width="2.5"/>
                             <line x1="38" y1="65" x2="62" y2="65" stroke="#C81D25" stroke-width="2.5"/>
+                            <line x1="43" y1="30" x2="60" y2="52" stroke="#C81D25" stroke-width="1.8"/>
+                            <line x1="57" y1="30" x2="40" y2="52" stroke="#C81D25" stroke-width="1.8"/>
+                            <line x1="40" y1="52" x2="63" y2="75" stroke="#C81D25" stroke-width="1.8"/>
+                            <line x1="60" y1="52" x2="37" y2="75" stroke="#C81D25" stroke-width="1.8"/>
                             <path d="M35 55 L75 38 L78 68 Z" fill="none" stroke="#C81D25" stroke-width="3"/>
                             <path d="M22 100 C22 75 78 75 78 100 Z" fill="none" stroke="#C81D25" stroke-width="3.5"/>
                             <line x1="16" y1="100" x2="84" y2="100" stroke="#C81D25" stroke-width="4.5"/>
@@ -88,11 +92,11 @@
                     <input type="password" id="login-password" class="w-full bg-white border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#8B1D24] focus:border-transparent transition-all shadow-sm" placeholder="••••••••">
                 </div>
                 <button id="btn-login" class="w-full bg-[#8B1D24] hover:bg-[#70141a] text-white font-bold py-3.5 rounded-xl text-sm transition-all duration-200 shadow-md flex items-center justify-center gap-2 mt-2">
-                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesion
+                    <i class="fas fa-sign-in-alt"></i> Ingresar al Tablero
                 </button>
             </div>
             
-            <p class="text-[10px] text-gray-400 text-center mt-6 uppercase tracking-wider font-semibold">Secretaria Departamental de Mineria e Hidrocarburos</p>
+            <p class="text-[10px] text-gray-400 text-center mt-6 uppercase tracking-wider font-semibold">Dirección de Recursos Hidrocarburíferos y Control</p>
         </div>
     </div>
 
@@ -191,7 +195,7 @@
         
         <!-- VISTA 1: TABLERO GENERAL -->
         <div id="view-dashboard" class="block p-4 md:p-6">
-            <header class="mb-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-[#1e212b]/80 p-4 rounded-2xl border border-gray-800 shadow-lg backdrop-blur-sm">
+            <header class="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-[#1e212b]/80 p-4 rounded-2xl border border-gray-800 shadow-lg backdrop-blur-sm">
                 <div class="flex items-center gap-4">
                     <button onclick="toggleSidebar()" class="bg-[#13151a] border border-gray-700 hover:border-[#00d2ff] p-3 rounded-xl text-white transition-colors flex items-center justify-center shadow-md" title="Menú">
                         <i class="fas fa-bars text-lg"></i>
@@ -206,7 +210,7 @@
                 </div>
 
                 <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
-                    <!-- Reloj en Tiempo Real (Sector Estratégico en Encabezado) -->
+                    <!-- Reloj en Tiempo Real -->
                     <div class="bg-[#13151a] border border-gray-700 px-3.5 py-1.5 rounded-xl flex items-center gap-2.5 shadow-inner">
                         <i class="fas fa-clock text-accentCyan text-sm"></i>
                         <div class="flex flex-col">
@@ -230,6 +234,25 @@
                     </button>
                 </div>
             </header>
+
+            <!-- PESTAÑAS DE SELECCIÓN RÁPIDA DE CAMPO (EN LA VISTA PRINCIPAL) -->
+            <div class="bg-[#1e212b] border border-gray-800 p-2 rounded-2xl mb-6 shadow-md flex flex-wrap items-center justify-between gap-2">
+                <div class="flex items-center gap-2 px-2 text-xs text-gray-400 font-bold uppercase tracking-wider">
+                    <i class="fas fa-layer-group text-accentCyan"></i>
+                    <span>Campo Activo:</span>
+                </div>
+                <div class="flex flex-wrap gap-2 flex-1 md:justify-end">
+                    <button onclick="cambiarCampoTab('monteagudo')" id="tab-campo-monteagudo" class="tab-campo-btn px-4 py-2 rounded-xl text-xs font-extrabold transition-all border border-[#00d2ff]/40 bg-[#00d2ff]/15 text-[#00d2ff] shadow-sm flex items-center gap-2">
+                        <i class="fas fa-fire text-xs"></i> Monteagudo
+                    </button>
+                    <button onclick="cambiarCampoTab('vuelta-grande')" id="tab-campo-vuelta-grande" class="tab-campo-btn px-4 py-2 rounded-xl text-xs font-bold transition-all border border-gray-700 bg-background text-gray-400 hover:text-white hover:border-gray-500 flex items-center gap-2">
+                        <i class="fas fa-oil-well text-xs"></i> Vuelta Grande
+                    </button>
+                    <button onclick="cambiarCampoTab('margarita')" id="tab-campo-margarita" class="tab-campo-btn px-4 py-2 rounded-xl text-xs font-bold transition-all border border-gray-700 bg-background text-gray-400 hover:text-white hover:border-gray-500 flex items-center gap-2">
+                        <i class="fas fa-gas-pump text-xs"></i> Margarita - Huacaya
+                    </button>
+                </div>
+            </div>
 
             <!-- TARJETAS DE INDICADORES FINANCIEROS Y DE MERCADO -->
             <div class="flex flex-wrap gap-4 mb-6">
@@ -367,12 +390,18 @@
                                 <input type="date" id="input-fecha" class="w-full bg-[#13151a] border border-gray-700 rounded-lg p-2 text-sm text-white [color-scheme:dark]">
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-[#00d2ff] mb-1">3. Gas (MMmcd)</label>
-                                <input type="number" id="input-gas" step="0.01" class="w-full bg-[#13151a] border border-gray-700 rounded-lg p-2 text-sm text-white font-mono text-right" placeholder="0.00">
+                                <div class="flex justify-between items-center mb-1">
+                                    <label class="block text-xs font-bold text-[#00d2ff]">3. Gas (MMmcd)</label>
+                                    <span class="text-[10px] text-gray-500 font-mono">Rango: 0 - 1000</span>
+                                </div>
+                                <input type="number" id="input-gas" min="0" max="1000" step="0.01" class="w-full bg-[#13151a] border border-gray-700 rounded-lg p-2 text-sm text-white font-mono text-right" placeholder="0.00">
                             </div>
                             <div>
-                                <label class="block text-xs font-bold text-[#10b981] mb-1">4. Líquidos (BPD)</label>
-                                <input type="number" id="input-oil" class="w-full bg-[#13151a] border border-gray-700 rounded-lg p-2 text-sm text-white font-mono text-right" placeholder="0">
+                                <div class="flex justify-between items-center mb-1">
+                                    <label class="block text-xs font-bold text-[#10b981]">4. Líquidos (BPD)</label>
+                                    <span class="text-[10px] text-gray-500 font-mono">Rango: 0 - 1000</span>
+                                </div>
+                                <input type="number" id="input-oil" min="0" max="1000" step="1" class="w-full bg-[#13151a] border border-gray-700 rounded-lg p-2 text-sm text-white font-mono text-right" placeholder="0">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-yellow-500 mb-1">5. WTI ($/bbl)</label>
@@ -392,7 +421,7 @@
                         </div>
                         <div>
                             <h3 class="text-sm font-bold text-gray-200" id="validation-title">Control de Integridad</h3>
-                            <p class="text-xs text-gray-400 mt-1" id="validation-msg">El motor lógico verificará los volúmenes contra los topes técnicos del campo antes de enviarlos a Supabase.</p>
+                            <p class="text-xs text-gray-400 mt-1" id="validation-msg">El motor lógico verificará los volúmenes contra los topes técnicos definidos antes de guardarlos en Supabase.</p>
                         </div>
                     </div>
 
@@ -540,19 +569,28 @@
         Chart.defaults.plugins.tooltip.mode = 'index';
         Chart.defaults.plugins.tooltip.intersect = false;
 
+        // ==========================================================
+        // ⚙️ RANGOS DE TOPES Y DATOS HISTÓRICOS (MODIFICABLES AQUÍ)
+        // ==========================================================
         const db = {
             "monteagudo": {
-                name: "Monteagudo", maxGas: 450, maxLiq: 1000,
+                name: "Monteagudo", 
+                maxGas: 1000,   // Rango máximo para Gas en Monteagudo
+                maxLiq: 1000,   // Rango máximo para Líquidos en Monteagudo
                 prod: { sem: [3100, 3150, 3050, 3200, 3350, 3400, 3500], mes: [13000, 13500, 13200, 14000, 14500, 14800, 15100] },
                 liq: { sem: [217000, 220500, 213500, 224000, 234500, 238000, 245000], mes: [910000, 945000, 924000, 980000, 1015000, 1036000, 1057000] }
             },
             "vuelta-grande": {
-                name: "Vuelta Grande", maxGas: 1000, maxLiq: 5000,
+                name: "Vuelta Grande", 
+                maxGas: 1000, 
+                maxLiq: 1000,
                 prod: { sem: [8200, 8400, 8100, 8700, 8600, 8900, 9100], mes: [35000, 36000, 34500, 37000, 36500, 38000, 39000] },
                 liq: { sem: [574000, 588000, 567000, 609000, 602000, 623000, 637000], mes: [2450000, 2520000, 2415000, 2590000, 2555000, 2660000, 2730000] }
             },
             "margarita": {
-                name: "Margarita - Huacaya", maxGas: 1000, maxLiq: 25000,
+                name: "Margarita - Huacaya", 
+                maxGas: 1000, 
+                maxLiq: 1000,
                 prod: { sem: [59000, 58000, 58500, 59800, 61000, 60500, 61500], mes: [250000, 245000, 248000, 255000, 260000, 258000, 265000] },
                 liq: { sem: [4130000, 4060000, 4095000, 4186000, 4270000, 4235000, 4305000], mes: [17500000, 17150000, 17360000, 17850000, 18200000, 18060000, 18550000] }
             }
@@ -580,6 +618,27 @@
             }
             actualizar();
             setInterval(actualizar, 1000);
+        }
+
+        // FUNCIÓN PARA CAMBIAR CAMPO DESDE LAS PESTAÑAS DEL TABLERO
+        function cambiarCampoTab(campoKey) {
+            currentField = campoKey;
+            
+            // Sincronizar el selector del sidebar
+            const fieldSelect = document.getElementById('field-selector');
+            if (fieldSelect) fieldSelect.value = campoKey;
+
+            // Actualizar estilo de las pestañas
+            document.querySelectorAll('.tab-campo-btn').forEach(btn => {
+                btn.className = "tab-campo-btn px-4 py-2 rounded-xl text-xs font-bold transition-all border border-gray-700 bg-background text-gray-400 hover:text-white hover:border-gray-500 flex items-center gap-2";
+            });
+
+            const activeTab = document.getElementById(`tab-campo-${campoKey}`);
+            if (activeTab) {
+                activeTab.className = "tab-campo-btn px-4 py-2 rounded-xl text-xs font-extrabold transition-all border border-[#00d2ff]/40 bg-[#00d2ff]/15 text-[#00d2ff] shadow-sm flex items-center gap-2";
+            }
+
+            updateUI();
         }
 
         function toggleSidebar() {
@@ -692,10 +751,8 @@
                     
                     const opciones = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
                     let fechaTexto = fechaObj.toLocaleDateString('es-BO', opciones);
-                    // Capitalizar primera letra
                     fechaTexto = fechaTexto.charAt(0).toUpperCase() + fechaTexto.slice(1);
 
-                    // Si existe timestamp de creación exacta en el servidor, mostrar hora
                     if (r.created_at) {
                         const creacion = new Date(r.created_at);
                         const hora = String(creacion.getHours()).padStart(2, '0');
@@ -717,7 +774,6 @@
         // 🌐 ACTUALIZACIÓN DE PRECIOS WTI Y TIPO DE CAMBIO
         // ==========================================================
         async function actualizarDatosMercado() {
-            // 1. Tipo de Cambio Oficial BCB
             try {
                 const { data: dbTc, error: errTc } = await clienteSupabase
                     .from('parametros_mercado')
@@ -737,7 +793,6 @@
                 document.getElementById('badge-tc').innerText = 'Oficial BCB';
             }
 
-            // 2. Petróleo WTI Referencial
             try {
                 const { data: dbWti, error: errWti } = await clienteSupabase
                     .from('parametros_mercado')
@@ -762,6 +817,15 @@
             const data = db[currentField];
             document.getElementById('title-field').innerText = data.name;
             document.querySelectorAll('.field-name-display').forEach(el => el.innerText = data.name);
+
+            // Asegurar que la pestaña activa tenga el estilo resaltado
+            document.querySelectorAll('.tab-campo-btn').forEach(btn => {
+                btn.className = "tab-campo-btn px-4 py-2 rounded-xl text-xs font-bold transition-all border border-gray-700 bg-background text-gray-400 hover:text-white hover:border-gray-500 flex items-center gap-2";
+            });
+            const activeTab = document.getElementById(`tab-campo-${currentField}`);
+            if (activeTab) {
+                activeTab.className = "tab-campo-btn px-4 py-2 rounded-xl text-xs font-extrabold transition-all border border-[#00d2ff]/40 bg-[#00d2ff]/15 text-[#00d2ff] shadow-sm flex items-center gap-2";
+            }
 
             const selector = document.getElementById('well-selector');
             selector.innerHTML = ''; 
@@ -941,7 +1005,7 @@
 
             const limites = db[campoID];
             if(gas > limites.maxGas || oil > limites.maxLiq) {
-                setPanelState('warning', 'Anomalía de Caudal', `Excede la capacidad técnica documentada. Revisa la planilla.`); return;
+                setPanelState('warning', 'Anomalía de Caudal', `Excede el tope técnico de ${limites.maxGas} configurado para este campo.`); return;
             }
 
             const btn = document.getElementById('btn-save');
@@ -1125,8 +1189,13 @@
         // INIT
         document.getElementById('input-fecha').value = new Date().toISOString().split('T')[0];
         
-        document.getElementById('field-selector').addEventListener('change', (e) => { currentField = e.target.value; updateUI(); });
+        // Sincronización del selector del sidebar con las pestañas
+        document.getElementById('field-selector').addEventListener('change', (e) => { 
+            cambiarCampoTab(e.target.value); 
+        });
+        
         document.getElementById('well-selector').addEventListener('change', (e) => updateWellData(e.target.value));
+        
         document.querySelectorAll('.cons-time-btn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 document.querySelectorAll('.cons-time-btn').forEach(b => b.className="cons-time-btn px-3 py-1 text-xs font-bold rounded text-gray-400 hover:text-white");
