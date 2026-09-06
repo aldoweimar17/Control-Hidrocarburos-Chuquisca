@@ -610,7 +610,7 @@
             </div>
         </div>
 
-        <!-- VISTA NUEVA: GENERADOR DE REPORTE PDF CON GRÁFICA DE RESPALDO -->
+        <!-- VISTA NUEVA: GENERADOR DE REPORTE PDF CON CALENDARIOS DE SELECCIÓN -->
         <div id="view-reports" class="hidden h-full flex flex-col bg-slate-100">
             <header class="p-6 border-b border-slate-200 bg-white flex justify-between items-center sticky top-0 z-10 shadow-sm no-print">
                 <div class="flex items-center gap-3">
@@ -619,7 +619,7 @@
                     </button>
                     <div>
                         <h1 class="text-xl font-bold text-slate-900"><i class="fas fa-print text-[#8B1D24] mr-2"></i> Generador de Reportes Oficiales en PDF</h1>
-                        <p class="text-xs text-slate-500 mt-0.5">Emisión de actas de producción y fiscalización con gráficas de respaldo detalladas.</p>
+                        <p class="text-xs text-slate-500 mt-0.5">Emisión de actas oficiales con selección de fechas, rangos y gráficas de respaldo.</p>
                     </div>
                 </div>
                 <button onclick="cerrarSesion()" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
@@ -628,32 +628,55 @@
             </header>
 
             <div class="p-6 max-w-4xl w-full mx-auto flex-1 overflow-y-auto space-y-6">
-                <!-- Filtros de Impresión (No se imprimen) -->
-                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap gap-4 items-end no-print">
-                    <div class="flex-1 min-w-[200px]">
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Campo a Reportar</label>
-                        <select id="report-campo" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900">
-                            <option value="monteagudo">Monteagudo</option>
-                            <option value="vuelta-grande">Vuelta Grande</option>
-                            <option value="margarita">Margarita - Huacaya</option>
-                        </select>
+                <!-- Filtros con Calendario Interactivo (No se imprimen) -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 no-print">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Campo Operativo</label>
+                            <select id="report-campo" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900">
+                                <option value="monteagudo">Monteagudo</option>
+                                <option value="vuelta-grande">Vuelta Grande</option>
+                                <option value="margarita">Margarita - Huacaya</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Tipo de Período</label>
+                            <select id="report-tipo" onchange="actualizarControlesCalendario()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900">
+                                <option value="dia">Día Específico</option>
+                                <option value="sem">Rango Semanal</option>
+                                <option value="mes">Mes Específico</option>
+                            </select>
+                        </div>
                     </div>
-                    <div class="flex-1 min-w-[200px]">
-                        <label class="block text-xs font-bold text-slate-700 mb-1">Tipo de Período</label>
-                        <select id="report-periodo" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900">
-                            <option value="dia">Diario</option>
-                            <option value="sem">Semanal</option>
-                            <option value="mes">Mensual</option>
-                        </select>
+
+                    <!-- Controles dinámicos de fecha / calendario -->
+                    <div id="container-calendarios" class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-slate-100">
+                        <div id="box-fecha-unica">
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Seleccionar Día</label>
+                            <input type="date" id="report-fecha-unica" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-xs text-slate-900">
+                        </div>
+                        <div id="box-rango-inicio" class="hidden">
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Fecha de Inicio (Semana)</label>
+                            <input type="date" id="report-fecha-inicio" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-xs text-slate-900">
+                        </div>
+                        <div id="box-rango-fin" class="hidden">
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Fecha de Fin (Semana)</label>
+                            <input type="date" id="report-fecha-fin" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-xs text-slate-900">
+                        </div>
+                        <div id="box-mes-picker" class="hidden">
+                            <label class="block text-xs font-bold text-slate-600 mb-1">Seleccionar Mes y Año</label>
+                            <input type="month" id="report-mes-val" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-xs text-slate-900" value="2026-09">
+                        </div>
                     </div>
-                    <div>
+
+                    <div class="flex justify-end pt-2">
                         <button onclick="generarReportePDF()" class="bg-[#8B1D24] hover:bg-[#6b141a] text-white font-bold px-6 py-2.5 rounded-xl text-xs transition-all flex items-center gap-2 shadow-md">
-                            <i class="fas fa-file-pdf"></i> Imprimir / Guardar PDF
+                            <i class="fas fa-file-pdf"></i> Imprimir / Guardar PDF Oficial
                         </button>
                     </div>
                 </div>
 
-                <!-- HOJA DE REPORTE OFICIAL (ÁREA DE IMPRESIÓN FORMAL CON GRÁFICA) -->
+                <!-- HOJA DE REPORTE OFICIAL (ÁREA DE IMPRESIÓN FORMAL) -->
                 <div id="print-report-area" class="bg-white p-8 md:p-12 rounded-3xl border border-slate-300 shadow-xl text-slate-800 space-y-6">
                     <!-- Membrete -->
                     <div class="flex justify-between items-center border-b-2 border-[#8B1D24] pb-6">
@@ -670,15 +693,15 @@
                             </div>
                         </div>
                         <div class="text-right">
-                            <div class="text-xs font-mono font-bold text-slate-700" id="rep-print-fecha">Fecha: --/--/2026</div>
+                            <div class="text-xs font-mono font-bold text-slate-700" id="rep-print-fecha">Fecha Emisión: --/--/2026</div>
                             <div class="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 mt-1 inline-block font-semibold">Estado: Verificado y Auditoría OK</div>
                         </div>
                     </div>
 
-                    <!-- Título y Fechas de Período Específico -->
+                    <!-- Título y Período Dinámico con Fechas -->
                     <div class="text-center space-y-1">
                         <h1 class="text-base font-extrabold text-slate-900 uppercase tracking-wide">Acta Oficial de Fiscalización y Control de Producción</h1>
-                        <p class="text-xs text-slate-600 font-semibold" id="rep-print-subtitulo">Bloque Operativo: Monteagudo — (Período: 01 de Enero al 08 de Enero de 2026)</p>
+                        <p class="text-xs text-slate-600 font-semibold" id="rep-print-subtitulo">Bloque Operativo: Monteagudo — (Período: 06 de Septiembre de 2026)</p>
                     </div>
 
                     <!-- Tabla de Datos -->
@@ -699,7 +722,7 @@
                         </table>
                     </div>
 
-                    <!-- Gráfica de Respaldo Numérico (Incrustada en el PDF) -->
+                    <!-- Gráfica de Respaldo Numérico -->
                     <div class="space-y-2 pt-2">
                         <h4 class="text-xs font-bold text-[#8B1D24] uppercase tracking-wider border-l-4 border-[#8B1D24] pl-2">2. Gráfica de Comportamiento de Respaldo</h4>
                         <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
@@ -1335,22 +1358,60 @@
             }
         }
 
-        // GENERADOR DE REPORTE PDF CON FECHAS ESPECÍFICAS Y GRÁFICA INCRUSTADA
+        // CONTROL VISUAL DE CALENDARIOS SEGÚN EL TIPO DE REPORTE
+        function actualizarControlesCalendario() {
+            const tipo = document.getElementById('report-tipo').value;
+            const boxUnica = document.getElementById('box-fecha-unica');
+            const boxInicio = document.getElementById('box-rango-inicio');
+            const boxFin = document.getElementById('box-rango-fin');
+            const boxMes = document.getElementById('box-mes-picker');
+
+            boxUnica.classList.add('hidden');
+            boxInicio.classList.add('hidden');
+            boxFin.classList.add('hidden');
+            boxMes.classList.add('hidden');
+
+            if (tipo === 'dia') {
+                boxUnica.classList.remove('hidden');
+            } else if (tipo === 'sem') {
+                boxInicio.classList.remove('hidden');
+                boxFin.classList.remove('hidden');
+            } else if (tipo === 'mes') {
+                boxMes.classList.remove('hidden');
+            }
+            prepararVistaReportePDF();
+        }
+
+        // GENERADOR DE REPORTE PDF CON CALENDARIO Y FECHAS ESPECÍFICAS
         function prepararVistaReportePDF() {
             const campoKey = document.getElementById('report-campo').value;
-            const periodoKey = document.getElementById('report-periodo').value;
+            const tipoReporte = document.getElementById('report-tipo').value;
             const infoCampo = db[campoKey];
 
             document.getElementById('rep-print-fecha').innerText = `Fecha Emisión: ${new Date().toLocaleDateString('es-BO', { day: '2-digit', month: 'long', year: 'numeric' })}`;
 
-            // Formato de fechas específico según el periodo
+            // Formatear texto del período según la selección del calendario
             let textoPeriodo = "";
-            if (periodoKey === 'dia') {
-                textoPeriodo = `(Período: 06 de Septiembre de 2026 - Diario)`;
-            } else if (periodoKey === 'sem') {
-                textoPeriodo = `(Período: 01 de Septiembre al 06 de Septiembre de 2026 - Semanal)`;
+            if (tipoReporte === 'dia') {
+                const valFec = document.getElementById('report-fecha-unica').value || new Date().toISOString().split('T')[0];
+                const partes = valFec.split('-');
+                const fObj = new Date(partes[0], partes[1] - 1, partes[2]);
+                const fechaFmt = fObj.toLocaleDateString('es-BO', { day: 'numeric', month: 'long', year: 'numeric' });
+                textoPeriodo = `(Período: ${fechaFmt} - Diario)`;
+            } else if (tipoReporte === 'sem') {
+                const fIni = document.getElementById('report-fecha-inicio').value || '2026-09-01';
+                const fFin = document.getElementById('report-fecha-fin').value || '2026-09-07';
+                const [y1, m1, d1] = fIni.split('-');
+                const [y2, m2, d2] = fFin.split('-');
+                const fecha1 = new Date(y1, m1 - 1, d1).toLocaleDateString('es-BO', { day: 'numeric', month: 'long', year: 'numeric' });
+                const fecha2 = new Date(y2, m2 - 1, d2).toLocaleDateString('es-BO', { day: 'numeric', month: 'long', year: 'numeric' });
+                textoPeriodo = `(Período: Del ${fecha1} al ${fecha2} - Semanal)`;
             } else {
-                textoPeriodo = `(Período: 01 de Septiembre al 30 de Septiembre de 2026 - Mensual)`;
+                const mesVal = document.getElementById('report-mes-val').value || '2026-09';
+                const [y, m] = mesVal.split('-');
+                const fObj = new Date(y, m - 1, 1);
+                const mesNom = fObj.toLocaleDateString('es-BO', { month: 'long', year: 'numeric' });
+                textoPeriodo = `(Período Mensual: ${mesNom.charAt(0).toUpperCase() + mesNom.slice(1)})`;
             }
 
             document.getElementById('rep-print-subtitulo').innerText = `Bloque Operativo: ${infoCampo.name} — ${textoPeriodo}`;
@@ -1360,7 +1421,7 @@
 
             let filas = [];
             let datasetGrafica = [];
-            let labelsGrafica = [];
+            let periodoKey = (tipoReporte === 'dia') ? 'dia' : (tipoReporte === 'sem') ? 'sem' : 'mes';
 
             if (campoKey === 'monteagudo') {
                 const liqVal = infoCampo.liq[periodoKey][infoCampo.liq[periodoKey].length - 1];
@@ -1372,7 +1433,6 @@
                     ['Agua de Formación', 'bbls', (liqVal * 0.55).toFixed(1), 'Agua producida asociada']
                 ];
                 datasetGrafica = infoCampo.liq[periodoKey];
-                labelsGrafica = (periodoKey === 'dia') ? diasLabels : (periodoKey === 'sem') ? semLabels : mesLabels;
             } else {
                 const gasVal = infoCampo.gas[periodoKey][infoCampo.gas[periodoKey].length - 1];
                 const liqVal = infoCampo.liq[periodoKey][infoCampo.liq[periodoKey].length - 1];
@@ -1384,7 +1444,6 @@
                     ['Producción de Líquidos', 'bbls', liqVal.toFixed(1), 'Condensado asociado']
                 ];
                 datasetGrafica = infoCampo.gas[periodoKey];
-                labelsGrafica = (periodoKey === 'dia') ? diasLabels : (periodoKey === 'sem') ? semLabels : mesLabels;
             }
 
             filas.forEach(f => {
@@ -1398,6 +1457,7 @@
             if (chartPdfRespaldoInstance) {
                 chartPdfRespaldoInstance.destroy();
             }
+            let labelsGrafica = (tipoReporte === 'dia') ? diasLabels : (tipoReporte === 'sem') ? semLabels : mesLabels;
             chartPdfRespaldoInstance = new Chart(ctxPdf, {
                 type: 'bar',
                 data: {
@@ -1424,7 +1484,11 @@
         }
 
         document.getElementById('report-campo').addEventListener('change', prepararVistaReportePDF);
-        document.getElementById('report-periodo').addEventListener('change', prepararVistaReportePDF);
+        document.getElementById('report-tipo').addEventListener('change', prepararVistaReportePDF);
+        document.getElementById('report-fecha-unica').addEventListener('change', prepararVistaReportePDF);
+        document.getElementById('report-fecha-inicio').addEventListener('change', prepararVistaReportePDF);
+        document.getElementById('report-fecha-fin').addEventListener('change', prepararVistaReportePDF);
+        document.getElementById('report-mes-val').addEventListener('change', prepararVistaReportePDF);
 
         async function aplicarPermisosRol(user) {
             const roleEl = document.getElementById('user-role-display');
@@ -1675,6 +1739,7 @@
         }
 
         document.getElementById('input-fecha').value = new Date().toISOString().split('T')[0];
+        document.getElementById('report-fecha-unica').value = new Date().toISOString().split('T')[0];
         document.getElementById('well-selector').addEventListener('change', (e) => updateWellData(e.target.value));
 
         iniciarReloj();
