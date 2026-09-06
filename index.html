@@ -123,7 +123,8 @@
                 </h3>
             </div>
 
-            <p class="text-[9px] text-accentCyan mt-2 border-t border-gray-800/80 pt-1.5 w-full text-center font-mono" id="user-email-display">usuario@chuquisaca.gob.bo</p>
+            <p class="text-[9px] text-accentCyan mt-2 border-t border-gray-800/80 pt-1.5 w-full text-center font-mono truncate" id="user-email-display">usuario@chuquisaca.gob.bo</p>
+            <p class="text-[10px] text-yellow-400 font-bold uppercase tracking-wider mt-0.5" id="user-role-display">Perfil: Cargando...</p>
             
             <button onclick="cerrarSesion()" class="mt-3 w-full bg-red-950/40 hover:bg-red-900/60 text-red-300 border border-red-800/60 px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all">
                 <i class="fas fa-arrow-right-from-bracket"></i> Cerrar Sesión
@@ -210,7 +211,6 @@
                 </div>
 
                 <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
-                    <!-- Reloj en Tiempo Real -->
                     <div class="bg-[#13151a] border border-gray-700 px-3.5 py-1.5 rounded-xl flex items-center gap-2.5 shadow-inner">
                         <i class="fas fa-clock text-accentCyan text-sm"></i>
                         <div class="flex flex-col">
@@ -219,23 +219,13 @@
                         </div>
                     </div>
 
-                    <!-- Insignia Institucional -->
-                    <div class="hidden sm:flex items-center bg-white px-3 py-1.5 rounded-xl border border-gray-300 shadow-sm gap-2">
-                        <svg viewBox="0 0 100 120" class="h-5 w-auto text-[#C81D25]" fill="currentColor">
-                            <polygon points="43,30 57,30 63,75 37,75" stroke="#C81D25" stroke-width="4" fill="none"/>
-                            <path d="M22 100 C22 75 78 75 78 100 Z" fill="none" stroke="#C81D25" stroke-width="5"/>
-                        </svg>
-                        <span class="text-[10px] font-black text-[#C81D25] uppercase tracking-wider font-serif">Minería e Hidrocarburos</span>
-                    </div>
-
-                    <!-- Botón Cerrar Sesión -->
                     <button onclick="cerrarSesion()" class="bg-red-950/30 hover:bg-red-900/60 text-red-300 border border-red-800/60 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-colors shadow-sm">
                         <i class="fas fa-arrow-right-from-bracket"></i> <span>Cerrar Sesión</span>
                     </button>
                 </div>
             </header>
 
-            <!-- PESTAÑAS DE SELECCIÓN RÁPIDA DE CAMPO (EN LA VISTA PRINCIPAL) -->
+            <!-- PESTAÑAS DE SELECCIÓN RÁPIDA DE CAMPO -->
             <div class="bg-[#1e212b] border border-gray-800 p-2 rounded-2xl mb-6 shadow-md flex flex-wrap items-center justify-between gap-2">
                 <div class="flex items-center gap-2 px-2 text-xs text-gray-400 font-bold uppercase tracking-wider">
                     <i class="fas fa-layer-group text-accentCyan"></i>
@@ -256,7 +246,7 @@
 
             <!-- TARJETAS DE INDICADORES FINANCIEROS Y DE MERCADO -->
             <div class="flex flex-wrap gap-4 mb-6">
-                <!-- Tarjeta WTI -->
+                <!-- WTI -->
                 <div class="bg-[#1e212b] border border-gray-700 px-4 py-2.5 rounded-lg flex items-center gap-3 shadow-sm flex-1 min-w-[220px]">
                     <div class="bg-yellow-500/20 p-2 rounded-md text-yellow-500 flex items-center justify-center">
                         <i class="fas fa-barrel text-lg"></i>
@@ -270,7 +260,7 @@
                     </div>
                 </div>
                 
-                <!-- Tarjeta Tipo de Cambio Oficial (BCB) -->
+                <!-- Tipo de Cambio Oficial BCB -->
                 <div class="bg-[#1e212b] border border-gray-700 px-4 py-2.5 rounded-lg flex items-center gap-3 shadow-sm flex-1 min-w-[220px]">
                     <div class="bg-green-500/20 p-2 rounded-md text-green-500 flex items-center justify-center">
                         <i class="fas fa-money-bill-wave text-lg"></i>
@@ -284,7 +274,7 @@
                     </div>
                 </div>
 
-                <!-- Tarjeta Fecha del Último Reporte Cargado -->
+                <!-- Último Reporte Operativo -->
                 <div class="bg-[#1e212b] border border-gray-700 px-4 py-2.5 rounded-lg flex items-center gap-3 shadow-sm flex-1 min-w-[220px]">
                     <div class="bg-blue-500/20 p-2 rounded-md text-[#3b82f6] flex items-center justify-center">
                         <i class="fas fa-calendar-check text-lg"></i>
@@ -352,7 +342,7 @@
             </div>
         </div>
 
-        <!-- VISTA 2: CARGA DE DATOS MANUALES -->
+        <!-- VISTA 2: CARGA DE DATOS MANUALES (SOLO OPERADORES) -->
         <div id="view-entry" class="hidden h-full flex flex-col">
             <header class="p-6 border-b border-gray-800 bg-[#1e212b] flex justify-between items-center sticky top-0 z-10">
                 <div class="flex items-center gap-3">
@@ -421,7 +411,7 @@
                         </div>
                         <div>
                             <h3 class="text-sm font-bold text-gray-200" id="validation-title">Control de Integridad</h3>
-                            <p class="text-xs text-gray-400 mt-1" id="validation-msg">El motor lógico verificará los volúmenes contra los topes técnicos definidos antes de guardarlos en Supabase.</p>
+                            <p class="text-xs text-gray-400 mt-1" id="validation-msg">El motor lógico verificará los volúmenes contra los topes técnicos configurados antes de guardarlos en Supabase.</p>
                         </div>
                     </div>
 
@@ -451,7 +441,7 @@
             </div>
         </div>
 
-        <!-- VISTA 3: ADMINISTRACIÓN DE POZOS -->
+        <!-- VISTA 3: ADMINISTRACIÓN DE POZOS (SOLO OPERADORES) -->
         <div id="view-wells" class="hidden h-full flex flex-col">
             <header class="p-6 border-b border-gray-800 bg-[#1e212b] flex justify-between items-center sticky top-0 z-10">
                 <div class="flex items-center gap-3">
@@ -570,13 +560,13 @@
         Chart.defaults.plugins.tooltip.intersect = false;
 
         // ==========================================================
-        // ⚙️ RANGOS DE TOPES Y DATOS HISTÓRICOS (MODIFICABLES AQUÍ)
+        // ⚙️ RANGOS DE TOPES TÉCNICOS (0 A 1000)
         // ==========================================================
         const db = {
             "monteagudo": {
                 name: "Monteagudo", 
-                maxGas: 1000,   // Rango máximo para Gas en Monteagudo
-                maxLiq: 1000,   // Rango máximo para Líquidos en Monteagudo
+                maxGas: 1000, 
+                maxLiq: 1000,
                 prod: { sem: [3100, 3150, 3050, 3200, 3350, 3400, 3500], mes: [13000, 13500, 13200, 14000, 14500, 14800, 15100] },
                 liq: { sem: [217000, 220500, 213500, 224000, 234500, 238000, 245000], mes: [910000, 945000, 924000, 980000, 1015000, 1036000, 1057000] }
             },
@@ -604,9 +594,9 @@
 
         let currentField = 'monteagudo';
         let consTime = 'dia';
+        let currentUserRole = 'operador';
         const charts = {};
 
-        // RELOJ DIGITAL EN TIEMPO REAL
         function iniciarReloj() {
             const clockEl = document.getElementById('live-clock');
             function actualizar() {
@@ -620,15 +610,12 @@
             setInterval(actualizar, 1000);
         }
 
-        // FUNCIÓN PARA CAMBIAR CAMPO DESDE LAS PESTAÑAS DEL TABLERO
         function cambiarCampoTab(campoKey) {
             currentField = campoKey;
             
-            // Sincronizar el selector del sidebar
             const fieldSelect = document.getElementById('field-selector');
             if (fieldSelect) fieldSelect.value = campoKey;
 
-            // Actualizar estilo de las pestañas
             document.querySelectorAll('.tab-campo-btn').forEach(btn => {
                 btn.className = "tab-campo-btn px-4 py-2 rounded-xl text-xs font-bold transition-all border border-gray-700 bg-background text-gray-400 hover:text-white hover:border-gray-500 flex items-center gap-2";
             });
@@ -661,6 +648,11 @@
         }
 
         function switchView(viewId) {
+            if (currentUserRole === 'directivo' && (viewId === 'entry' || viewId === 'wells')) {
+                alert("Acceso restringido. Su perfil solo tiene permisos de consulta para el Tablero General.");
+                return;
+            }
+
             document.getElementById('view-dashboard').classList.add('hidden');
             document.getElementById('view-entry').classList.add('hidden');
             document.getElementById('view-wells').classList.add('hidden');
@@ -688,6 +680,55 @@
             }
 
             toggleSidebar();
+        }
+
+        // ==========================================================
+        // 🛡️ LECTURA DINÁMICA DE ROLES DESDE SUPABASE
+        // ==========================================================
+        async function aplicarPermisosRol(user) {
+            const roleEl = document.getElementById('user-role-display');
+            let rol = 'operador';
+            let cargo = 'Operador / Pasante';
+
+            try {
+                // Consultar la tabla de perfiles_usuarios en Supabase
+                const { data, error } = await clienteSupabase
+                    .from('perfiles_usuarios')
+                    .select('rol, cargo')
+                    .eq('id', user.id)
+                    .single();
+
+                if (!error && data) {
+                    rol = data.rol || 'operador';
+                    cargo = data.cargo || (rol === 'directivo' ? 'Secretario / Director' : 'Operador / Pasante');
+                } else {
+                    // Si aún no está en la tabla, verificar si es el correo principal
+                    if (user.email === 'aldorosalesbellido@gmail.com') {
+                        rol = 'directivo';
+                        cargo = 'Secretario de Hidrocarburos';
+                    }
+                }
+            } catch (e) {
+                console.warn("No se pudo leer perfiles_usuarios, aplicando rol por defecto:", e);
+            }
+
+            currentUserRole = rol;
+
+            if (rol === 'directivo') {
+                roleEl.innerText = `Perfil: ${cargo}`;
+                roleEl.className = 'text-[10px] text-green-400 font-bold uppercase tracking-wider mt-0.5';
+                
+                // Ocultar opciones de transcripción y administración de pozos
+                document.getElementById('btn-menu-entry').classList.add('hidden');
+                document.getElementById('btn-menu-wells').classList.add('hidden');
+            } else {
+                roleEl.innerText = `Perfil: ${cargo}`;
+                roleEl.className = 'text-[10px] text-accentCyan font-bold uppercase tracking-wider mt-0.5';
+                
+                // Mostrar opciones operativas
+                document.getElementById('btn-menu-entry').classList.remove('hidden');
+                document.getElementById('btn-menu-wells').classList.remove('hidden');
+            }
         }
 
         function createChart(ctxId, type, title, color, isCurrency = false) {
@@ -818,7 +859,6 @@
             document.getElementById('title-field').innerText = data.name;
             document.querySelectorAll('.field-name-display').forEach(el => el.innerText = data.name);
 
-            // Asegurar que la pestaña activa tenga el estilo resaltado
             document.querySelectorAll('.tab-campo-btn').forEach(btn => {
                 btn.className = "tab-campo-btn px-4 py-2 rounded-xl text-xs font-bold transition-all border border-gray-700 bg-background text-gray-400 hover:text-white hover:border-gray-500 flex items-center gap-2";
             });
@@ -938,13 +978,14 @@
         }
 
         // ==========================================================
-        // 🔐 LÓGICA DE AUTENTICACIÓN CON SUPABASE AUTH
+        // 🔐 VERIFICACIÓN DE SESIÓN
         // ==========================================================
         async function verificarSesion() {
             const { data: { session } } = await clienteSupabase.auth.getSession();
             if (session) {
                 document.getElementById('view-login').classList.add('hidden');
                 document.getElementById('user-email-display').innerText = session.user.email;
+                await aplicarPermisosRol(session.user);
                 updateUI();
                 actualizarDatosMercado();
             } else {
@@ -980,6 +1021,7 @@
             } else {
                 document.getElementById('view-login').classList.add('hidden');
                 document.getElementById('user-email-display').innerText = data.user.email;
+                await aplicarPermisosRol(data.user);
                 updateUI();
                 actualizarDatosMercado();
             }
@@ -990,6 +1032,11 @@
         // ==========================================================
         let sessionCount = 0;
         document.getElementById('btn-save').addEventListener('click', async function() {
+            if (currentUserRole === 'directivo') {
+                alert("Acceso denegado: Su perfil es de consulta directiva y no tiene permisos de transcripción.");
+                return;
+            }
+
             const campoID = document.getElementById('input-campo').value;
             const fecha = document.getElementById('input-fecha').value;
             const gas = parseFloat(document.getElementById('input-gas').value);
@@ -1089,6 +1136,11 @@
         }
 
         document.getElementById('btn-save-well').addEventListener('click', async function() {
+            if (currentUserRole === 'directivo') {
+                alert("Acceso denegado: Su perfil es de consulta directiva y no tiene permisos de modificación.");
+                return;
+            }
+
             const campoId = parseInt(document.getElementById('well-input-campo').value);
             const nombrePozo = document.getElementById('well-input-nombre').value.trim();
             const estado = document.getElementById('well-input-estado').value;
@@ -1189,7 +1241,6 @@
         // INIT
         document.getElementById('input-fecha').value = new Date().toISOString().split('T')[0];
         
-        // Sincronización del selector del sidebar con las pestañas
         document.getElementById('field-selector').addEventListener('change', (e) => { 
             cambiarCampoTab(e.target.value); 
         });
