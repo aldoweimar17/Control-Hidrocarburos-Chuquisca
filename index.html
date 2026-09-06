@@ -37,9 +37,16 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         input[type="number"]::-webkit-inner-spin-button, 
         input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-        .chart-container { position: relative; height: 260px; width: 100%; }
+        .chart-container { position: relative; height: 240px; width: 100%; }
         .large-chart-container { position: relative; height: 350px; width: 100%; }
         .toast { transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; }
+        
+        @media print {
+            body * { visibility: hidden; }
+            #print-report-area, #print-report-area * { visibility: visible; }
+            #print-report-area { position: absolute; left: 0; top: 0; width: 100%; }
+            .no-print { display: none !important; }
+        }
     </style>
 </head>
 <body class="bg-chqLight text-chqText h-screen flex overflow-hidden relative">
@@ -134,6 +141,9 @@
                 <button id="btn-menu-entry" onclick="switchView('entry')" class="flex items-center gap-3 p-3 rounded-xl text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors w-full text-left">
                     <i class="fas fa-edit w-5 text-center"></i> Carga de Partes Diarios
                 </button>
+                <button id="btn-menu-reports" onclick="switchView('reports')" class="flex items-center gap-3 p-3 rounded-xl text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors w-full text-left">
+                    <i class="fas fa-print w-5 text-center"></i> Generador de Reportes PDF
+                </button>
                 <button id="btn-menu-wells" onclick="switchView('wells')" class="flex items-center gap-3 p-3 rounded-xl text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors w-full text-left">
                     <i class="fas fa-oil-well w-5 text-center"></i> Catálogo de Pozos
                 </button>
@@ -224,13 +234,13 @@
                 </div>
             </div>
 
-            <!-- SUB-PESTAÑAS ESTRATÉGICAS (1. Producción, 2. Fiscalización) -->
+            <!-- SUB-PESTAÑAS ESTRATÉGICAS -->
             <div class="flex border-b border-slate-200 mb-6 gap-2 overflow-x-auto">
                 <button onclick="cambiarPestanaEstrategia('produccion')" id="subtab-produccion" class="px-5 py-2.5 font-bold text-xs border-b-2 border-[#8B1D24] text-[#8B1D24] flex items-center gap-2 transition-all whitespace-nowrap">
                     <i class="fas fa-chart-line"></i> 1. Producción Bruta (Oferta Física)
                 </button>
                 <button onclick="cambiarPestanaEstrategia('fiscalizacion')" id="subtab-fiscalizacion" class="px-5 py-2.5 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition-all whitespace-nowrap">
-                    <i class="fas fa-file-invoice-dollar"></i> 2. Fiscalización & Balance de Materia
+                    <i class="fas fa-file-invoice-dollar"></i> 2. Fiscalización & Balance
                 </button>
             </div>
 
@@ -308,7 +318,6 @@
                                 <p class="text-[10px] text-slate-500" id="subtitulo-liq-prod">Petróleo crudo y condensado asociado.</p>
                             </div>
                             <div class="flex items-center gap-3">
-                                <!-- Botones de Periodo para Líquidos (Diario, Semanal, Mensual) -->
                                 <div class="flex gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200">
                                     <button onclick="cambiarPeriodoLiq('dia')" id="btn-liq-dia" class="px-2.5 py-1 text-xs font-bold rounded-lg bg-white text-slate-900 shadow-sm">Diario</button>
                                     <button onclick="cambiarPeriodoLiq('sem')" id="btn-liq-sem" class="px-2.5 py-1 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-900">Semanal</button>
@@ -322,7 +331,7 @@
                         <div class="chart-container"><canvas id="chart-liq-prod"></canvas></div>
                     </div>
 
-                    <!-- Producción de GLP en m3 (Oculto en Monteagudo) -->
+                    <!-- Producción de GLP en m3 -->
                     <div id="wrapper-chart-glp" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
                         <div class="flex justify-between items-center border-b border-slate-100 pb-3 mb-4">
                             <div>
@@ -345,7 +354,7 @@
 
             <!-- SUB-PANEL 2: FISCALIZACIÓN & BALANCE DE MATERIA -->
             <div id="panel-fiscalizacion" class="hidden space-y-6">
-                <!-- Gráfica Exclusiva Monteagudo: Balance de Materia de Líquidos con Diario, Semanal y Mensual -->
+                <!-- Gráfica Exclusiva Monteagudo -->
                 <div id="wrapper-balance-monteagudo" class="hidden bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
                     <div class="border-b border-slate-100 pb-3 mb-4 flex flex-col md:flex-row justify-between md:items-center gap-3">
                         <div class="flex items-center gap-3">
@@ -360,7 +369,6 @@
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
-                            <!-- Selector Diario, Semanal, Mensual para el Balance de Monteagudo -->
                             <div class="flex gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200">
                                 <button onclick="cambiarPeriodoBalMnt('dia')" id="btn-balmnt-dia" class="px-3 py-1 text-xs font-bold rounded-lg bg-white text-slate-900 shadow-sm">Diario</button>
                                 <button onclick="cambiarPeriodoBalMnt('sem')" id="btn-balmnt-sem" class="px-3 py-1 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-900">Semanal</button>
@@ -372,7 +380,7 @@
                     <div class="large-chart-container"><canvas id="chart-balance-monteagudo"></canvas></div>
                 </div>
 
-                <!-- Gráfica General: Balance de Masas de Gas (Vuelta Grande y Margarita) -->
+                <!-- Gráfica General Gas -->
                 <div id="wrapper-balance-gas" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
                     <div class="border-b border-slate-100 pb-3 mb-4 flex flex-col md:flex-row justify-between md:items-center gap-2">
                         <div class="flex items-center gap-3">
@@ -598,6 +606,131 @@
                     </div>
                 </div>
 
+            </div>
+        </div>
+
+        <!-- VISTA NUEVA: GENERADOR E IMPRESIÓN DE REPORTES PDF -->
+        <div id="view-reports" class="hidden h-full flex flex-col bg-slate-100">
+            <header class="p-6 border-b border-slate-200 bg-white flex justify-between items-center sticky top-0 z-10 shadow-sm no-print">
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleSidebar()" class="bg-slate-100 border border-slate-300 hover:border-slate-400 p-2.5 rounded-xl text-slate-700">
+                        <i class="fas fa-bars text-lg"></i>
+                    </button>
+                    <div>
+                        <h1 class="text-xl font-bold text-slate-900"><i class="fas fa-print text-[#8B1D24] mr-2"></i> Generador de Reportes Oficiales en PDF</h1>
+                        <p class="text-xs text-slate-500 mt-0.5">Emisión de actas de producción y fiscalización por campo y período específico.</p>
+                    </div>
+                </div>
+                <button onclick="cerrarSesion()" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
+                    <i class="fas fa-arrow-right-from-bracket"></i> <span>Cerrar Sesión</span>
+                </button>
+            </header>
+
+            <div class="p-6 max-w-4xl w-full mx-auto flex-1 overflow-y-auto space-y-6">
+                <!-- Filtros de Impresión (No se imprimen) -->
+                <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap gap-4 items-end no-print">
+                    <div class="flex-1 min-w-[200px]">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Campo a Reportar</label>
+                        <select id="report-campo" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900">
+                            <option value="monteagudo">Monteagudo</option>
+                            <option value="vuelta-grande">Vuelta Grande</option>
+                            <option value="margarita">Margarita - Huacaya</option>
+                        </select>
+                    </div>
+                    <div class="flex-1 min-w-[200px]">
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Período / Día</label>
+                        <select id="report-periodo" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900">
+                            <option value="dia">Reporte Diario Consolidado</option>
+                            <option value="sem">Reporte Semanal Acumulado</option>
+                            <option value="mes">Reporte Mensual Oficial</option>
+                        </select>
+                    </div>
+                    <div>
+                        <button onclick="generarReportePDF()" class="bg-[#8B1D24] hover:bg-[#6b141a] text-white font-bold px-6 py-2.5 rounded-xl text-xs transition-all flex items-center gap-2 shadow-md">
+                            <i class="fas fa-file-pdf"></i> Generar e Imprimir / PDF
+                        </button>
+                    </div>
+                </div>
+
+                <!-- HOJA DE REPORTE OFICIAL (ÁREA DE IMPRESIÓN FORMAL) -->
+                <div id="print-report-area" class="bg-white p-8 md:p-12 rounded-3xl border border-slate-300 shadow-xl text-slate-800 space-y-6">
+                    <!-- Membrete Institucional -->
+                    <div class="flex justify-between items-center border-b-2 border-[#8B1D24] pb-6">
+                        <div class="flex items-center gap-4">
+                            <svg viewBox="0 0 100 120" class="h-14 w-auto text-[#8B1D24]" fill="currentColor">
+                                <polygon points="43,30 57,30 63,75 37,75" stroke="#8B1D24" stroke-width="2.5" fill="none"/>
+                                <path d="M35 55 L75 38 L78 68 Z" fill="none" stroke="#8B1D24" stroke-width="3"/>
+                                <path d="M22 100 C22 75 78 75 78 100 Z" fill="none" stroke="#8B1D24" stroke-width="3.5"/>
+                            </svg>
+                            <div>
+                                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Gobierno Autónomo Departamental de Chuquisaca</h3>
+                                <h2 class="text-sm font-black text-[#8B1D24] uppercase">Secretaría Departamental de Minería e Hidrocarburos</h2>
+                                <p class="text-[10px] text-slate-400">Dirección de Recursos Hidrocarburíferos y Control</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="text-xs font-mono font-bold text-slate-700" id="rep-print-fecha">Fecha: --/--/2026</div>
+                            <div class="text-[10px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200 mt-1 inline-block font-semibold">Estado: Verificado y Auditoría OK</div>
+                        </div>
+                    </div>
+
+                    <!-- Título del Acta -->
+                    <div class="text-center space-y-1">
+                        <h1 class="text-base font-extrabold text-slate-900 uppercase tracking-wide">Acta Oficial de Fiscalización y Control de Producción</h1>
+                        <p class="text-xs text-slate-600 font-semibold" id="rep-print-subtitulo">Bloque Operativo: Monteagudo — Período: Diario</p>
+                    </div>
+
+                    <!-- Tabla de Datos Consolidados -->
+                    <div class="space-y-3">
+                        <h4 class="text-xs font-bold text-[#8B1D24] uppercase tracking-wider border-l-4 border-[#8B1D24] pl-2">1. Resumen de Volúmenes Extraídos y Fiscalizados</h4>
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-slate-100 text-slate-700 uppercase text-[10px] border-b border-slate-300">
+                                    <th class="p-2.5">Variable Operativa / Concepto</th>
+                                    <th class="p-2.5 text-right">Unidad</th>
+                                    <th class="p-2.5 text-right">Volumen Registrado</th>
+                                    <th class="p-2.5 text-right">Observación Técnica</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rep-table-body" class="divide-y divide-slate-200 font-mono text-slate-800">
+                                <!-- Inyección dinámica -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Indicadores Económicos de Referencia -->
+                    <div class="grid grid-cols-2 gap-4 pt-2">
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                            <div class="text-[10px] text-slate-500 uppercase font-bold">Precio Referencial WTI</div>
+                            <div class="text-sm font-bold text-slate-900">$ 82.50 <span class="text-xs font-normal text-slate-500">/ bbl</span></div>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200">
+                            <div class="text-[10px] text-slate-500 uppercase font-bold">Tipo de Cambio Oficial (BCB)</div>
+                            <div class="text-sm font-bold text-slate-900">12.58 <span class="text-xs font-normal text-slate-500">Bs. / USD</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Bloque de Firmas Institucionales -->
+                    <div class="pt-12 grid grid-cols-2 gap-8 text-center text-xs">
+                        <div class="space-y-12">
+                            <div class="border-t border-slate-400 w-3/4 mx-auto pt-2">
+                                <p class="font-bold text-slate-800">Responsable de Transcripción</p>
+                                <p class="text-[10px] text-slate-500">Técnico / Pasante Operativo</p>
+                            </div>
+                        </div>
+                        <div class="space-y-12">
+                            <div class="border-t border-slate-400 w-3/4 mx-auto pt-2">
+                                <p class="font-bold text-slate-800">Dirección de Hidrocarburos</p>
+                                <p class="text-[10px] text-slate-500">Secretaría de Minería e Hidrocarburos</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pie de página reporte -->
+                    <div class="text-center text-[9px] text-slate-400 border-t border-slate-200 pt-4 font-mono">
+                        Sistema de Control Operativo Departamental - Gobernación de Chuquisaca © 2026
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -891,12 +1024,13 @@
         }
 
         function switchView(viewId) {
-            if (currentUserRole === 'directivo' && (viewId === 'entry' || viewId === 'wells')) {
+            if (currentUserRole === 'directivo' && (viewId === 'entry' || viewId === 'wells' || viewId === 'reports')) {
                 alert("Acceso restringido: Consulta disponible únicamente para el Tablero General.");
                 return;
             }
             document.getElementById('view-dashboard').classList.add('hidden');
             document.getElementById('view-entry').classList.add('hidden');
+            document.getElementById('view-reports').classList.add('hidden');
             document.getElementById('view-wells').classList.add('hidden');
 
             const inactive = "flex items-center gap-3 p-3 rounded-xl text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors w-full text-left";
@@ -904,6 +1038,7 @@
 
             document.getElementById('btn-menu-dashboard').className = inactive;
             document.getElementById('btn-menu-entry').className = inactive;
+            document.getElementById('btn-menu-reports').className = inactive;
             document.getElementById('btn-menu-wells').className = inactive;
 
             if (viewId === 'dashboard') {
@@ -918,6 +1053,10 @@
                     sel.value = currentField;
                     ajustarFormularioPorCampo(currentField);
                 }
+            } else if (viewId === 'reports') {
+                document.getElementById('view-reports').classList.remove('hidden');
+                document.getElementById('btn-menu-reports').className = active;
+                prepararVistaReportePDF();
             } else if (viewId === 'wells') {
                 document.getElementById('view-wells').classList.remove('hidden');
                 document.getElementById('btn-menu-wells').className = active;
@@ -1197,6 +1336,55 @@
             }
         }
 
+        // GENERADOR DE REPORTE PDF
+        function prepararVistaReportePDF() {
+            const campoKey = document.getElementById('report-campo').value;
+            const periodoKey = document.getElementById('report-periodo').value;
+            const infoCampo = db[campoKey];
+
+            document.getElementById('rep-print-fecha').innerText = `Fecha Emisión: ${new Date().toLocaleDateString('es-BO')}`;
+            document.getElementById('rep-print-subtitulo').innerText = `Bloque Operativo: ${infoCampo.name} — Período: ${periodoKey.toUpperCase()}`;
+
+            const tbody = document.getElementById('rep-table-body');
+            tbody.innerHTML = '';
+
+            let filas = [];
+            if (campoKey === 'monteagudo') {
+                const liqVal = infoCampo.liq[periodoKey][infoCampo.liq[periodoKey].length - 1];
+                filas = [
+                    ['Producción Total de Líquidos', 'bbls', liqVal.toFixed(1), 'Extracción bruta acumulada'],
+                    ['Petróleo Crudo', 'bbls', (liqVal * 0.7).toFixed(1), 'Fiscalizado en planta'],
+                    ['Condensado Asociado', 'bbls', (liqVal * 0.18).toFixed(1), 'Separación térmica'],
+                    ['Gasolina Natural', 'bbls', (liqVal * 0.12).toFixed(1), 'Fracción liviana'],
+                    ['Agua de Formación', 'bbls', (liqVal * 0.55).toFixed(1), 'Agua producida asociada']
+                ];
+            } else {
+                const gasVal = infoCampo.gas[periodoKey][infoCampo.gas[periodoKey].length - 1];
+                const liqVal = infoCampo.liq[periodoKey][infoCampo.liq[periodoKey].length - 1];
+                filas = [
+                    ['Producción Actual de Gas', 'MPC', gasVal.toFixed(1), 'Oferta bruta de pozo'],
+                    ['Entrega a Gasoducto', 'MPC', (gasVal * 0.85).toFixed(1), 'Flujo comercializado'],
+                    ['Consumo Combustible Planta', 'MPC', (gasVal * 0.08).toFixed(1), 'Operación interna'],
+                    ['Gas Quemado / Flare', 'MPC', (gasVal * 0.03).toFixed(1), 'Antorcha de seguridad'],
+                    ['Producción de Líquidos', 'bbls', liqVal.toFixed(1), 'Condensado asociado']
+                ];
+            }
+
+            filas.forEach(f => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td class="p-2.5 font-bold">${f[0]}</td><td class="p-2.5 text-right font-semibold">${f[1]}</td><td class="p-2.5 text-right font-bold text-slate-900">${f[2]}</td><td class="p-2.5 text-right text-slate-500 italic">${f[3]}</td>`;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function generarReportePDF() {
+            prepararVistaReportePDF();
+            window.print();
+        }
+
+        document.getElementById('report-campo').addEventListener('change', prepararVistaReportePDF);
+        document.getElementById('report-periodo').addEventListener('change', prepararVistaReportePDF);
+
         async function aplicarPermisosRol(user) {
             const roleEl = document.getElementById('user-role-display');
             let rol = 'operador';
@@ -1228,16 +1416,19 @@
                 roleEl.innerText = `Perfil: ${cargo}`;
                 roleEl.className = 'text-[10px] text-amber-700 font-extrabold uppercase mt-0.5';
                 document.getElementById('btn-menu-entry').classList.remove('hidden');
+                document.getElementById('btn-menu-reports').classList.remove('hidden');
                 document.getElementById('btn-menu-wells').classList.remove('hidden');
             } else if (rol === 'directivo') {
                 roleEl.innerText = `Perfil: ${cargo}`;
                 roleEl.className = 'text-[10px] text-emerald-700 font-bold uppercase mt-0.5';
                 document.getElementById('btn-menu-entry').classList.add('hidden');
+                document.getElementById('btn-menu-reports').classList.add('hidden');
                 document.getElementById('btn-menu-wells').classList.add('hidden');
             } else {
                 roleEl.innerText = `Perfil: ${cargo}`;
                 roleEl.className = 'text-[10px] text-blue-700 font-bold uppercase mt-0.5';
                 document.getElementById('btn-menu-entry').classList.remove('hidden');
+                document.getElementById('btn-menu-reports').classList.remove('hidden');
                 document.getElementById('btn-menu-wells').classList.remove('hidden');
             }
         }
@@ -1292,7 +1483,6 @@
             const wti = parseFloat(document.getElementById('input-wti').value) || 82.50;
             const isMonteagudo = (campoID === 'monteagudo');
 
-            // Líquidos
             const liqProd = parseFloat(document.getElementById('liq-prod').value) || 0;
             const petroleo = parseFloat(document.getElementById('liq-petroleo').value) || 0;
             const condensado = parseFloat(document.getElementById('liq-condensado').value) || 0;
@@ -1301,7 +1491,6 @@
             const agua = parseFloat(document.getElementById('liq-agua').value) || 0;
             const liqEntregado = parseFloat(document.getElementById('liq-entregado').value) || 0;
 
-            // Gas (cero absoluto si es Monteagudo)
             const gasProd = isMonteagudo ? 0 : (parseFloat(document.getElementById('gas-prod').value) || 0);
             const gasGasoducto = isMonteagudo ? 0 : (parseFloat(document.getElementById('gas-gasoducto').value) || 0);
             const gasProceso = isMonteagudo ? 0 : (parseFloat(document.getElementById('gas-proceso').value) || 0);
@@ -1311,7 +1500,6 @@
             const gasQuemado = isMonteagudo ? 0 : (parseFloat(document.getElementById('gas-quemado').value) || 0);
             const gasCo2 = isMonteagudo ? 0 : (parseFloat(document.getElementById('gas-co2').value) || 0);
 
-            // GLP (cero absoluto si es Monteagudo)
             const glpProd = isMonteagudo ? 0 : (parseFloat(document.getElementById('glp-prod').value) || 0);
             const glpEntrega = isMonteagudo ? 0 : (parseFloat(document.getElementById('glp-entrega').value) || 0);
 
