@@ -92,11 +92,11 @@
                     <input type="password" id="login-password" class="w-full bg-white border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#8B1D24] focus:border-transparent transition-all shadow-sm" placeholder="••••••••">
                 </div>
                 <button id="btn-login" class="w-full bg-[#8B1D24] hover:bg-[#70141a] text-white font-bold py-3.5 rounded-xl text-sm transition-all duration-200 shadow-md flex items-center justify-center gap-2 mt-2">
-                    <i class="fas fa-sign-in-alt"></i> Ingresar al Tablero
+                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesion
                 </button>
             </div>
             
-            <p class="text-[10px] text-gray-400 text-center mt-6 uppercase tracking-wider font-semibold">Dirección de Recursos Hidrocarburíferos y Control</p>
+            <p class="text-[10px] text-gray-400 text-center mt-6 uppercase tracking-wider font-semibold">Secretaria Departamental de Mineria e Hidrocarburos</p>
         </div>
     </div>
 
@@ -124,7 +124,7 @@
             </div>
 
             <p class="text-[9px] text-accentCyan mt-2 border-t border-gray-800/80 pt-1.5 w-full text-center font-mono truncate" id="user-email-display">usuario@chuquisaca.gob.bo</p>
-            <p class="text-[10px] text-yellow-400 font-bold uppercase tracking-wider mt-0.5" id="user-role-display">Perfil: Cargando...</p>
+            <p class="text-[10px] font-extrabold uppercase tracking-wider mt-0.5" id="user-role-display">Perfil: Cargando...</p>
             
             <button onclick="cerrarSesion()" class="mt-3 w-full bg-red-950/40 hover:bg-red-900/60 text-red-300 border border-red-800/60 px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all">
                 <i class="fas fa-arrow-right-from-bracket"></i> Cerrar Sesión
@@ -342,7 +342,7 @@
             </div>
         </div>
 
-        <!-- VISTA 2: CARGA DE DATOS MANUALES (SOLO OPERADORES) -->
+        <!-- VISTA 2: CARGA DE DATOS MANUALES -->
         <div id="view-entry" class="hidden h-full flex flex-col">
             <header class="p-6 border-b border-gray-800 bg-[#1e212b] flex justify-between items-center sticky top-0 z-10">
                 <div class="flex items-center gap-3">
@@ -441,7 +441,7 @@
             </div>
         </div>
 
-        <!-- VISTA 3: ADMINISTRACIÓN DE POZOS (SOLO OPERADORES) -->
+        <!-- VISTA 3: ADMINISTRACIÓN DE POZOS -->
         <div id="view-wells" class="hidden h-full flex flex-col">
             <header class="p-6 border-b border-gray-800 bg-[#1e212b] flex justify-between items-center sticky top-0 z-10">
                 <div class="flex items-center gap-3">
@@ -559,9 +559,6 @@
         Chart.defaults.plugins.tooltip.mode = 'index';
         Chart.defaults.plugins.tooltip.intersect = false;
 
-        // ==========================================================
-        // ⚙️ RANGOS DE TOPES TÉCNICOS (0 A 1000)
-        // ==========================================================
         const db = {
             "monteagudo": {
                 name: "Monteagudo", 
@@ -683,7 +680,7 @@
         }
 
         // ==========================================================
-        // 🛡️ LECTURA DINÁMICA DE ROLES DESDE SUPABASE
+        // 🛡️ CONTROL DE ACCESOS POR JERARQUÍA (ADMIN, DIRECTIVO, OPERADOR)
         // ==========================================================
         async function aplicarPermisosRol(user) {
             const roleEl = document.getElementById('user-role-display');
@@ -691,7 +688,6 @@
             let cargo = 'Operador / Pasante';
 
             try {
-                // Consultar la tabla de perfiles_usuarios en Supabase
                 const { data, error } = await clienteSupabase
                     .from('perfiles_usuarios')
                     .select('rol, cargo')
@@ -700,32 +696,36 @@
 
                 if (!error && data) {
                     rol = data.rol || 'operador';
-                    cargo = data.cargo || (rol === 'directivo' ? 'Secretario / Director' : 'Operador / Pasante');
-                } else {
-                    // Si aún no está en la tabla, verificar si es el correo principal
-                    if (user.email === 'aldorosalesbellido@gmail.com') {
-                        rol = 'directivo';
-                        cargo = 'Secretario de Hidrocarburos';
-                    }
+                    cargo = data.cargo || 'Funcionario';
+                } else if (user.email === 'aldorosalesbellido@gmail.com') {
+                    rol = 'admin';
+                    cargo = 'Administrador General del Sistema';
                 }
             } catch (e) {
-                console.warn("No se pudo leer perfiles_usuarios, aplicando rol por defecto:", e);
+                if (user.email === 'aldorosalesbellido@gmail.com') {
+                    rol = 'admin';
+                    cargo = 'Administrador General del Sistema';
+                }
             }
 
             currentUserRole = rol;
 
-            if (rol === 'directivo') {
+            if (rol === 'admin') {
+                // Administrador Total: Acceso ilimitado a todos los módulos
+                roleEl.innerText = `Perfil: ${cargo}`;
+                roleEl.className = 'text-[10px] text-yellow-400 font-extrabold uppercase tracking-wider mt-0.5';
+                document.getElementById('btn-menu-entry').classList.remove('hidden');
+                document.getElementById('btn-menu-wells').classList.remove('hidden');
+            } else if (rol === 'directivo') {
+                // Directivo (Secretario / Director): Solo Tableros de consulta
                 roleEl.innerText = `Perfil: ${cargo}`;
                 roleEl.className = 'text-[10px] text-green-400 font-bold uppercase tracking-wider mt-0.5';
-                
-                // Ocultar opciones de transcripción y administración de pozos
                 document.getElementById('btn-menu-entry').classList.add('hidden');
                 document.getElementById('btn-menu-wells').classList.add('hidden');
             } else {
+                // Operador / Pasante: Carga de reportes y pozos
                 roleEl.innerText = `Perfil: ${cargo}`;
                 roleEl.className = 'text-[10px] text-accentCyan font-bold uppercase tracking-wider mt-0.5';
-                
-                // Mostrar opciones operativas
                 document.getElementById('btn-menu-entry').classList.remove('hidden');
                 document.getElementById('btn-menu-wells').classList.remove('hidden');
             }
@@ -771,9 +771,6 @@
             return `<span class="text-gray-400"><i class="fas fa-minus"></i> 0%</span>`;
         }
 
-        // ==========================================================
-        // 🌐 OBTENCIÓN DEL ÚLTIMO REPORTE CARGADO EN SUPABASE
-        // ==========================================================
         async function obtenerUltimaFechaReporte() {
             const dateEl = document.getElementById('update-date');
             try {
@@ -811,9 +808,6 @@
             }
         }
 
-        // ==========================================================
-        // 🌐 ACTUALIZACIÓN DE PRECIOS WTI Y TIPO DE CAMBIO
-        // ==========================================================
         async function actualizarDatosMercado() {
             try {
                 const { data: dbTc, error: errTc } = await clienteSupabase
