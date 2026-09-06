@@ -234,8 +234,9 @@
                 </button>
             </div>
 
-            <!-- TARJETAS DE MERCADO -->
+            <!-- TARJETAS DE MERCADO (CON FUENTE BCB EXPLICITA) -->
             <div class="flex flex-wrap gap-4 mb-6">
+                <!-- WTI -->
                 <div class="bg-white border border-slate-200 px-4 py-3 rounded-2xl flex items-center gap-3 shadow-sm flex-1 min-w-[200px]">
                     <div class="bg-amber-50 p-2.5 rounded-xl text-amber-600 border border-amber-200"><i class="fas fa-barrel text-lg"></i></div>
                     <div>
@@ -244,14 +245,23 @@
                     </div>
                 </div>
                 
+                <!-- Tipo de Cambio Oficial (Fuente: BCB explícita y visible) -->
                 <div class="bg-white border border-slate-200 px-4 py-3 rounded-2xl flex items-center gap-3 shadow-sm flex-1 min-w-[200px]">
                     <div class="bg-emerald-50 p-2.5 rounded-xl text-emerald-600 border border-emerald-200"><i class="fas fa-money-bill-wave text-lg"></i></div>
                     <div>
-                        <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Tipo de Cambio Oficial</div>
-                        <div class="text-sm font-extrabold text-slate-900"><span id="val-tc">12.58</span> <span class="text-[10px] text-slate-400 font-normal">Bs. / USD</span></div>
+                        <div class="flex items-center gap-1.5">
+                            <span class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Tipo de Cambio Oficial</span>
+                            <a href="https://www.bcb.gob.bo" target="_blank" title="Verificar en Banco Central de Bolivia" class="text-[9px] bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold px-1.5 py-0.2 rounded hover:bg-emerald-200 transition-colors">
+                                Fuente: BCB
+                            </a>
+                        </div>
+                        <div class="text-sm font-extrabold text-slate-900">
+                            <span id="val-tc">12.58</span> <span class="text-[10px] text-slate-500 font-normal">Bs. / USD</span>
+                        </div>
                     </div>
                 </div>
 
+                <!-- Último Parte Cargado -->
                 <div class="bg-white border border-slate-200 px-4 py-3 rounded-2xl flex items-center gap-3 shadow-sm flex-1 min-w-[240px]">
                     <div class="bg-blue-50 p-2.5 rounded-xl text-blue-600 border border-blue-200"><i class="fas fa-calendar-check text-lg"></i></div>
                     <div>
@@ -261,15 +271,22 @@
                 </div>
             </div>
 
-            <!-- SUB-PANEL 1: PRODUCCIÓN BRUTA -->
+            <!-- SUB-PANEL 1: PRODUCCIÓN BRUTA (CON ALERTAS PORCENTUALES) -->
             <div id="panel-produccion" class="block space-y-6">
-                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+                <!-- Gas Bruto (MPC) -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm relative">
                     <div class="flex flex-col md:flex-row justify-between md:items-center border-b border-slate-100 pb-3 mb-4 gap-2">
-                        <div>
-                            <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-                                <i class="fas fa-fire-flame-curved text-accentBlue"></i> Producción Actual de Gas (MPC)
-                            </h2>
-                            <p class="text-[11px] text-slate-500 mt-0.5">Potencial físico extraído de reservorio sin deducción de consumo interno.</p>
+                        <div class="flex items-center gap-3">
+                            <div>
+                                <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                                    <i class="fas fa-fire-flame-curved text-accentBlue"></i> Producción Actual de Gas (MPC)
+                                </h2>
+                                <p class="text-[11px] text-slate-500 mt-0.5">Potencial físico extraído de reservorio sin deducción de consumo interno.</p>
+                            </div>
+                            <!-- Badge Alerta Gas -->
+                            <div id="alert-gas-prod" class="text-xs font-bold px-2.5 py-1 rounded-xl shadow-sm border border-slate-200 bg-slate-50">
+                                --
+                            </div>
                         </div>
                         <div class="flex gap-2 bg-slate-100 p-1 rounded-xl border border-slate-200">
                             <button onclick="cambiarPeriodoGas('dia')" id="btn-gas-dia" class="px-3 py-1 text-xs font-bold rounded-lg bg-white text-slate-900 shadow-sm">Diario</button>
@@ -290,7 +307,13 @@
                                 </h3>
                                 <p class="text-[10px] text-slate-500">Petróleo negro y condensado asociado.</p>
                             </div>
-                            <span class="text-xs font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-lg">bbls</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-lg">bbls</span>
+                                <!-- Badge Alerta Líquidos -->
+                                <div id="alert-liq-prod" class="text-xs font-bold px-2.5 py-1 rounded-xl shadow-sm border border-slate-200 bg-slate-50">
+                                    --
+                                </div>
+                            </div>
                         </div>
                         <div class="chart-container"><canvas id="chart-liq-prod"></canvas></div>
                     </div>
@@ -304,7 +327,13 @@
                                 </h3>
                                 <p class="text-[10px] text-slate-500">Extracción líquida de licuables en planta.</p>
                             </div>
-                            <span class="text-xs font-mono text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-lg">m³</span>
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-mono text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-lg">m³</span>
+                                <!-- Badge Alerta GLP -->
+                                <div id="alert-glp-prod" class="text-xs font-bold px-2.5 py-1 rounded-xl shadow-sm border border-slate-200 bg-slate-50">
+                                    --
+                                </div>
+                            </div>
                         </div>
                         <div class="chart-container"><canvas id="chart-glp-prod"></canvas></div>
                     </div>
@@ -315,11 +344,17 @@
             <div id="panel-fiscalizacion" class="hidden space-y-6">
                 <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
                     <div class="border-b border-slate-100 pb-3 mb-4 flex flex-col md:flex-row justify-between md:items-center gap-2">
-                        <div>
-                            <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-                                <i class="fas fa-balance-scale text-[#8B1D24]"></i> Balance de Masas & Destino de Gas (Barras Apiladas)
-                            </h2>
-                            <p class="text-[11px] text-slate-500 mt-0.5">Auditoría: Gasoducto vs. Proceso, Combustible, Flare y CO₂.</p>
+                        <div class="flex items-center gap-3">
+                            <div>
+                                <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                                    <i class="fas fa-balance-scale text-[#8B1D24]"></i> Balance de Masas & Destino de Gas (Barras Apiladas)
+                                </h2>
+                                <p class="text-[11px] text-slate-500 mt-0.5">Auditoría: Gasoducto vs. Proceso, Combustible, Flare y CO₂.</p>
+                            </div>
+                            <!-- Badge Alerta Balance Gasoducto -->
+                            <div id="alert-gasoducto" class="text-xs font-bold px-2.5 py-1 rounded-xl shadow-sm border border-slate-200 bg-slate-50">
+                                --
+                            </div>
                         </div>
                         <span class="text-xs font-mono bg-slate-100 border border-slate-200 text-slate-700 px-3 py-1 rounded-lg">Unidad: MPC</span>
                     </div>
@@ -328,15 +363,25 @@
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-                        <h3 class="text-sm font-bold text-slate-900 mb-3 border-b border-slate-100 pb-2 flex items-center gap-2">
-                            <i class="fas fa-truck-moving text-accentGreen"></i> Petróleo Entregado (bbls)
-                        </h3>
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-2 mb-3">
+                            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                                <i class="fas fa-truck-moving text-accentGreen"></i> Petróleo Entregado (bbls)
+                            </h3>
+                            <div id="alert-entrega-liq" class="text-xs font-bold px-2.5 py-1 rounded-xl shadow-sm border border-slate-200 bg-slate-50">
+                                --
+                            </div>
+                        </div>
                         <div class="chart-container"><canvas id="chart-entrega-liq"></canvas></div>
                     </div>
                     <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-                        <h3 class="text-sm font-bold text-slate-900 mb-3 border-b border-slate-100 pb-2 flex items-center gap-2">
-                            <i class="fas fa-industry text-accentAmber"></i> Despacho Comercial de GLP (m³)
-                        </h3>
+                        <div class="flex justify-between items-center border-b border-slate-100 pb-2 mb-3">
+                            <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                                <i class="fas fa-industry text-accentAmber"></i> Despacho Comercial de GLP (m³)
+                            </h3>
+                            <div id="alert-entrega-glp" class="text-xs font-bold px-2.5 py-1 rounded-xl shadow-sm border border-slate-200 bg-slate-50">
+                                --
+                            </div>
+                        </div>
                         <div class="chart-container"><canvas id="chart-entrega-glp"></canvas></div>
                     </div>
                 </div>
@@ -618,7 +663,7 @@
 
     </main>
 
-    <!-- ==================== LÓGICA JAVASCRIPT ==================== -->
+    <!-- ==================== LÓGICA JAVASCRIPT & SUPABASE ==================== -->
     <script>
         const { createClient } = supabase;
         const supabaseUrl = 'https://beyohkwkbjlnrhyvvace.supabase.co';
@@ -662,6 +707,25 @@
         let periodoGas = 'dia';
         let currentUserRole = 'operador';
         const charts = {};
+
+        // CALCULAR ALERTA DE INCREMENTO O REDUCCIÓN
+        function calcAlerta(arr, periodoTexto = 'ant.') {
+            if (!arr || arr.length < 2) return '<span class="text-slate-400 font-normal">--</span>';
+            const actual = arr[arr.length - 1];
+            const anterior = arr[arr.length - 2];
+            if (anterior === 0) return '<span class="text-slate-400 font-normal">0%</span>';
+
+            const diff = actual - anterior;
+            const pct = ((diff / anterior) * 100).toFixed(1);
+
+            if (diff > 0) {
+                return `<span class="text-emerald-700 font-bold"><i class="fas fa-arrow-up text-[10px] mr-0.5"></i>+${pct}% <span class="text-[9px] font-normal text-slate-500">vs ${periodoTexto}</span></span>`;
+            } else if (diff < 0) {
+                return `<span class="text-rose-600 font-bold"><i class="fas fa-arrow-down text-[10px] mr-0.5"></i>${pct}% <span class="text-[9px] font-normal text-slate-500">vs ${periodoTexto}</span></span>`;
+            } else {
+                return `<span class="text-slate-500 font-bold"><i class="fas fa-equals text-[10px] mr-0.5"></i>0% <span class="text-[9px] font-normal text-slate-500">vs ${periodoTexto}</span></span>`;
+            }
+        }
 
         function iniciarReloj() {
             const clockEl = document.getElementById('live-clock');
@@ -757,28 +821,24 @@
         }
 
         function initCharts() {
-            // Gas Bruto (MPC)
             charts.gasProd = new Chart(document.getElementById('chart-gas-prod').getContext('2d'), {
                 type: 'line',
                 data: { labels: diasLabels, datasets: [{ label: 'Gas Bruto (MPC)', data: [], borderColor: '#0284c7', backgroundColor: '#0284c715', fill: true, tension: 0.3, borderWidth: 2.5 }] },
                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' } } } }
             });
 
-            // Líquidos (bbls)
             charts.liqProd = new Chart(document.getElementById('chart-liq-prod').getContext('2d'), {
                 type: 'line',
                 data: { labels: diasLabels, datasets: [{ label: 'Líquidos (bbls)', data: [], borderColor: '#059669', backgroundColor: '#05966915', fill: true, tension: 0.3, borderWidth: 2 }] },
                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' } } } }
             });
 
-            // GLP (m3)
             charts.glpProd = new Chart(document.getElementById('chart-glp-prod').getContext('2d'), {
                 type: 'bar',
                 data: { labels: diasLabels, datasets: [{ label: 'GLP (m³)', data: [], backgroundColor: '#d97706', borderRadius: 6 }] },
                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' } } } }
             });
 
-            // Balance de Masas Gas (MPC)
             charts.balanceGas = new Chart(document.getElementById('chart-balance-gas').getContext('2d'), {
                 type: 'bar',
                 data: {
@@ -797,14 +857,12 @@
                 }
             });
 
-            // Entregas Líquidos
             charts.entregaLiq = new Chart(document.getElementById('chart-entrega-liq').getContext('2d'), {
                 type: 'bar',
                 data: { labels: diasLabels, datasets: [{ label: 'Petróleo Entregado (bbls)', data: [], backgroundColor: '#059669', borderRadius: 6 }] },
                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' } } } }
             });
 
-            // Despacho GLP
             charts.entregaGlp = new Chart(document.getElementById('chart-entrega-glp').getContext('2d'), {
                 type: 'line',
                 data: { labels: diasLabels, datasets: [{ label: 'GLP Despachado (m³)', data: [], borderColor: '#d97706', backgroundColor: '#d9770615', fill: true }] },
@@ -814,23 +872,30 @@
 
         function actualizarGraficaGas() {
             const dataCampo = db[currentField].gas;
+            let refTexto = 'día ant.';
             if (periodoGas === 'dia') {
                 charts.gasProd.config.type = 'line';
                 charts.gasProd.data.labels = diasLabels;
                 charts.gasProd.data.datasets[0].data = dataCampo.dia;
                 charts.gasProd.data.datasets[0].fill = true;
+                refTexto = 'día ant.';
             } else if (periodoGas === 'sem') {
                 charts.gasProd.config.type = 'bar';
                 charts.gasProd.data.labels = semLabels;
                 charts.gasProd.data.datasets[0].data = dataCampo.sem;
                 charts.gasProd.data.datasets[0].fill = false;
+                refTexto = 'sem. ant.';
             } else {
                 charts.gasProd.config.type = 'bar';
                 charts.gasProd.data.labels = mesLabels;
                 charts.gasProd.data.datasets[0].data = dataCampo.mes;
                 charts.gasProd.data.datasets[0].fill = false;
+                refTexto = 'mes ant.';
             }
             charts.gasProd.update();
+
+            const elGas = document.getElementById('alert-gas-prod');
+            if (elGas) elGas.innerHTML = calcAlerta(dataCampo[periodoGas], refTexto);
         }
 
         async function updateUI() {
@@ -842,24 +907,35 @@
             charts.liqProd.data.labels = diasLabels;
             charts.liqProd.data.datasets[0].data = data.liq;
             charts.liqProd.update();
+            const elLiq = document.getElementById('alert-liq-prod');
+            if (elLiq) elLiq.innerHTML = calcAlerta(data.liq, 'día ant.');
 
             charts.glpProd.data.labels = diasLabels;
             charts.glpProd.data.datasets[0].data = data.glp;
             charts.glpProd.update();
+            const elGlp = document.getElementById('alert-glp-prod');
+            if (elGlp) elGlp.innerHTML = calcAlerta(data.glp, 'día ant.');
 
             charts.balanceGas.data.datasets[0].data = data.balance.gasoducto;
             charts.balanceGas.data.datasets[1].data = data.balance.proceso;
             charts.balanceGas.data.datasets[2].data = data.balance.flare;
             charts.balanceGas.data.datasets[3].data = data.balance.co2;
             charts.balanceGas.update();
+            const elGasoducto = document.getElementById('alert-gasoducto');
+            if (elGasoducto) elGasoducto.innerHTML = calcAlerta(data.balance.gasoducto, 'día ant.');
 
-            charts.entregaLiq.data.datasets[0].data = data.liq.map(v => v * 0.95);
+            const dataEntLiq = data.liq.map(v => v * 0.95);
+            charts.entregaLiq.data.datasets[0].data = dataEntLiq;
             charts.entregaLiq.update();
+            const elEntLiq = document.getElementById('alert-entrega-liq');
+            if (elEntLiq) elEntLiq.innerHTML = calcAlerta(dataEntLiq, 'día ant.');
 
-            charts.entregaGlp.data.datasets[0].data = data.glp.map(v => v * 0.98);
+            const dataEntGlp = data.glp.map(v => v * 0.98);
+            charts.entregaGlp.data.datasets[0].data = dataEntGlp;
             charts.entregaGlp.update();
+            const elEntGlp = document.getElementById('alert-entrega-glp');
+            if (elEntGlp) elEntGlp.innerHTML = calcAlerta(dataEntGlp, 'día ant.');
 
-            // Cargar Pozos del Campo
             const selector = document.getElementById('well-selector');
             selector.innerHTML = '';
             try {
@@ -994,9 +1070,7 @@
             }
         });
 
-        // ==========================================================
-        // 💾 VALIDACIÓN Y GUARDADO DE DATOS (0 A 1000)
-        // ==========================================================
+        // VALIDACIÓN Y GUARDADO DE DATOS (0 A 1000)
         let sessionCount = 0;
         document.getElementById('btn-save').addEventListener('click', async function() {
             if (currentUserRole === 'directivo') {
@@ -1007,7 +1081,6 @@
             const fecha = document.getElementById('input-fecha').value;
             const wti = parseFloat(document.getElementById('input-wti').value) || 82.50;
 
-            // Líquidos
             const liqProd = parseFloat(document.getElementById('liq-prod').value) || 0;
             const petroleo = parseFloat(document.getElementById('liq-petroleo').value) || 0;
             const condensado = parseFloat(document.getElementById('liq-condensado').value) || 0;
@@ -1016,7 +1089,6 @@
             const agua = parseFloat(document.getElementById('liq-agua').value) || 0;
             const liqEntregado = parseFloat(document.getElementById('liq-entregado').value) || 0;
 
-            // Gas
             const gasProd = parseFloat(document.getElementById('gas-prod').value) || 0;
             const gasGasoducto = parseFloat(document.getElementById('gas-gasoducto').value) || 0;
             const gasProceso = parseFloat(document.getElementById('gas-proceso').value) || 0;
@@ -1026,7 +1098,6 @@
             const gasQuemado = parseFloat(document.getElementById('gas-quemado').value) || 0;
             const gasCo2 = parseFloat(document.getElementById('gas-co2').value) || 0;
 
-            // GLP
             const glpProd = parseFloat(document.getElementById('glp-prod').value) || 0;
             const glpEntrega = parseFloat(document.getElementById('glp-entrega').value) || 0;
 
@@ -1034,11 +1105,10 @@
                 alert("Seleccione un campo y especifique la fecha del reporte."); return;
             }
 
-            // Verificación de límites (0 a 1000)
             const valores = [liqProd, petroleo, condensado, densidad, gasolina, agua, liqEntregado, gasProd, gasGasoducto, gasProceso, gasLicuables, gasCombustible, gasResidual, gasQuemado, gasCo2, glpProd, glpEntrega];
             const fueraDeRango = valores.some(v => v < 0 || v > 1000);
             if (fueraDeRango) {
-                alert("Uno o más valores están fuera del rango establecido (0 a 1000). Verifique los datos ingresados."); return;
+                alert("Uno o más valores están fuera del rango permitido (0 a 1000). Verifique los datos ingresados."); return;
             }
 
             const btn = document.getElementById('btn-save');
@@ -1051,8 +1121,8 @@
                     .insert([{
                         id_campo: mapaCampos[campoID],
                         fecha_operativa: fecha,
-                        vol_gas_mmmcd: gasProd, // Gas en MPC
-                        vol_liquidos_bpd: petroleo, // Petróleo en bbls
+                        vol_gas_mmmcd: gasProd,
+                        vol_liquidos_bpd: petroleo,
                         precio_wti_usd: wti
                     }]);
 
@@ -1060,7 +1130,6 @@
 
                 showToast();
 
-                // Tabla de historial
                 const tbody = document.getElementById('log-body');
                 if (document.getElementById('empty-state')) document.getElementById('empty-state').remove();
                 const tr = document.createElement('tr');
@@ -1079,7 +1148,6 @@
                 sessionCount++;
                 document.getElementById('counter').innerText = `${sessionCount} Registros`;
 
-                // Resetear campos
                 document.querySelectorAll('#view-entry input[type="number"]').forEach(input => {
                     if (input.id !== 'input-wti') input.value = '';
                 });
