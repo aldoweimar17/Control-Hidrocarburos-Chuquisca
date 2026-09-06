@@ -48,10 +48,39 @@
     <!-- ==================== VISTA DE AUTENTICACIÓN (LOGIN) ==================== -->
     <div id="view-login" class="fixed inset-0 bg-gradient-to-br from-[#0b0c10] via-[#13151a] to-[#1f0e11] z-50 flex items-center justify-center p-4">
         <div class="bg-[#fcfbfc] p-8 md:p-10 rounded-3xl border border-gray-200 shadow-2xl max-w-md w-full text-gray-800">
-            <!-- Imagen Original Oficial -->
+            <!-- Emblema Oficial Incrustado -->
             <div class="flex flex-col items-center justify-center mb-6 pb-6 border-b border-gray-200">
-                <div class="w-full flex justify-center bg-white p-3 rounded-2xl shadow-sm border border-gray-100">
-                    <img src="logo-secretaria.jpg" alt="Secretaría Departamental de Minería e Hidrocarburos" class="max-h-44 w-auto object-contain">
+                <div class="w-full flex flex-col items-center justify-center bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
+                    <!-- Iconografía Oficial de la Secretaría -->
+                    <div class="w-24 h-24 mb-3 flex items-center justify-center">
+                        <svg viewBox="0 0 100 120" class="h-full w-auto text-[#C81D25]" fill="currentColor">
+                            <!-- Llama -->
+                            <path d="M48 6 C48 6 52 14 47 18 C44 21 44 26 50 30 C56 26 56 21 53 18 C48 14 52 6 52 6 C50 10 46 12 48 6 Z"/>
+                            <!-- Torre Perforación -->
+                            <polygon points="43,30 57,30 63,75 37,75" stroke="#C81D25" stroke-width="2.5" fill="none"/>
+                            <line x1="43" y1="40" x2="57" y2="40" stroke="#C81D25" stroke-width="2.5"/>
+                            <line x1="40" y1="52" x2="60" y2="52" stroke="#C81D25" stroke-width="2.5"/>
+                            <line x1="38" y1="65" x2="62" y2="65" stroke="#C81D25" stroke-width="2.5"/>
+                            <line x1="43" y1="30" x2="60" y2="52" stroke="#C81D25" stroke-width="1.8"/>
+                            <line x1="57" y1="30" x2="40" y2="52" stroke="#C81D25" stroke-width="1.8"/>
+                            <line x1="40" y1="52" x2="63" y2="75" stroke="#C81D25" stroke-width="1.8"/>
+                            <line x1="60" y1="52" x2="37" y2="75" stroke="#C81D25" stroke-width="1.8"/>
+                            <!-- Balancín de Extracción -->
+                            <path d="M35 55 L75 38 L78 68 Z" fill="none" stroke="#C81D25" stroke-width="3"/>
+                            <!-- Casco de Protección Minera -->
+                            <path d="M22 100 C22 75 78 75 78 100 Z" fill="none" stroke="#C81D25" stroke-width="3.5"/>
+                            <line x1="16" y1="100" x2="84" y2="100" stroke="#C81D25" stroke-width="4.5"/>
+                        </svg>
+                    </div>
+                    <!-- Texto Institucional Idéntico -->
+                    <h2 class="text-base font-black text-center text-[#C81D25] tracking-tight uppercase leading-tight font-serif">
+                        Secretaría Departamental<br>de Minería e Hidrocarburos
+                    </h2>
+                    <div class="flex items-center gap-2 mt-2">
+                        <span class="text-[#C81D25] font-bold text-xs">➤➤➤</span>
+                        <span class="text-[9px] font-black text-[#C81D25] tracking-widest uppercase">Gobernación de Chuquisaca</span>
+                        <span class="text-[#C81D25] font-bold text-xs">➤➤➤</span>
+                    </div>
                 </div>
                 <div class="inline-block mt-4 px-3 py-1 bg-red-50 text-[#8B1D24] text-[10px] font-bold tracking-widest rounded-full uppercase border border-red-200">
                     Sistema de Control Operativo
@@ -88,14 +117,22 @@
                 <i class="fas fa-arrow-left text-base"></i>
             </button>
 
-            <!-- Imagen Original Oficial en Menú Lateral -->
-            <div class="bg-white p-2.5 rounded-2xl w-full flex items-center justify-center shadow-md mt-6 mb-2">
-                <img src="logo-secretaria.jpg" alt="Secretaría Departamental de Minería e Hidrocarburos" class="max-h-20 w-auto object-contain">
+            <!-- Emblema en Barra Lateral -->
+            <div class="bg-white p-3 rounded-2xl w-full flex flex-col items-center justify-center shadow-md mt-6 mb-2">
+                <div class="w-12 h-12 flex items-center justify-center">
+                    <svg viewBox="0 0 100 120" class="h-full w-auto text-[#C81D25]" fill="currentColor">
+                        <polygon points="43,30 57,30 63,75 37,75" stroke="#C81D25" stroke-width="3" fill="none"/>
+                        <path d="M35 55 L75 38 L78 68 Z" fill="none" stroke="#C81D25" stroke-width="3"/>
+                        <path d="M22 100 C22 75 78 75 78 100 Z" fill="none" stroke="#C81D25" stroke-width="4"/>
+                    </svg>
+                </div>
+                <h3 class="text-[9px] font-black text-center text-[#C81D25] tracking-tight uppercase leading-tight font-serif mt-1">
+                    Secretaría Departamental<br>de Minería e Hidrocarburos
+                </h3>
             </div>
 
             <p class="text-[9px] text-accentCyan mt-2 border-t border-gray-800/80 pt-1.5 w-full text-center font-mono" id="user-email-display">usuario@chuquisaca.gob.bo</p>
             
-            <!-- Botón Cerrar Sesión Destacado -->
             <button onclick="cerrarSesion()" class="mt-3 w-full bg-red-950/40 hover:bg-red-900/60 text-red-300 border border-red-800/60 px-3 py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all">
                 <i class="fas fa-arrow-right-from-bracket"></i> Cerrar Sesión
             </button>
@@ -181,12 +218,14 @@
                 </div>
 
                 <div class="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
-                    <!-- Insignia en Header Superior con Imagen Original -->
-                    <div class="hidden sm:flex items-center bg-white px-3 py-1 rounded-xl border border-gray-300 shadow-sm">
-                        <img src="logo-secretaria.jpg" alt="Logo" class="h-8 w-auto object-contain">
+                    <div class="hidden sm:flex items-center bg-white px-3 py-1.5 rounded-xl border border-gray-300 shadow-sm gap-2">
+                        <svg viewBox="0 0 100 120" class="h-5 w-auto text-[#C81D25]" fill="currentColor">
+                            <polygon points="43,30 57,30 63,75 37,75" stroke="#C81D25" stroke-width="4" fill="none"/>
+                            <path d="M22 100 C22 75 78 75 78 100 Z" fill="none" stroke="#C81D25" stroke-width="5"/>
+                        </svg>
+                        <span class="text-[10px] font-black text-[#C81D25] uppercase tracking-wider font-serif">Minería e Hidrocarburos</span>
                     </div>
 
-                    <!-- Botón Cerrar Sesión en Header Superior -->
                     <button onclick="cerrarSesion()" class="bg-red-950/30 hover:bg-red-900/60 text-red-300 border border-red-800/60 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-colors shadow-sm">
                         <i class="fas fa-arrow-right-from-bracket"></i> <span>Cerrar Sesión</span>
                     </button>
@@ -620,7 +659,7 @@
         // 🌐 ACTUALIZACIÓN DE PRECIOS WTI Y TIPO DE CAMBIO
         // ==========================================================
         async function actualizarDatosMercado() {
-            // 1. Tipo de Cambio Oficial BCB
+            // 1. Tipo de Cambio Oficial BCB (Fijado en 12.58 con soporte Supabase)
             try {
                 const { data: dbTc, error: errTc } = await clienteSupabase
                     .from('parametros_mercado')
