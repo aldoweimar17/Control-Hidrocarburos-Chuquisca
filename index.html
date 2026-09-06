@@ -37,7 +37,7 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         input[type="number"]::-webkit-inner-spin-button, 
         input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-        .chart-container { position: relative; height: 260px; width: 100%; }
+        .chart-container { position: relative; height: 240px; width: 100%; }
         .large-chart-container { position: relative; height: 350px; width: 100%; }
         .toast { transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; }
     </style>
@@ -206,7 +206,7 @@
             </header>
 
             <!-- SELECTOR DE CAMPOS (PESTAÑAS) -->
-            <div class="bg-white border border-slate-200 p-2 rounded-2xl mb-4 shadow-sm flex flex-wrap items-center justify-between gap-2">
+            <div id="container-field-tabs" class="bg-white border border-slate-200 p-2 rounded-2xl mb-4 shadow-sm flex flex-wrap items-center justify-between gap-2">
                 <div class="flex items-center gap-2 px-2 text-xs text-slate-500 font-bold uppercase tracking-wider">
                     <i class="fas fa-layer-group text-[#8B1D24]"></i>
                     <span>Bloque Productivo:</span>
@@ -224,17 +224,20 @@
                 </div>
             </div>
 
-            <!-- SUB-PESTAÑAS: PRODUCCIÓN BRUTA VS FISCALIZACIÓN -->
-            <div class="flex border-b border-slate-200 mb-6 gap-2">
-                <button onclick="cambiarPestanaEstrategia('produccion')" id="subtab-produccion" class="px-5 py-2.5 font-bold text-xs border-b-2 border-[#8B1D24] text-[#8B1D24] flex items-center gap-2 transition-all">
-                    <i class="fas fa-chart-line"></i> 1. Producción Bruta del Reservorio (Oferta Física)
+            <!-- SUB-PESTAÑAS ESTRATÉGICAS (1. Producción, 2. Fiscalización, 3. Consolidado Departamental) -->
+            <div class="flex border-b border-slate-200 mb-6 gap-2 overflow-x-auto">
+                <button onclick="cambiarPestanaEstrategia('produccion')" id="subtab-produccion" class="px-4 py-2.5 font-bold text-xs border-b-2 border-[#8B1D24] text-[#8B1D24] flex items-center gap-2 transition-all whitespace-nowrap">
+                    <i class="fas fa-chart-line"></i> 1. Producción Bruta (Oferta Física)
                 </button>
-                <button onclick="cambiarPestanaEstrategia('fiscalizacion')" id="subtab-fiscalizacion" class="px-5 py-2.5 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition-all">
-                    <i class="fas fa-file-invoice-dollar"></i> 2. Fiscalización & Balance de Materia
+                <button onclick="cambiarPestanaEstrategia('fiscalizacion')" id="subtab-fiscalizacion" class="px-4 py-2.5 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition-all whitespace-nowrap">
+                    <i class="fas fa-file-invoice-dollar"></i> 2. Fiscalización & Balance
+                </button>
+                <button onclick="cambiarPestanaEstrategia('consolidado')" id="subtab-consolidado" class="px-4 py-2.5 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition-all whitespace-nowrap">
+                    <i class="fas fa-globe"></i> 3. Consolidado Departamental (Los 3 Campos)
                 </button>
             </div>
 
-            <!-- TARJETAS DE MERCADO (CON FUENTE BCB) -->
+            <!-- TARJETAS DE MERCADO -->
             <div class="flex flex-wrap gap-4 mb-6">
                 <!-- WTI -->
                 <div class="bg-white border border-slate-200 px-4 py-3 rounded-2xl flex items-center gap-3 shadow-sm flex-1 min-w-[200px]">
@@ -296,7 +299,7 @@
                     <div class="large-chart-container"><canvas id="chart-gas-prod"></canvas></div>
                 </div>
 
-                <!-- Grilla de Líquidos (Con selectores Diario, Semanal y Mensual) -->
+                <!-- Grilla de Líquidos -->
                 <div id="grid-produccion-secundaria" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <!-- Producción de Líquidos en bbls -->
                     <div id="card-chart-liq" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
@@ -414,6 +417,32 @@
                         </div>
                         <div class="chart-container"><canvas id="chart-entrega-glp"></canvas></div>
                     </div>
+                </div>
+            </div>
+
+            <!-- SUB-PANEL 3: CONSOLIDADO DEPARTAMENTAL (LOS 3 CAMPOS EN UNA SOLA VISTA) -->
+            <div id="panel-consolidado" class="hidden space-y-6">
+                <!-- Parte Superior: Dos Gráficas de Producción Conjunta -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+                        <h3 class="text-sm font-bold text-slate-900 mb-3 border-b border-slate-100 pb-2 flex items-center gap-2">
+                            <i class="fas fa-fire-flame-curved text-accentBlue"></i> Comparativo Producción de Gas (MPC) - Los 3 Campos
+                        </h3>
+                        <div class="chart-container"><canvas id="chart-cons-gas"></canvas></div>
+                    </div>
+                    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+                        <h3 class="text-sm font-bold text-slate-900 mb-3 border-b border-slate-100 pb-2 flex items-center gap-2">
+                            <i class="fas fa-oil-well text-accentGreen"></i> Comparativo Producción de Líquidos (bbls) - Los 3 Campos
+                        </h3>
+                        <div class="chart-container"><canvas id="chart-cons-liq"></canvas></div>
+                    </div>
+                </div>
+                <!-- Parte Inferior: Gráfica de Fiscalización y Entregas Conjuntas -->
+                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+                    <h3 class="text-sm font-bold text-slate-900 mb-3 border-b border-slate-100 pb-2 flex items-center gap-2">
+                        <i class="fas fa-balance-scale text-[#8B1D24]"></i> Consolidado Departamental de Fiscalización / Entregas a Gasoducto
+                    </h3>
+                    <div class="large-chart-container"><canvas id="chart-cons-fisc"></canvas></div>
                 </div>
             </div>
 
@@ -819,19 +848,32 @@
         function cambiarPestanaEstrategia(pestana) {
             const panelProd = document.getElementById('panel-produccion');
             const panelFisc = document.getElementById('panel-fiscalizacion');
+            const panelCons = document.getElementById('panel-consolidado');
             const subtabProd = document.getElementById('subtab-produccion');
             const subtabFisc = document.getElementById('subtab-fiscalizacion');
+            const subtabCons = document.getElementById('subtab-consolidado');
+            const containerTabs = document.getElementById('container-field-tabs');
+
+            panelProd.classList.add('hidden');
+            panelFisc.classList.add('hidden');
+            panelCons.classList.add('hidden');
+            subtabProd.className = "px-4 py-2.5 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition-all whitespace-nowrap";
+            subtabFisc.className = "px-4 py-2.5 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition-all whitespace-nowrap";
+            subtabCons.className = "px-4 py-2.5 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition-all whitespace-nowrap";
 
             if (pestana === 'produccion') {
                 panelProd.classList.remove('hidden');
-                panelFisc.classList.add('hidden');
-                subtabProd.className = "px-5 py-2.5 font-bold text-xs border-b-2 border-[#8B1D24] text-[#8B1D24] flex items-center gap-2 transition-all";
-                subtabFisc.className = "px-5 py-2.5 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition-all";
-            } else {
-                panelProd.classList.add('hidden');
+                subtabProd.className = "px-4 py-2.5 font-bold text-xs border-b-2 border-[#8B1D24] text-[#8B1D24] flex items-center gap-2 transition-all whitespace-nowrap";
+                containerTabs.style.display = 'flex';
+            } else if (pestana === 'fiscalizacion') {
                 panelFisc.classList.remove('hidden');
-                subtabFisc.className = "px-5 py-2.5 font-bold text-xs border-b-2 border-[#8B1D24] text-[#8B1D24] flex items-center gap-2 transition-all";
-                subtabProd.className = "px-5 py-2.5 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition-all";
+                subtabFisc.className = "px-4 py-2.5 font-bold text-xs border-b-2 border-[#8B1D24] text-[#8B1D24] flex items-center gap-2 transition-all whitespace-nowrap";
+                containerTabs.style.display = 'flex';
+            } else if (pestana === 'consolidado') {
+                panelCons.classList.remove('hidden');
+                subtabCons.className = "px-4 py-2.5 font-bold text-xs border-b-2 border-[#8B1D24] text-[#8B1D24] flex items-center gap-2 transition-all whitespace-nowrap";
+                containerTabs.style.display = 'none';
+                actualizarConsolidadoDepartamental();
             }
         }
 
@@ -845,7 +887,6 @@
             actualizarGraficaGas();
         }
 
-        // CONTROL TEMPORAL DE LÍQUIDOS (DIARIO, SEMANAL, MENSUAL)
         function cambiarPeriodoLiq(periodo) {
             periodoLiq = periodo;
             document.querySelectorAll('#btn-liq-dia, #btn-liq-sem, #btn-liq-mes').forEach(b => {
@@ -856,7 +897,6 @@
             actualizarGraficaLiq();
         }
 
-        // CONTROL TEMPORAL DE BALANCE MONTEAGUDO (DIARIO, SEMANAL, MENSUAL)
         function cambiarPeriodoBalMnt(periodo) {
             periodoBalMnt = periodo;
             document.querySelectorAll('#btn-balmnt-dia, #btn-balmnt-sem, #btn-balmnt-mes').forEach(b => {
@@ -928,28 +968,24 @@
         }
 
         function initCharts() {
-            // 1. Gas Bruto (MPC)
             charts.gasProd = new Chart(document.getElementById('chart-gas-prod').getContext('2d'), {
                 type: 'line',
                 data: { labels: diasLabels, datasets: [{ label: 'Gas Bruto (MPC)', data: [], borderColor: '#0284c7', backgroundColor: '#0284c715', fill: true, tension: 0.3, borderWidth: 2.5 }] },
                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
 
-            // 2. Líquidos (bbls) - Conmutación Línea (diario) o Barras (semanal / mensual)
             charts.liqProd = new Chart(document.getElementById('chart-liq-prod').getContext('2d'), {
                 type: 'line',
                 data: { labels: diasLabels, datasets: [{ label: 'Líquidos (bbls)', data: [], borderColor: '#059669', backgroundColor: '#05966915', fill: true, tension: 0.3, borderWidth: 2.5 }] },
                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
 
-            // 3. GLP (m3)
             charts.glpProd = new Chart(document.getElementById('chart-glp-prod').getContext('2d'), {
                 type: 'bar',
                 data: { labels: diasLabels, datasets: [{ label: 'GLP (m³)', data: [], backgroundColor: '#d97706', borderRadius: 6 }] },
                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' } } } }
             });
 
-            // 4. Balance de Materia Exclusivo Monteagudo (Petróleo, Condensado, Gasolina, Agua)
             charts.balanceMonteagudo = new Chart(document.getElementById('chart-balance-monteagudo').getContext('2d'), {
                 type: 'bar',
                 data: {
@@ -968,7 +1004,6 @@
                 }
             });
 
-            // 5. Balance de Masas Gas (Otros Campos)
             charts.balanceGas = new Chart(document.getElementById('chart-balance-gas').getContext('2d'), {
                 type: 'bar',
                 data: {
@@ -983,23 +1018,77 @@
                 options: {
                     responsive: true, maintainAspectRatio: false,
                     plugins: { legend: { position: 'top', labels: { color: '#1e293b', boxWidth: 12 } } },
-                    scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, grid: { color: '#f1f5f9' } } }
+                    scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, grid: { color: '#f1f5f9' }, min: 0 } }
                 }
             });
 
-            // 6. Entregas Líquidos
             charts.entregaLiq = new Chart(document.getElementById('chart-entrega-liq').getContext('2d'), {
                 type: 'bar',
                 data: { labels: diasLabels, datasets: [{ label: 'Petróleo Entregado (bbls)', data: [], backgroundColor: '#059669', borderRadius: 6 }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' } } } }
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
 
-            // 7. Despacho GLP
             charts.entregaGlp = new Chart(document.getElementById('chart-entrega-glp').getContext('2d'), {
                 type: 'line',
                 data: { labels: diasLabels, datasets: [{ label: 'GLP Despachado (m³)', data: [], borderColor: '#d97706', backgroundColor: '#d9770615', fill: true }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' } } } }
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
+
+            // GRÁFICAS CONSOLIDADAS (SECCIÓN 3)
+            charts.consGas = new Chart(document.getElementById('chart-cons-gas').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: diasLabels,
+                    datasets: [
+                        { label: 'Monteagudo', data: [0, 0, 0, 0, 0, 0, 0], borderColor: '#64748b', tension: 0.3 },
+                        { label: 'Vuelta Grande', data: [], borderColor: '#0284c7', tension: 0.3 },
+                        { label: 'Margarita-Huacaya', data: [], borderColor: '#059669', tension: 0.3 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
+            });
+
+            charts.consLiq = new Chart(document.getElementById('chart-cons-liq').getContext('2d'), {
+                type: 'line',
+                data: {
+                    labels: diasLabels,
+                    datasets: [
+                        { label: 'Monteagudo', data: [], borderColor: '#8B1D24', tension: 0.3 },
+                        { label: 'Vuelta Grande', data: [], borderColor: '#0284c7', tension: 0.3 },
+                        { label: 'Margarita-Huacaya', data: [], borderColor: '#059669', tension: 0.3 }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
+            });
+
+            charts.consFisc = new Chart(document.getElementById('chart-cons-fisc').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: diasLabels,
+                    datasets: [
+                        { label: 'Monteagudo (Petróleo Entregado)', data: [], backgroundColor: '#8B1D24' },
+                        { label: 'Vuelta Grande (Gasoducto)', data: [], backgroundColor: '#0284c7' },
+                        { label: 'Margarita (Gasoducto)', data: [], backgroundColor: '#059669' }
+                    ]
+                },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
+            });
+        }
+
+        function actualizarConsolidadoDepartamental() {
+            charts.consGas.data.datasets[1].data = db['vuelta-grande'].gas.dia;
+            charts.consGas.data.datasets[2].data = db['margarita'].gas.dia;
+            charts.consGas.update();
+
+            charts.consLiq.data.datasets[0].data = db['monteagudo'].liq.dia;
+            charts.consLiq.data.datasets[1].data = db['vuelta-grande'].liq.dia;
+            charts.consLiq.data.datasets[2].data = db['margarita'].liq.dia;
+            charts.consLiq.update();
+
+            charts.consFisc.data.datasets[0].data = db['monteagudo'].liq.dia.map(v => v * 0.95);
+            charts.consFisc.data.datasets[1].data = db['vuelta-grande'].balance.gasoducto;
+            charts.consFisc.data.datasets[2].data = db['margarita'].balance.gasoducto;
+            charts.consFisc.update();
         }
 
         function actualizarGraficaGas() {
@@ -1097,13 +1186,11 @@
             const gridFiscSec = document.getElementById('grid-fiscalizacion-secundaria');
 
             if (isMonteagudo) {
-                // En Producción Bruta: Ocultar Gas y GLP, expandir Líquidos
                 wrapChartGas.classList.add('hidden');
                 wrapChartGlp.classList.add('hidden');
                 gridProdSec.className = "grid grid-cols-1 gap-6";
                 subtituloLiq.innerText = "Comportamiento temporal de extracción de líquidos (bbls).";
 
-                // En Fiscalización: Mostrar balance de materia de líquidos y ocultar gas/GLP
                 wrapBalMonteagudo.classList.remove('hidden');
                 wrapBalGas.classList.add('hidden');
                 wrapEntregaGlp.classList.add('hidden');
@@ -1111,7 +1198,6 @@
 
                 actualizarGraficaBalanceMonteagudo();
             } else {
-                // Restaurar para Vuelta Grande y Margarita
                 wrapChartGas.classList.remove('hidden');
                 wrapChartGlp.classList.remove('hidden');
                 gridProdSec.className = "grid grid-cols-1 lg:grid-cols-2 gap-6";
@@ -1124,14 +1210,12 @@
 
                 actualizarGraficaGas();
 
-                // GLP Bruto
                 charts.glpProd.data.labels = diasLabels;
                 charts.glpProd.data.datasets[0].data = data.glp;
                 charts.glpProd.update();
                 const elGlp = document.getElementById('alert-glp-prod');
                 if (elGlp) elGlp.innerHTML = calcAlerta(data.glp, 'día ant.');
 
-                // Balance de Gas
                 charts.balanceGas.data.datasets[0].data = data.balance.gasoducto;
                 charts.balanceGas.data.datasets[1].data = data.balance.proceso;
                 charts.balanceGas.data.datasets[2].data = data.balance.flare;
@@ -1140,7 +1224,6 @@
                 const elGasoducto = document.getElementById('alert-gasoducto');
                 if (elGasoducto) elGasoducto.innerHTML = calcAlerta(data.balance.gasoducto, 'día ant.');
 
-                // Entrega GLP
                 const dataEntGlp = data.glp.map(v => v * 0.98);
                 charts.entregaGlp.data.datasets[0].data = dataEntGlp;
                 charts.entregaGlp.update();
@@ -1148,17 +1231,14 @@
                 if (elEntGlp) elEntGlp.innerHTML = calcAlerta(dataEntGlp, 'día ant.');
             }
 
-            // Actualizar Líquidos con su periodo actual
             actualizarGraficaLiq();
 
-            // Entrega de Petróleo
             const dataEntLiq = data.liq.dia.map(v => v * 0.95);
             charts.entregaLiq.data.datasets[0].data = dataEntLiq;
             charts.entregaLiq.update();
             const elEntLiq = document.getElementById('alert-entrega-liq');
             if (elEntLiq) elEntLiq.innerHTML = calcAlerta(dataEntLiq, 'día ant.');
 
-            // Cargar Pozos del Campo
             const selector = document.getElementById('well-selector');
             selector.innerHTML = '';
             try {
