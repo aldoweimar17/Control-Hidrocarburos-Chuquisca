@@ -37,8 +37,8 @@
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         input[type="number"]::-webkit-inner-spin-button, 
         input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-        .chart-container { position: relative; height: 210px; width: 100%; }
-        .large-chart-container { position: relative; height: 320px; width: 100%; }
+        .chart-container { position: relative; height: 260px; width: 100%; }
+        .large-chart-container { position: relative; height: 350px; width: 100%; }
         .toast { transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; }
     </style>
 </head>
@@ -205,7 +205,7 @@
                 </div>
             </header>
 
-            <!-- SELECTOR DE CAMPOS (PESTAÑAS) -->
+            <!-- SELECTOR DE CAMPOS -->
             <div class="bg-white border border-slate-200 p-2 rounded-2xl mb-4 shadow-sm flex flex-wrap items-center justify-between gap-2">
                 <div class="flex items-center gap-2 px-2 text-xs text-slate-500 font-bold uppercase tracking-wider">
                     <i class="fas fa-layer-group text-[#8B1D24]"></i>
@@ -213,7 +213,7 @@
                 </div>
                 <div class="flex flex-wrap gap-2 flex-1 md:justify-end">
                     <button onclick="cambiarCampoTab('monteagudo')" id="tab-campo-monteagudo" class="tab-campo-btn px-4 py-2 rounded-xl text-xs font-extrabold transition-all border border-red-300 bg-red-50 text-[#8B1D24] shadow-sm flex items-center gap-2">
-                        <i class="fas fa-fire text-xs"></i> Monteagudo (Solo Petróleo)
+                        <i class="fas fa-fire text-xs"></i> Monteagudo (Solo Líquidos)
                     </button>
                     <button onclick="cambiarCampoTab('vuelta-grande')" id="tab-campo-vuelta-grande" class="tab-campo-btn px-4 py-2 rounded-xl text-xs font-bold transition-all border border-slate-200 bg-white text-slate-600 hover:text-slate-900 flex items-center gap-2">
                         <i class="fas fa-oil-well text-xs"></i> Vuelta Grande
@@ -224,13 +224,13 @@
                 </div>
             </div>
 
-            <!-- SUB-PESTAÑAS: PRODUCCIÓN BRUTA VS FISCALIZACIÓN -->
+            <!-- SUB-PESTAÑAS -->
             <div class="flex border-b border-slate-200 mb-6 gap-2">
                 <button onclick="cambiarPestanaEstrategia('produccion')" id="subtab-produccion" class="px-5 py-2.5 font-bold text-xs border-b-2 border-[#8B1D24] text-[#8B1D24] flex items-center gap-2 transition-all">
                     <i class="fas fa-chart-line"></i> 1. Producción Bruta del Reservorio (Oferta Física)
                 </button>
                 <button onclick="cambiarPestanaEstrategia('fiscalizacion')" id="subtab-fiscalizacion" class="px-5 py-2.5 font-bold text-xs border-b-2 border-transparent text-slate-500 hover:text-slate-800 flex items-center gap-2 transition-all">
-                    <i class="fas fa-file-invoice-dollar"></i> 2. Fiscalización & Balance de Masas (Entregas y Consumos)
+                    <i class="fas fa-file-invoice-dollar"></i> 2. Fiscalización & Balance de Materia
                 </button>
             </div>
 
@@ -245,7 +245,7 @@
                     </div>
                 </div>
                 
-                <!-- Tipo de Cambio Oficial (Fuente: BCB) -->
+                <!-- Tipo de Cambio Oficial -->
                 <div class="bg-white border border-slate-200 px-4 py-3 rounded-2xl flex items-center gap-3 shadow-sm flex-1 min-w-[200px]">
                     <div class="bg-emerald-50 p-2.5 rounded-xl text-emerald-600 border border-emerald-200"><i class="fas fa-money-bill-wave text-lg"></i></div>
                     <div>
@@ -273,15 +273,15 @@
 
             <!-- SUB-PANEL 1: PRODUCCIÓN BRUTA -->
             <div id="panel-produccion" class="block space-y-6">
-                <!-- Gas Bruto (MPC) -->
-                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm relative">
+                <!-- Contenedor Gas (Oculto en Monteagudo) -->
+                <div id="wrapper-chart-gas" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm relative">
                     <div class="flex flex-col md:flex-row justify-between md:items-center border-b border-slate-100 pb-3 mb-4 gap-2">
                         <div class="flex items-center gap-3">
                             <div>
                                 <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
                                     <i class="fas fa-fire-flame-curved text-accentBlue"></i> Producción Actual de Gas (MPC)
                                 </h2>
-                                <p class="text-[11px] text-slate-500 mt-0.5" id="desc-gas-prod">Potencial físico extraído de reservorio sin deducción de consumo interno.</p>
+                                <p class="text-[11px] text-slate-500 mt-0.5">Potencial físico extraído de reservorio sin deducción de consumo interno.</p>
                             </div>
                             <div id="alert-gas-prod" class="text-xs font-bold px-2.5 py-1 rounded-xl shadow-sm border border-slate-200 bg-slate-50">
                                 --
@@ -296,15 +296,16 @@
                     <div class="large-chart-container"><canvas id="chart-gas-prod"></canvas></div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <!-- Petróleo & Condensado en bbls -->
-                    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+                <!-- Grilla de Líquidos y GLP (GLP se oculta en Monteagudo y Líquidos toma ancho completo) -->
+                <div id="grid-produccion-secundaria" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Producción de Líquidos en bbls -->
+                    <div id="card-chart-liq" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
                         <div class="flex justify-between items-center border-b border-slate-100 pb-3 mb-4">
                             <div>
                                 <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
                                     <i class="fas fa-oil-well text-accentGreen"></i> Producción de Líquidos (bbls)
                                 </h3>
-                                <p class="text-[10px] text-slate-500">Petróleo negro y condensado asociado.</p>
+                                <p class="text-[10px] text-slate-500" id="subtitulo-liq-prod">Petróleo crudo y condensado asociado.</p>
                             </div>
                             <div class="flex items-center gap-2">
                                 <span class="text-xs font-mono text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-lg">bbls</span>
@@ -316,14 +317,14 @@
                         <div class="chart-container"><canvas id="chart-liq-prod"></canvas></div>
                     </div>
 
-                    <!-- Producción de GLP en m3 -->
-                    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+                    <!-- Producción de GLP en m3 (Oculto en Monteagudo) -->
+                    <div id="wrapper-chart-glp" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
                         <div class="flex justify-between items-center border-b border-slate-100 pb-3 mb-4">
                             <div>
                                 <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
                                     <i class="fas fa-gas-pump text-accentAmber"></i> Producción de GLP (m³)
                                 </h3>
-                                <p class="text-[10px] text-slate-500" id="desc-glp-prod">Extracción líquida de licuables en planta.</p>
+                                <p class="text-[10px] text-slate-500">Extracción líquida de licuables en planta.</p>
                             </div>
                             <div class="flex items-center gap-2">
                                 <span class="text-xs font-mono text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-lg">m³</span>
@@ -337,16 +338,36 @@
                 </div>
             </div>
 
-            <!-- SUB-PANEL 2: FISCALIZACIÓN & BALANCE -->
+            <!-- SUB-PANEL 2: FISCALIZACIÓN & BALANCE DE MATERIA -->
             <div id="panel-fiscalizacion" class="hidden space-y-6">
-                <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+                <!-- Gráfica Exclusiva Monteagudo: Balance de Materia de Líquidos (Petróleo, Condensado, Gasolina, Agua) -->
+                <div id="wrapper-balance-monteagudo" class="hidden bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+                    <div class="border-b border-slate-100 pb-3 mb-4 flex flex-col md:flex-row justify-between md:items-center gap-2">
+                        <div class="flex items-center gap-3">
+                            <div>
+                                <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                                    <i class="fas fa-balance-scale text-[#8B1D24]"></i> Fiscalización & Balance de Materia: Monteagudo (bbls)
+                                </h2>
+                                <p class="text-[11px] text-slate-500 mt-0.5">Desglose integral de componentes líquidos extraídos: Petróleo, Condensado, Gasolina y Agua.</p>
+                            </div>
+                            <div id="alert-balance-monteagudo" class="text-xs font-bold px-2.5 py-1 rounded-xl shadow-sm border border-slate-200 bg-slate-50">
+                                --
+                            </div>
+                        </div>
+                        <span class="text-xs font-mono bg-emerald-50 border border-emerald-200 text-emerald-800 px-3 py-1 rounded-lg">Unidad: bbls</span>
+                    </div>
+                    <div class="large-chart-container"><canvas id="chart-balance-monteagudo"></canvas></div>
+                </div>
+
+                <!-- Gráfica General: Balance de Masas de Gas (Campos de Gas) -->
+                <div id="wrapper-balance-gas" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
                     <div class="border-b border-slate-100 pb-3 mb-4 flex flex-col md:flex-row justify-between md:items-center gap-2">
                         <div class="flex items-center gap-3">
                             <div>
                                 <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
                                     <i class="fas fa-balance-scale text-[#8B1D24]"></i> Balance de Masas & Destino de Gas (Barras Apiladas)
                                 </h2>
-                                <p class="text-[11px] text-slate-500 mt-0.5" id="desc-balance-gas">Auditoría: Gasoducto vs. Proceso, Combustible, Flare y CO₂.</p>
+                                <p class="text-[11px] text-slate-500 mt-0.5">Auditoría: Gasoducto vs. Proceso, Combustible, Flare y CO₂.</p>
                             </div>
                             <div id="alert-gasoducto" class="text-xs font-bold px-2.5 py-1 rounded-xl shadow-sm border border-slate-200 bg-slate-50">
                                 --
@@ -357,8 +378,8 @@
                     <div class="large-chart-container"><canvas id="chart-balance-gas"></canvas></div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+                <div id="grid-fiscalizacion-secundaria" class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div id="card-chart-entrega-liq" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
                         <div class="flex justify-between items-center border-b border-slate-100 pb-2 mb-3">
                             <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
                                 <i class="fas fa-truck-moving text-accentGreen"></i> Petróleo Entregado (bbls)
@@ -369,7 +390,7 @@
                         </div>
                         <div class="chart-container"><canvas id="chart-entrega-liq"></canvas></div>
                     </div>
-                    <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
+                    <div id="wrapper-chart-entrega-glp" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
                         <div class="flex justify-between items-center border-b border-slate-100 pb-2 mb-3">
                             <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
                                 <i class="fas fa-industry text-accentAmber"></i> Despacho Comercial de GLP (m³)
@@ -394,7 +415,7 @@
                     </button>
                     <div>
                         <h1 class="text-xl font-bold text-slate-900"><i class="fas fa-file-import text-[#8B1D24] mr-2"></i> Módulo de Carga Diaria de Partes</h1>
-                        <p class="text-xs text-slate-500 mt-0.5">Ingreso de volúmenes de producción, destinos, densidad y entregas fiscales.</p>
+                        <p class="text-xs text-slate-500 mt-0.5" id="entry-subtitle-info">Ingreso de volúmenes de producción, destinos, densidad y entregas fiscales.</p>
                     </div>
                 </div>
                 <button onclick="cerrarSesion()" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
@@ -405,13 +426,13 @@
             <div class="p-6 max-w-6xl w-full mx-auto flex-1 overflow-y-auto space-y-6">
                 
                 <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8">
-                    <!-- Parámetros Generales (Fila Uniforme y Lineal con WTI Alineado) -->
+                    <!-- Parámetros Generales -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pb-6 border-b border-slate-200 items-end">
                         <div class="w-full">
                             <label class="block text-xs font-bold text-slate-700 mb-1.5">1. Bloque / Campo Operativo</label>
                             <select id="input-campo" class="w-full h-11 bg-slate-50 border border-slate-300 rounded-xl px-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#8B1D24]">
                                 <option value="" disabled selected>-- Seleccione Campo --</option>
-                                <option value="monteagudo">Monteagudo (Solo Petróleo)</option>
+                                <option value="monteagudo">Monteagudo (Solo Líquidos)</option>
                                 <option value="vuelta-grande">Vuelta Grande</option>
                                 <option value="margarita">Margarita - Huacaya</option>
                             </select>
@@ -466,15 +487,15 @@
                         </div>
                     </div>
 
-                    <!-- SECCIÓN 2: GAS (en MPC) - Adaptable para Monteagudo -->
+                    <!-- SECCIÓN 2: GAS (en MPC) - SE OCULTA COMPLETAMENTE EN MONTEAGUDO -->
                     <div class="mt-6" id="wrapper-gas-section">
                         <div class="flex items-center justify-between mb-3">
                             <h3 class="text-xs font-black text-sky-700 uppercase tracking-wider flex items-center gap-2">
                                 <i class="fas fa-fire-flame-curved text-base"></i> B. Gas (en MPC)
                             </h3>
-                            <span id="label-gas-aviso" class="text-[10px] text-slate-400 font-mono font-semibold">Rangos: 0 a 1000</span>
+                            <span class="text-[10px] text-slate-400 font-mono font-semibold">Rangos: 0 a 1000</span>
                         </div>
-                        <div id="grid-gas-section" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 bg-sky-50/50 p-4 rounded-2xl border border-sky-100 transition-opacity">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 bg-sky-50/50 p-4 rounded-2xl border border-sky-100">
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-700 mb-1">Prod. Actual de Gas</label>
                                 <input type="number" id="gas-prod" min="0" max="1000" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
@@ -510,15 +531,15 @@
                         </div>
                     </div>
 
-                    <!-- SECCIÓN 3: GLP (en m3) - Adaptable para Monteagudo -->
+                    <!-- SECCIÓN 3: GLP (en m3) - SE OCULTA COMPLETAMENTE EN MONTEAGUDO -->
                     <div class="mt-6" id="wrapper-glp-section">
                         <div class="flex items-center justify-between mb-3">
                             <h3 class="text-xs font-black text-amber-700 uppercase tracking-wider flex items-center gap-2">
                                 <i class="fas fa-gas-pump text-base"></i> C. GLP (en m³)
                             </h3>
-                            <span id="label-glp-aviso" class="text-[10px] text-slate-400 font-mono font-semibold">Rangos: 0 a 1000</span>
+                            <span class="text-[10px] text-slate-400 font-mono font-semibold">Rangos: 0 a 1000</span>
                         </div>
-                        <div id="grid-glp-section" class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-amber-50/50 p-4 rounded-2xl border border-amber-100 transition-opacity">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-amber-50/50 p-4 rounded-2xl border border-amber-100">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-1">Producción GLP (m³)</label>
                                 <input type="number" id="glp-prod" min="0" max="1000" step="0.01" class="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900 font-mono text-right" placeholder="0.00">
@@ -549,15 +570,16 @@
                                 <tr class="bg-slate-50 uppercase text-slate-500 border-b border-slate-200">
                                     <th class="p-3">Fecha</th>
                                     <th class="p-3">Campo</th>
-                                    <th class="p-3 text-right">Gas Actual (MPC)</th>
+                                    <th class="p-3 text-right">Líquidos (bbl)</th>
                                     <th class="p-3 text-right">Petróleo (bbl)</th>
                                     <th class="p-3 text-right">Condensado (bbl)</th>
-                                    <th class="p-3 text-right">GLP (m³)</th>
+                                    <th class="p-3 text-right">Gasolina (bbl)</th>
+                                    <th class="p-3 text-right">Agua (bbl)</th>
                                     <th class="p-3 text-center">Estado</th>
                                 </tr>
                             </thead>
                             <tbody id="log-body" class="divide-y divide-slate-100 text-slate-700 font-mono">
-                                <tr id="empty-state"><td colspan="7" class="p-6 text-center text-slate-400 italic">No hay partes procesados en esta sesión.</td></tr>
+                                <tr id="empty-state"><td colspan="8" class="p-6 text-center text-slate-400 italic">No hay partes procesados en esta sesión.</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -671,14 +693,17 @@
         Chart.defaults.color = '#64748b';
         Chart.defaults.font.family = "'Inter', sans-serif";
 
-        // MONTEAGUDO REGISTRA PRODUCCIÓN CERO EN GAS Y GLP (CAMPO PETROLERO)
         const db = {
             "monteagudo": {
                 name: "Monteagudo",
-                gas: { dia: [0, 0, 0, 0, 0, 0, 0], sem: [0, 0, 0, 0, 0, 0, 0], mes: [0, 0, 0, 0, 0, 0, 0] },
                 liq: [85, 88, 84, 91, 95, 92, 96],
-                glp: [0, 0, 0, 0, 0, 0, 0],
-                balance: { gasoducto: [0, 0, 0, 0, 0, 0, 0], proceso: [0, 0, 0, 0, 0, 0, 0], flare: [0, 0, 0, 0, 0, 0, 0], co2: [0, 0, 0, 0, 0, 0, 0] }
+                // Desglose del Balance de Materia de Líquidos exclusivo de Monteagudo
+                balanceLiquidos: {
+                    petroleo: [60, 62, 59, 65, 68, 66, 69],
+                    condensado: [15, 16, 15, 16, 17, 16, 17],
+                    gasolina: [10, 10, 10, 10, 10, 10, 10],
+                    agua: [45, 48, 44, 50, 52, 49, 53]
+                }
             },
             "vuelta-grande": {
                 name: "Vuelta Grande",
@@ -705,12 +730,11 @@
         let currentUserRole = 'operador';
         const charts = {};
 
-        // CALCULAR ALERTA DE INCREMENTO O REDUCCIÓN
         function calcAlerta(arr, periodoTexto = 'ant.') {
             if (!arr || arr.length < 2) return '<span class="text-slate-400 font-normal">--</span>';
             const actual = arr[arr.length - 1];
             const anterior = arr[arr.length - 2];
-            if (anterior === 0 && actual === 0) return '<span class="text-slate-400 font-normal">N/A</span>';
+            if (anterior === 0 && actual === 0) return '<span class="text-slate-400 font-normal">0%</span>';
             if (anterior === 0) return '<span class="text-slate-400 font-normal">0%</span>';
 
             const diff = actual - anterior;
@@ -725,31 +749,23 @@
             }
         }
 
-        // AJUSTAR FORMULARIO SEGÚN CAMPO (MONTEAGUDO NO PRODUCE GAS NI GLP)
+        // CONTROL DINÁMICO DEL FORMULARIO SEGÚN CAMPO
         function ajustarFormularioPorCampo(campo) {
             const isMonteagudo = (campo === 'monteagudo');
-            const gridGas = document.getElementById('grid-gas-section');
-            const gridGlp = document.getElementById('grid-glp-section');
-            const labelGas = document.getElementById('label-gas-aviso');
-            const labelGlp = document.getElementById('label-glp-aviso');
-
-            const gasInputs = gridGas.querySelectorAll('input');
-            const glpInputs = gridGlp.querySelectorAll('input');
+            const wrapGas = document.getElementById('wrapper-gas-section');
+            const wrapGlp = document.getElementById('wrapper-glp-section');
+            const subInfo = document.getElementById('entry-subtitle-info');
 
             if (isMonteagudo) {
-                gridGas.classList.add('opacity-40', 'pointer-events-none');
-                gridGlp.classList.add('opacity-40', 'pointer-events-none');
-                labelGas.innerHTML = '<span class="text-amber-700 font-bold"><i class="fas fa-ban mr-1"></i>No aplica (Monteagudo no produce gas)</span>';
-                labelGlp.innerHTML = '<span class="text-amber-700 font-bold"><i class="fas fa-ban mr-1"></i>No aplica (Monteagudo no produce GLP)</span>';
-                gasInputs.forEach(i => { i.value = '0'; i.disabled = true; });
-                glpInputs.forEach(i => { i.value = '0'; i.disabled = true; });
+                wrapGas.classList.add('hidden');
+                wrapGlp.classList.add('hidden');
+                subInfo.innerText = "Campo Monteagudo: Ingreso exclusivo de componentes líquidos (Petróleo, Condensado, Gasolina y Agua).";
+                // Limpiar inputs de gas y GLP
+                document.querySelectorAll('#wrapper-gas-section input, #wrapper-glp-section input').forEach(i => i.value = '0');
             } else {
-                gridGas.classList.remove('opacity-40', 'pointer-events-none');
-                gridGlp.classList.remove('opacity-40', 'pointer-events-none');
-                labelGas.innerText = 'Rangos: 0 a 1000';
-                labelGlp.innerText = 'Rangos: 0 a 1000';
-                gasInputs.forEach(i => { i.disabled = false; });
-                glpInputs.forEach(i => { i.disabled = false; });
+                wrapGas.classList.remove('hidden');
+                wrapGlp.classList.remove('hidden');
+                subInfo.innerText = "Ingreso de volúmenes de producción, destinos, densidad y entregas fiscales.";
             }
         }
 
@@ -787,7 +803,7 @@
                 b.className = "px-3 py-1 text-xs font-bold rounded-lg text-slate-500 hover:text-slate-900";
             });
             const btnActivo = document.getElementById(`btn-gas-${periodo}`);
-            btnActivo.className = "px-3 py-1 text-xs font-bold rounded-lg bg-white text-slate-900 shadow-sm";
+            if (btnActivo) btnActivo.className = "px-3 py-1 text-xs font-bold rounded-lg bg-white text-slate-900 shadow-sm";
             actualizarGraficaGas();
         }
 
@@ -838,6 +854,12 @@
             } else if (viewId === 'entry') {
                 document.getElementById('view-entry').classList.remove('hidden');
                 document.getElementById('btn-menu-entry').className = active;
+                // Sincronizar formulario con el campo seleccionado
+                const sel = document.getElementById('input-campo');
+                if (sel) {
+                    sel.value = currentField;
+                    ajustarFormularioPorCampo(currentField);
+                }
             } else if (viewId === 'wells') {
                 document.getElementById('view-wells').classList.remove('hidden');
                 document.getElementById('btn-menu-wells').className = active;
@@ -847,24 +869,47 @@
         }
 
         function initCharts() {
+            // 1. Gas Bruto (MPC)
             charts.gasProd = new Chart(document.getElementById('chart-gas-prod').getContext('2d'), {
                 type: 'line',
                 data: { labels: diasLabels, datasets: [{ label: 'Gas Bruto (MPC)', data: [], borderColor: '#0284c7', backgroundColor: '#0284c715', fill: true, tension: 0.3, borderWidth: 2.5 }] },
                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
 
+            // 2. Líquidos (bbls)
             charts.liqProd = new Chart(document.getElementById('chart-liq-prod').getContext('2d'), {
                 type: 'line',
-                data: { labels: diasLabels, datasets: [{ label: 'Líquidos (bbls)', data: [], borderColor: '#059669', backgroundColor: '#05966915', fill: true, tension: 0.3, borderWidth: 2 }] },
+                data: { labels: diasLabels, datasets: [{ label: 'Producción de Líquidos (bbls)', data: [], borderColor: '#059669', backgroundColor: '#05966915', fill: true, tension: 0.3, borderWidth: 2.5 }] },
                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
 
+            // 3. GLP (m3)
             charts.glpProd = new Chart(document.getElementById('chart-glp-prod').getContext('2d'), {
                 type: 'bar',
                 data: { labels: diasLabels, datasets: [{ label: 'GLP (m³)', data: [], backgroundColor: '#d97706', borderRadius: 6 }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' } } } }
             });
 
+            // 4. Balance de Materia Exclusivo Monteagudo (Líquidos: Petróleo, Condensado, Gasolina, Agua)
+            charts.balanceMonteagudo = new Chart(document.getElementById('chart-balance-monteagudo').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: diasLabels,
+                    datasets: [
+                        { label: 'Petróleo (bbls)', data: [], backgroundColor: '#059669', stack: 'm' },
+                        { label: 'Condensado (bbls)', data: [], backgroundColor: '#0284c7', stack: 'm' },
+                        { label: 'Gasolina (bbls)', data: [], backgroundColor: '#d97706', stack: 'm' },
+                        { label: 'Agua de Formación (bbls)', data: [], backgroundColor: '#64748b', stack: 'm' }
+                    ]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { position: 'top', labels: { color: '#1e293b', boxWidth: 12 } } },
+                    scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, grid: { color: '#f1f5f9' }, min: 0 } }
+                }
+            });
+
+            // 5. Balance de Masas Gas (Otros Campos)
             charts.balanceGas = new Chart(document.getElementById('chart-balance-gas').getContext('2d'), {
                 type: 'bar',
                 data: {
@@ -883,12 +928,14 @@
                 }
             });
 
+            // 6. Entregas Líquidos
             charts.entregaLiq = new Chart(document.getElementById('chart-entrega-liq').getContext('2d'), {
                 type: 'bar',
                 data: { labels: diasLabels, datasets: [{ label: 'Petróleo Entregado (bbls)', data: [], backgroundColor: '#059669', borderRadius: 6 }] },
                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
 
+            // 7. Despacho GLP
             charts.entregaGlp = new Chart(document.getElementById('chart-entrega-glp').getContext('2d'), {
                 type: 'line',
                 data: { labels: diasLabels, datasets: [{ label: 'GLP Despachado (m³)', data: [], borderColor: '#d97706', backgroundColor: '#d9770615', fill: true }] },
@@ -897,22 +944,9 @@
         }
 
         function actualizarGraficaGas() {
-            const isMonteagudo = (currentField === 'monteagudo');
+            if (currentField === 'monteagudo') return;
+
             const dataCampo = db[currentField].gas;
-            const descGas = document.getElementById('desc-gas-prod');
-
-            if (isMonteagudo) {
-                charts.gasProd.config.type = 'line';
-                charts.gasProd.data.labels = diasLabels;
-                charts.gasProd.data.datasets[0].data = [0, 0, 0, 0, 0, 0, 0];
-                charts.gasProd.data.datasets[0].fill = false;
-                descGas.innerText = "Campo Monteagudo: No registra extracción de gas natural (Bloque petrolero).";
-                charts.gasProd.update();
-                document.getElementById('alert-gas-prod').innerHTML = '<span class="text-slate-400 font-normal">0 MPC (Sin Gas)</span>';
-                return;
-            }
-
-            descGas.innerText = "Potencial físico extraído de reservorio sin deducción de consumo interno.";
             let refTexto = 'día ant.';
             if (periodoGas === 'dia') {
                 charts.gasProd.config.type = 'line';
@@ -942,46 +976,64 @@
         async function updateUI() {
             const isMonteagudo = (currentField === 'monteagudo');
             const data = db[currentField];
-            document.getElementById('title-field').innerText = data.name + (isMonteagudo ? ' (Solo Petróleo)' : '');
+            document.getElementById('title-field').innerText = data.name + (isMonteagudo ? ' (Solo Líquidos)' : '');
 
-            actualizarGraficaGas();
+            // DISPOSICIÓN VISUAL EN MONTEAGUDO
+            const wrapChartGas = document.getElementById('wrapper-chart-gas');
+            const wrapChartGlp = document.getElementById('wrapper-chart-glp');
+            const cardChartLiq = document.getElementById('card-chart-liq');
+            const gridProdSec = document.getElementById('grid-produccion-secundaria');
+            const subtituloLiq = document.getElementById('subtitulo-liq-prod');
 
-            // Líquidos y Alerta
-            charts.liqProd.data.labels = diasLabels;
-            charts.liqProd.data.datasets[0].data = data.liq;
-            charts.liqProd.update();
-            const elLiq = document.getElementById('alert-liq-prod');
-            if (elLiq) elLiq.innerHTML = calcAlerta(data.liq, 'día ant.');
+            const wrapBalMonteagudo = document.getElementById('wrapper-balance-monteagudo');
+            const wrapBalGas = document.getElementById('wrapper-balance-gas');
+            const wrapEntregaGlp = document.getElementById('wrapper-chart-entrega-glp');
+            const cardEntregaLiq = document.getElementById('card-chart-entrega-liq');
+            const gridFiscSec = document.getElementById('grid-fiscalizacion-secundaria');
 
-            // GLP y Alerta (Cero en Monteagudo)
-            const descGlp = document.getElementById('desc-glp-prod');
             if (isMonteagudo) {
-                charts.glpProd.data.labels = diasLabels;
-                charts.glpProd.data.datasets[0].data = [0, 0, 0, 0, 0, 0, 0];
-                charts.glpProd.update();
-                descGlp.innerText = "Campo Monteagudo: Sin planta de extracción de GLP.";
-                document.getElementById('alert-glp-prod').innerHTML = '<span class="text-slate-400 font-normal">0 m³ (Sin GLP)</span>';
+                // 1. En Producción Bruta: Ocultar Gas y GLP, expandir Líquidos
+                wrapChartGas.classList.add('hidden');
+                wrapChartGlp.classList.add('hidden');
+                gridProdSec.className = "grid grid-cols-1 gap-6";
+                subtituloLiq.innerText = "Producción total de líquidos de reservorio (bbls).";
+
+                // 2. En Fiscalización: Mostrar balance de materia de líquidos y ocultar gas/GLP
+                wrapBalMonteagudo.classList.remove('hidden');
+                wrapBalGas.classList.add('hidden');
+                wrapEntregaGlp.classList.add('hidden');
+                gridFiscSec.className = "grid grid-cols-1 gap-6";
+
+                // Actualizar gráfica de Balance de Materia de Monteagudo
+                charts.balanceMonteagudo.data.datasets[0].data = data.balanceLiquidos.petroleo;
+                charts.balanceMonteagudo.data.datasets[1].data = data.balanceLiquidos.condensado;
+                charts.balanceMonteagudo.data.datasets[2].data = data.balanceLiquidos.gasolina;
+                charts.balanceMonteagudo.data.datasets[3].data = data.balanceLiquidos.agua;
+                charts.balanceMonteagudo.update();
+                document.getElementById('alert-balance-monteagudo').innerHTML = calcAlerta(data.balanceLiquidos.petroleo, 'día ant.');
+
             } else {
-                descGlp.innerText = "Extracción líquida de licuables en planta.";
+                // Restaurar para Vuelta Grande y Margarita
+                wrapChartGas.classList.remove('hidden');
+                wrapChartGlp.classList.remove('hidden');
+                gridProdSec.className = "grid grid-cols-1 lg:grid-cols-2 gap-6";
+                subtituloLiq.innerText = "Petróleo crudo y condensado asociado.";
+
+                wrapBalMonteagudo.classList.add('hidden');
+                wrapBalGas.classList.remove('hidden');
+                wrapEntregaGlp.classList.remove('hidden');
+                gridFiscSec.className = "grid grid-cols-1 lg:grid-cols-2 gap-6";
+
+                actualizarGraficaGas();
+
+                // GLP Bruto
                 charts.glpProd.data.labels = diasLabels;
                 charts.glpProd.data.datasets[0].data = data.glp;
                 charts.glpProd.update();
                 const elGlp = document.getElementById('alert-glp-prod');
                 if (elGlp) elGlp.innerHTML = calcAlerta(data.glp, 'día ant.');
-            }
 
-            // Balance de Masas (Cero en Monteagudo)
-            const descBal = document.getElementById('desc-balance-gas');
-            if (isMonteagudo) {
-                charts.balanceGas.data.datasets[0].data = [0, 0, 0, 0, 0, 0, 0];
-                charts.balanceGas.data.datasets[1].data = [0, 0, 0, 0, 0, 0, 0];
-                charts.balanceGas.data.datasets[2].data = [0, 0, 0, 0, 0, 0, 0];
-                charts.balanceGas.data.datasets[3].data = [0, 0, 0, 0, 0, 0, 0];
-                charts.balanceGas.update();
-                descBal.innerText = "Monteagudo no entrega gasoducto ni registra quema de gas.";
-                document.getElementById('alert-gasoducto').innerHTML = '<span class="text-slate-400 font-normal">Sin balance gas</span>';
-            } else {
-                descBal.innerText = "Auditoría: Gasoducto vs. Proceso, Combustible, Flare y CO₂.";
+                // Balance de Gas
                 charts.balanceGas.data.datasets[0].data = data.balance.gasoducto;
                 charts.balanceGas.data.datasets[1].data = data.balance.proceso;
                 charts.balanceGas.data.datasets[2].data = data.balance.flare;
@@ -989,20 +1041,8 @@
                 charts.balanceGas.update();
                 const elGasoducto = document.getElementById('alert-gasoducto');
                 if (elGasoducto) elGasoducto.innerHTML = calcAlerta(data.balance.gasoducto, 'día ant.');
-            }
 
-            // Entregas Líquidos y GLP
-            const dataEntLiq = data.liq.map(v => v * 0.95);
-            charts.entregaLiq.data.datasets[0].data = dataEntLiq;
-            charts.entregaLiq.update();
-            const elEntLiq = document.getElementById('alert-entrega-liq');
-            if (elEntLiq) elEntLiq.innerHTML = calcAlerta(dataEntLiq, 'día ant.');
-
-            if (isMonteagudo) {
-                charts.entregaGlp.data.datasets[0].data = [0, 0, 0, 0, 0, 0, 0];
-                charts.entregaGlp.update();
-                document.getElementById('alert-entrega-glp').innerHTML = '<span class="text-slate-400 font-normal">0 m³</span>';
-            } else {
+                // Entrega GLP
                 const dataEntGlp = data.glp.map(v => v * 0.98);
                 charts.entregaGlp.data.datasets[0].data = dataEntGlp;
                 charts.entregaGlp.update();
@@ -1010,7 +1050,21 @@
                 if (elEntGlp) elEntGlp.innerHTML = calcAlerta(dataEntGlp, 'día ant.');
             }
 
-            // Pozos del Campo
+            // Gráfica de Producción de Líquidos (Común para todos)
+            charts.liqProd.data.labels = diasLabels;
+            charts.liqProd.data.datasets[0].data = data.liq;
+            charts.liqProd.update();
+            const elLiq = document.getElementById('alert-liq-prod');
+            if (elLiq) elLiq.innerHTML = calcAlerta(data.liq, 'día ant.');
+
+            // Entrega de Petróleo (Común para todos)
+            const dataEntLiq = data.liq.map(v => v * 0.95);
+            charts.entregaLiq.data.datasets[0].data = dataEntLiq;
+            charts.entregaLiq.update();
+            const elEntLiq = document.getElementById('alert-entrega-liq');
+            if (elEntLiq) elEntLiq.innerHTML = calcAlerta(dataEntLiq, 'día ant.');
+
+            // Cargar Pozos del Campo
             const selector = document.getElementById('well-selector');
             selector.innerHTML = '';
             try {
@@ -1145,7 +1199,7 @@
             }
         });
 
-        // ESCUCHA DEL SELECTOR DE CAMPO EN EL FORMULARIO DE INGRESO
+        // CAMBIO DE CAMPO EN LA SECCIÓN DE INGRESO DE DATOS
         document.getElementById('input-campo').addEventListener('change', function(e) {
             ajustarFormularioPorCampo(e.target.value);
         });
@@ -1171,7 +1225,7 @@
             const agua = parseFloat(document.getElementById('liq-agua').value) || 0;
             const liqEntregado = parseFloat(document.getElementById('liq-entregado').value) || 0;
 
-            // Gas (cero si es Monteagudo)
+            // Gas (cero absoluto si es Monteagudo)
             const gasProd = isMonteagudo ? 0 : (parseFloat(document.getElementById('gas-prod').value) || 0);
             const gasGasoducto = isMonteagudo ? 0 : (parseFloat(document.getElementById('gas-gasoducto').value) || 0);
             const gasProceso = isMonteagudo ? 0 : (parseFloat(document.getElementById('gas-proceso').value) || 0);
@@ -1181,7 +1235,7 @@
             const gasQuemado = isMonteagudo ? 0 : (parseFloat(document.getElementById('gas-quemado').value) || 0);
             const gasCo2 = isMonteagudo ? 0 : (parseFloat(document.getElementById('gas-co2').value) || 0);
 
-            // GLP (cero si es Monteagudo)
+            // GLP (cero absoluto si es Monteagudo)
             const glpProd = isMonteagudo ? 0 : (parseFloat(document.getElementById('glp-prod').value) || 0);
             const glpEntrega = isMonteagudo ? 0 : (parseFloat(document.getElementById('glp-entrega').value) || 0);
 
@@ -1221,10 +1275,11 @@
                 tr.innerHTML = `
                     <td class="p-3">${fecha}</td>
                     <td class="p-3 font-bold text-[#8B1D24] uppercase">${campoID}</td>
-                    <td class="p-3 text-right text-slate-800">${gasProd.toFixed(1)}</td>
-                    <td class="p-3 text-right text-emerald-700">${petroleo.toFixed(1)}</td>
+                    <td class="p-3 text-right text-emerald-700 font-bold">${liqProd.toFixed(1)}</td>
+                    <td class="p-3 text-right text-slate-800">${petroleo.toFixed(1)}</td>
                     <td class="p-3 text-right text-slate-600">${condensado.toFixed(1)}</td>
-                    <td class="p-3 text-right text-amber-700">${glpProd.toFixed(2)}</td>
+                    <td class="p-3 text-right text-amber-700">${gasolina.toFixed(1)}</td>
+                    <td class="p-3 text-right text-slate-500">${agua.toFixed(1)}</td>
                     <td class="p-3 text-center"><span class="text-[10px] text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">Guardado</span></td>
                 `;
                 tbody.insertBefore(tr, tbody.firstChild);
@@ -1236,10 +1291,7 @@
                     if (input.id !== 'input-wti') input.value = '';
                 });
 
-                if (isMonteagudo) {
-                    ajustarFormularioPorCampo('monteagudo');
-                }
-
+                ajustarFormularioPorCampo(campoID);
                 updateUI();
             } catch (err) {
                 console.error(err);
@@ -1299,7 +1351,6 @@
                 cargarTablaPozosAdmin();
                 document.getElementById('well-input-nombre').value = '';
                 document.getElementById('well-input-prof').value = '';
-                document.getElementById('well-input-form').value = '';
             } catch (e) {
                 alert("Error al registrar pozo.");
             }
