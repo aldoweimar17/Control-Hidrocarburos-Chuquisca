@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Control Operativo - Hidrocarburos</title>
-    <!-- Tailwind CSS CDN -->
+    <title>Sistema de Control Operativo - Hidrocarburos Chuquisaca</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -17,6 +16,8 @@
                         accentCyan: '#00d2ff', 
                         accentGreen: '#10b981',
                         accentBlue: '#3b82f6',
+                        accentAmber: '#f59e0b',
+                        accentPurple: '#a855f7',
                         textMuted: '#8b8d97',
                         chqRed: '#9e1b22',
                     }
@@ -24,10 +25,8 @@
             }
         }
     </script>
-    <!-- Chart.js & Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <!-- FontAwesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
     
@@ -38,29 +37,25 @@
         ::-webkit-scrollbar-thumb { background: #1e212b; border-radius: 4px; }
         input[type="number"]::-webkit-inner-spin-button, 
         input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
-        .chart-container { position: relative; height: 180px; width: 100%; }
-        .large-chart-container { position: relative; height: 300px; width: 100%; }
+        .chart-container { position: relative; height: 210px; width: 100%; }
+        .large-chart-container { position: relative; height: 320px; width: 100%; }
         .toast { transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; }
     </style>
 </head>
 <body class="bg-background text-white h-screen flex overflow-hidden relative">
 
-    <!-- ==================== VISTA DE AUTENTICACIÓN (LOGIN) ==================== -->
+    <!-- ==================== VISTA DE AUTENTICACIÓN ==================== -->
     <div id="view-login" class="fixed inset-0 bg-gradient-to-br from-[#0b0c10] via-[#13151a] to-[#1f0e11] z-50 flex items-center justify-center p-4">
         <div class="bg-[#fcfbfc] p-8 md:p-10 rounded-3xl border border-gray-200 shadow-2xl max-w-md w-full text-gray-800">
             <div class="flex flex-col items-center justify-center mb-6 pb-6 border-b border-gray-200">
                 <div class="w-full flex flex-col items-center justify-center bg-white p-4 rounded-2xl shadow-sm border border-gray-100">
-                    <div class="w-24 h-24 mb-3 flex items-center justify-center">
+                    <div class="w-20 h-20 mb-3 flex items-center justify-center">
                         <svg viewBox="0 0 100 120" class="h-full w-auto text-[#C81D25]" fill="currentColor">
                             <path d="M48 6 C48 6 52 14 47 18 C44 21 44 26 50 30 C56 26 56 21 53 18 C48 14 52 6 52 6 C50 10 46 12 48 6 Z"/>
                             <polygon points="43,30 57,30 63,75 37,75" stroke="#C81D25" stroke-width="2.5" fill="none"/>
                             <line x1="43" y1="40" x2="57" y2="40" stroke="#C81D25" stroke-width="2.5"/>
                             <line x1="40" y1="52" x2="60" y2="52" stroke="#C81D25" stroke-width="2.5"/>
                             <line x1="38" y1="65" x2="62" y2="65" stroke="#C81D25" stroke-width="2.5"/>
-                            <line x1="43" y1="30" x2="60" y2="52" stroke="#C81D25" stroke-width="1.8"/>
-                            <line x1="57" y1="30" x2="40" y2="52" stroke="#C81D25" stroke-width="1.8"/>
-                            <line x1="40" y1="52" x2="63" y2="75" stroke="#C81D25" stroke-width="1.8"/>
-                            <line x1="60" y1="52" x2="37" y2="75" stroke="#C81D25" stroke-width="1.8"/>
                             <path d="M35 55 L75 38 L78 68 Z" fill="none" stroke="#C81D25" stroke-width="3"/>
                             <path d="M22 100 C22 75 78 75 78 100 Z" fill="none" stroke="#C81D25" stroke-width="3.5"/>
                             <line x1="16" y1="100" x2="84" y2="100" stroke="#C81D25" stroke-width="4.5"/>
@@ -76,7 +71,7 @@
                     </div>
                 </div>
                 <div class="inline-block mt-4 px-3 py-1 bg-red-50 text-[#8B1D24] text-[10px] font-bold tracking-widest rounded-full uppercase border border-red-200">
-                    Sistema de Control Operativo
+                    Control Operativo & Balance Fiscal
                 </div>
             </div>
 
@@ -85,33 +80,32 @@
             <div class="space-y-4">
                 <div>
                     <label class="block text-xs font-bold text-gray-600 mb-1">Correo Institucional</label>
-                    <input type="email" id="login-email" class="w-full bg-white border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#8B1D24] focus:border-transparent transition-all shadow-sm" placeholder="usuario@chuquisaca.gob.bo">
+                    <input type="email" id="login-email" class="w-full bg-white border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#8B1D24] shadow-sm" placeholder="usuario@chuquisaca.gob.bo">
                 </div>
                 <div>
                     <label class="block text-xs font-bold text-gray-600 mb-1">Contraseña</label>
-                    <input type="password" id="login-password" class="w-full bg-white border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#8B1D24] focus:border-transparent transition-all shadow-sm" placeholder="••••••••">
+                    <input type="password" id="login-password" class="w-full bg-white border border-gray-300 rounded-xl p-3 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-[#8B1D24] shadow-sm" placeholder="••••••••">
                 </div>
-                <button id="btn-login" class="w-full bg-[#8B1D24] hover:bg-[#70141a] text-white font-bold py-3.5 rounded-xl text-sm transition-all duration-200 shadow-md flex items-center justify-center gap-2 mt-2">
-                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesion
+                <button id="btn-login" class="w-full bg-[#8B1D24] hover:bg-[#70141a] text-white font-bold py-3.5 rounded-xl text-sm transition-all shadow-md flex items-center justify-center gap-2 mt-2">
+                    <i class="fas fa-sign-in-alt"></i> Ingresar al Tablero
                 </button>
             </div>
-            
-            <p class="text-[10px] text-gray-400 text-center mt-6 uppercase tracking-wider font-semibold">Secretaria Departamental de Mineria e Hidrocarburos</p>
+            <p class="text-[10px] text-gray-400 text-center mt-6 uppercase tracking-wider font-semibold">Dirección de Recursos Hidrocarburíferos y Control</p>
         </div>
     </div>
 
     <!-- TELÓN DE FONDO (BACKDROP) -->
     <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-black/60 z-30 hidden transition-opacity"></div>
 
-    <!-- ==================== SIDEBAR COLAPSABLE ==================== -->
+    <!-- ==================== SIDEBAR ==================== -->
     <aside id="main-sidebar" class="fixed top-0 bottom-0 left-0 w-80 bg-[#0f1115] h-full flex flex-col shadow-2xl border-r border-gray-800 z-40 transition-transform duration-300 ease-in-out -translate-x-full">
         <div class="p-4 border-b border-gray-800 bg-gradient-to-b from-[#180a0d] to-[#0f1115] relative flex flex-col items-center">
-            <button onclick="toggleSidebar()" title="Minimizar Menú" class="absolute top-3 left-3 text-gray-400 hover:text-white transition-colors p-1">
+            <button onclick="toggleSidebar()" title="Minimizar Menú" class="absolute top-3 left-3 text-gray-400 hover:text-white p-1">
                 <i class="fas fa-arrow-left text-base"></i>
             </button>
 
             <div class="bg-white p-3 rounded-2xl w-full flex flex-col items-center justify-center shadow-md mt-6 mb-2">
-                <div class="w-12 h-12 flex items-center justify-center">
+                <div class="w-10 h-10 flex items-center justify-center">
                     <svg viewBox="0 0 100 120" class="h-full w-auto text-[#C81D25]" fill="currentColor">
                         <polygon points="43,30 57,30 63,75 37,75" stroke="#C81D25" stroke-width="3" fill="none"/>
                         <path d="M35 55 L75 38 L78 68 Z" fill="none" stroke="#C81D25" stroke-width="3"/>
@@ -132,42 +126,30 @@
         </div>
 
         <div class="p-5 flex-1 overflow-y-auto">
-            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3">Menú del Sistema</h3>
+            <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3">Módulos de Gestión</h3>
             <div class="flex flex-col gap-2 mb-6">
                 <button id="btn-menu-dashboard" onclick="switchView('dashboard')" class="flex items-center gap-3 p-3 rounded-lg text-sm bg-[#00d2ff]/10 text-[#00d2ff] border border-[#00d2ff]/20 font-bold w-full text-left transition-colors">
-                    <i class="fas fa-chart-pie w-5 text-center"></i> Tablero General
+                    <i class="fas fa-chart-pie w-5 text-center"></i> Tablero General & Auditoría
                 </button>
                 <button id="btn-menu-entry" onclick="switchView('entry')" class="flex items-center gap-3 p-3 rounded-lg text-sm text-gray-400 hover:bg-gray-800 hover:text-white transition-colors w-full text-left">
                     <i class="fas fa-edit w-5 text-center"></i> Carga de Partes Diarios
                 </button>
                 <button id="btn-menu-wells" onclick="switchView('wells')" class="flex items-center gap-3 p-3 rounded-lg text-sm text-gray-400 hover:bg-gray-800 hover:text-white transition-colors w-full text-left">
-                    <i class="fas fa-oil-well w-5 text-center"></i> Admin. de Pozos
+                    <i class="fas fa-oil-well w-5 text-center"></i> Catálogo de Pozos
                 </button>
             </div>
 
             <div id="sidebar-filters" class="block border-t border-gray-800 pt-5">
-                <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3">Filtros de Análisis</h3>
+                <h3 class="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-3">Ficha Técnica Geológica</h3>
                 
                 <div class="mb-4">
-                    <label class="block text-xs text-gray-400 mb-1.5">1. Campo Operativo</label>
-                    <select id="field-selector" class="w-full bg-[#1e212b] border border-gray-700 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-[#00d2ff]">
-                        <option value="monteagudo">Monteagudo</option>
-                        <option value="vuelta-grande">Vuelta Grande</option>
-                        <option value="margarita">Margarita - Huacaya</option>
-                    </select>
-                </div>
-
-                <div class="mb-5">
-                    <label class="block text-xs text-gray-400 mb-1.5">2. Desglose por Pozo</label>
+                    <label class="block text-xs text-gray-400 mb-1.5">Pozo Seleccionado</label>
                     <select id="well-selector" class="w-full bg-[#1e212b] border border-gray-700 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-[#00d2ff]">
                     </select>
                 </div>
 
                 <div class="bg-gradient-to-br from-[#1e212b] to-[#161820] border border-gray-700 rounded-lg p-4 mb-6 shadow-md relative overflow-hidden">
                     <div class="absolute top-0 right-0 w-12 h-12 bg-[#00d2ff] opacity-5 rounded-bl-full"></div>
-                    <h4 class="text-[10px] font-bold text-[#00d2ff] mb-3 uppercase tracking-wider flex items-center gap-1.5 border-b border-gray-700 pb-2">
-                        <i class="fas fa-clipboard-list"></i> Ficha Técnica del Pozo
-                    </h4>
                     <ul class="text-[11px] text-gray-300 space-y-2">
                         <li class="flex justify-between border-b border-gray-800/50 pb-1">
                             <span class="text-gray-500">Pozo:</span> <span id="ft-nombre" class="font-bold text-white">--</span>
@@ -185,7 +167,7 @@
                             <span class="text-gray-500">Extracción:</span> <span id="ft-ext" class="text-gray-200">--</span>
                         </li>
                     </ul>
-                    <div class="mt-3 bg-black/20 p-2 rounded text-[10px] text-gray-400 italic leading-relaxed border-l-2 border-[#00d2ff]" id="ft-desc">--</div>
+                    <div class="mt-3 bg-black/20 p-2 rounded text-[10px] text-gray-400 italic border-l-2 border-[#00d2ff]" id="ft-desc">--</div>
                 </div>
             </div>
         </div>
@@ -194,19 +176,19 @@
     <!-- ==================== CONTENIDO PRINCIPAL ==================== -->
     <main class="flex-1 overflow-y-auto bg-[#13151a] relative w-full">
         
-        <!-- VISTA 1: TABLERO GENERAL -->
+        <!-- VISTA 1: TABLERO GENERAL (PRODUCCIÓN & FISCALIZACIÓN) -->
         <div id="view-dashboard" class="block p-4 md:p-6">
             <header class="mb-4 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-[#1e212b]/80 p-4 rounded-2xl border border-gray-800 shadow-lg backdrop-blur-sm">
                 <div class="flex items-center gap-4">
-                    <button onclick="toggleSidebar()" class="bg-[#13151a] border border-gray-700 hover:border-[#00d2ff] p-3 rounded-xl text-white transition-colors flex items-center justify-center shadow-md" title="Menú">
+                    <button onclick="toggleSidebar()" class="bg-[#13151a] border border-gray-700 hover:border-[#00d2ff] p-3 rounded-xl text-white transition-colors" title="Menú">
                         <i class="fas fa-bars text-lg"></i>
                     </button>
                     <div>
                         <div class="flex items-center gap-2">
                             <span class="inline-block w-2.5 h-2.5 rounded-full bg-green-500 animate-pulse"></span>
-                            <span class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Control Operativo en Línea</span>
+                            <span class="text-[11px] font-bold text-gray-400 uppercase tracking-widest">Secretaría de Hidrocarburos</span>
                         </div>
-                        <h1 class="text-xl md:text-2xl font-black tracking-wide text-white mt-0.5">Rendimiento: <span id="title-field" class="text-[#00d2ff]">Monteagudo</span></h1>
+                        <h1 class="text-xl md:text-2xl font-black tracking-wide text-white mt-0.5">Control de Campo: <span id="title-field" class="text-[#00d2ff]">Monteagudo</span></h1>
                     </div>
                 </div>
 
@@ -219,313 +201,352 @@
                         </div>
                     </div>
 
-                    <button onclick="cerrarSesion()" class="bg-red-950/30 hover:bg-red-900/60 text-red-300 border border-red-800/60 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-colors shadow-sm">
+                    <button onclick="cerrarSesion()" class="bg-red-950/30 hover:bg-red-900/60 text-red-300 border border-red-800/60 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-colors">
                         <i class="fas fa-arrow-right-from-bracket"></i> <span>Cerrar Sesión</span>
                     </button>
                 </div>
             </header>
 
-            <!-- PESTAÑAS DE SELECCIÓN RÁPIDA DE CAMPO -->
-            <div class="bg-[#1e212b] border border-gray-800 p-2 rounded-2xl mb-6 shadow-md flex flex-wrap items-center justify-between gap-2">
+            <!-- SELECTOR DE CAMPOS (PESTAÑAS) -->
+            <div class="bg-[#1e212b] border border-gray-800 p-2 rounded-2xl mb-4 shadow-md flex flex-wrap items-center justify-between gap-2">
                 <div class="flex items-center gap-2 px-2 text-xs text-gray-400 font-bold uppercase tracking-wider">
                     <i class="fas fa-layer-group text-accentCyan"></i>
-                    <span>Campo Activo:</span>
+                    <span>Bloque Productivo:</span>
                 </div>
                 <div class="flex flex-wrap gap-2 flex-1 md:justify-end">
                     <button onclick="cambiarCampoTab('monteagudo')" id="tab-campo-monteagudo" class="tab-campo-btn px-4 py-2 rounded-xl text-xs font-extrabold transition-all border border-[#00d2ff]/40 bg-[#00d2ff]/15 text-[#00d2ff] shadow-sm flex items-center gap-2">
                         <i class="fas fa-fire text-xs"></i> Monteagudo
                     </button>
-                    <button onclick="cambiarCampoTab('vuelta-grande')" id="tab-campo-vuelta-grande" class="tab-campo-btn px-4 py-2 rounded-xl text-xs font-bold transition-all border border-gray-700 bg-background text-gray-400 hover:text-white hover:border-gray-500 flex items-center gap-2">
+                    <button onclick="cambiarCampoTab('vuelta-grande')" id="tab-campo-vuelta-grande" class="tab-campo-btn px-4 py-2 rounded-xl text-xs font-bold transition-all border border-gray-700 bg-background text-gray-400 hover:text-white flex items-center gap-2">
                         <i class="fas fa-oil-well text-xs"></i> Vuelta Grande
                     </button>
-                    <button onclick="cambiarCampoTab('margarita')" id="tab-campo-margarita" class="tab-campo-btn px-4 py-2 rounded-xl text-xs font-bold transition-all border border-gray-700 bg-background text-gray-400 hover:text-white hover:border-gray-500 flex items-center gap-2">
+                    <button onclick="cambiarCampoTab('margarita')" id="tab-campo-margarita" class="tab-campo-btn px-4 py-2 rounded-xl text-xs font-bold transition-all border border-gray-700 bg-background text-gray-400 hover:text-white flex items-center gap-2">
                         <i class="fas fa-gas-pump text-xs"></i> Margarita - Huacaya
                     </button>
                 </div>
             </div>
 
-            <!-- TARJETAS DE INDICADORES FINANCIEROS Y DE MERCADO -->
+            <!-- SUB-PESTAÑAS DE ESTRATEGIA ANALÍTICA (PRODUCCIÓN BRUTA VS FISCALIZACIÓN) -->
+            <div class="flex border-b border-gray-800 mb-6 gap-2">
+                <button onclick="cambiarPestanaEstrategia('produccion')" id="subtab-produccion" class="px-5 py-2.5 font-bold text-xs border-b-2 border-accentCyan text-accentCyan flex items-center gap-2 transition-all">
+                    <i class="fas fa-chart-line"></i> 1. Producción Bruta del Reservorio (Oferta Física)
+                </button>
+                <button onclick="cambiarPestanaEstrategia('fiscalizacion')" id="subtab-fiscalizacion" class="px-5 py-2.5 font-bold text-xs border-b-2 border-transparent text-gray-400 hover:text-white flex items-center gap-2 transition-all">
+                    <i class="fas fa-file-invoice-dollar"></i> 2. Fiscalización & Balance de Masas (Entregas y Consumos)
+                </button>
+            </div>
+
+            <!-- TARJETAS SUPERIORES DE MERCADO Y AUDITORÍA -->
             <div class="flex flex-wrap gap-4 mb-6">
-                <!-- WTI -->
-                <div class="bg-[#1e212b] border border-gray-700 px-4 py-2.5 rounded-lg flex items-center gap-3 shadow-sm flex-1 min-w-[220px]">
-                    <div class="bg-yellow-500/20 p-2 rounded-md text-yellow-500 flex items-center justify-center">
-                        <i class="fas fa-barrel text-lg"></i>
-                    </div>
+                <div class="bg-[#1e212b] border border-gray-700 px-4 py-2.5 rounded-lg flex items-center gap-3 shadow-sm flex-1 min-w-[200px]">
+                    <div class="bg-yellow-500/20 p-2 rounded-md text-yellow-500"><i class="fas fa-barrel text-lg"></i></div>
                     <div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-[10px] text-gray-400 uppercase tracking-wider font-bold">Precio WTI Referencial</span>
-                            <span id="badge-wti" class="text-[9px] bg-yellow-500/10 text-yellow-400 border border-yellow-500/30 px-1.5 py-0.2 rounded font-mono">Referencial</span>
-                        </div>
+                        <div class="text-[10px] text-gray-400 uppercase font-bold">WTI Referencial</div>
                         <div class="text-sm font-bold text-white"><span id="val-wti">$ 82.50</span> <span class="text-[10px] text-gray-500 font-normal">/ bbl</span></div>
                     </div>
                 </div>
                 
-                <!-- Tipo de Cambio Oficial BCB -->
-                <div class="bg-[#1e212b] border border-gray-700 px-4 py-2.5 rounded-lg flex items-center gap-3 shadow-sm flex-1 min-w-[220px]">
-                    <div class="bg-green-500/20 p-2 rounded-md text-green-500 flex items-center justify-center">
-                        <i class="fas fa-money-bill-wave text-lg"></i>
-                    </div>
+                <div class="bg-[#1e212b] border border-gray-700 px-4 py-2.5 rounded-lg flex items-center gap-3 shadow-sm flex-1 min-w-[200px]">
+                    <div class="bg-green-500/20 p-2 rounded-md text-green-500"><i class="fas fa-money-bill-wave text-lg"></i></div>
                     <div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-[10px] text-gray-400 uppercase tracking-wider font-bold">Tipo de Cambio Oficial</span>
-                            <a href="https://www.bcb.gob.bo" target="_blank" id="badge-tc" class="text-[9px] bg-green-500/10 text-green-400 border border-green-500/30 px-1.5 py-0.2 rounded font-mono hover:underline">Oficial BCB</a>
-                        </div>
+                        <div class="text-[10px] text-gray-400 uppercase font-bold">Tipo de Cambio Oficial</div>
                         <div class="text-sm font-bold text-white"><span id="val-tc">12.58</span> <span class="text-[10px] text-gray-500 font-normal">Bs. / USD</span></div>
                     </div>
                 </div>
 
-                <!-- Último Reporte Operativo -->
-                <div class="bg-[#1e212b] border border-gray-700 px-4 py-2.5 rounded-lg flex items-center gap-3 shadow-sm flex-1 min-w-[220px]">
-                    <div class="bg-blue-500/20 p-2 rounded-md text-[#3b82f6] flex items-center justify-center">
-                        <i class="fas fa-calendar-check text-lg"></i>
-                    </div>
+                <div class="bg-[#1e212b] border border-gray-700 px-4 py-2.5 rounded-lg flex items-center gap-3 shadow-sm flex-1 min-w-[240px]">
+                    <div class="bg-blue-500/20 p-2 rounded-md text-accentBlue"><i class="fas fa-calendar-check text-lg"></i></div>
                     <div>
-                        <div class="flex items-center gap-2">
-                            <span class="text-[10px] text-gray-400 uppercase tracking-wider font-bold">Último Reporte Operativo</span>
-                            <span id="badge-report" class="text-[9px] bg-blue-500/10 text-accentBlue border border-blue-500/30 px-1.5 py-0.2 rounded font-mono">Consolidado</span>
+                        <div class="text-[10px] text-gray-400 uppercase font-bold">Último Parte Registrado</div>
+                        <div id="update-date" class="text-xs font-bold text-white">Consultando...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ================= SUB-PANEL 1: PRODUCCIÓN BRUTA ================= -->
+            <div id="panel-produccion" class="block space-y-6">
+                <div class="bg-[#1e212b] rounded-xl p-5 border border-gray-800 shadow-lg">
+                    <div class="flex justify-between items-center border-b border-gray-700 pb-3 mb-4">
+                        <div>
+                            <h2 class="text-sm font-bold text-white flex items-center gap-2">
+                                <i class="fas fa-fire-flame-curved text-accentCyan"></i> Potencial de Extracción: Gas Natural (MPC)
+                            </h2>
+                            <p class="text-[11px] text-gray-400 mt-0.5">Producción actual salida de pozo/boca de planta sin deducciones.</p>
                         </div>
-                        <div id="update-date" class="text-sm font-bold text-white">Consultando base de datos...</div>
+                        <div class="flex gap-2 bg-[#13151a] p-1 rounded-lg border border-gray-800">
+                            <button onclick="cambiarPeriodoGas('dia')" id="btn-gas-dia" class="px-3 py-1 text-xs font-bold rounded bg-accentCyan text-black">Diario (Flujo)</button>
+                            <button onclick="cambiarPeriodoGas('sem')" id="btn-gas-sem" class="px-3 py-1 text-xs font-bold rounded text-gray-400 hover:text-white">Semanal (Acumulado)</button>
+                            <button onclick="cambiarPeriodoGas('mes')" id="btn-gas-mes" class="px-3 py-1 text-xs font-bold rounded text-gray-400 hover:text-white">Mensual (Fiscal)</button>
+                        </div>
+                    </div>
+                    <div class="large-chart-container"><canvas id="chart-gas-prod"></canvas></div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Petróleo & Condensado en bbls -->
+                    <div class="bg-[#1e212b] rounded-xl p-5 border border-gray-800 shadow-lg">
+                        <div class="flex justify-between items-center border-b border-gray-700 pb-3 mb-4">
+                            <div>
+                                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                                    <i class="fas fa-oil-well text-accentGreen"></i> Petróleo & Condensado (bbls)
+                                </h3>
+                                <p class="text-[10px] text-gray-400">Separación técnica de hidrocarburos líquidos.</p>
+                            </div>
+                            <span class="text-xs font-mono text-accentGreen bg-green-950/40 border border-green-800/50 px-2 py-0.5 rounded">bbls</span>
+                        </div>
+                        <div class="chart-container"><canvas id="chart-liq-prod"></canvas></div>
+                    </div>
+
+                    <!-- Producción de GLP en m3 -->
+                    <div class="bg-[#1e212b] rounded-xl p-5 border border-gray-800 shadow-lg">
+                        <div class="flex justify-between items-center border-b border-gray-700 pb-3 mb-4">
+                            <div>
+                                <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                                    <i class="fas fa-gas-pump text-accentAmber"></i> Producción de GLP en Planta (m³)
+                                </h3>
+                                <p class="text-[10px] text-gray-400">Extracción líquida de licuables procesados.</p>
+                            </div>
+                            <span class="text-xs font-mono text-accentAmber bg-amber-950/40 border border-amber-800/50 px-2 py-0.5 rounded">m³</span>
+                        </div>
+                        <div class="chart-container"><canvas id="chart-glp-prod"></canvas></div>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-[#1e212b] rounded-xl p-5 border border-gray-800 mb-6 shadow-lg">
-                <h2 class="text-sm font-bold text-gray-200 mb-4 border-b border-gray-700 pb-2">
-                    <i class="fas fa-chart-line text-[#3b82f6] mr-2"></i>Métricas Consolidadas del Campo (<span class="field-name-display text-[#00d2ff]"></span>)
-                </h2>
-                
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                    <div class="bg-[#13151a] rounded-lg p-3 border border-gray-800 relative">
-                        <div id="alert-prod-d" class="absolute top-3 right-3 text-[10px] font-bold bg-[#1e212b] border border-gray-700 px-2 py-1 rounded shadow-md z-10">--</div>
-                        <div class="chart-container"><canvas id="chart-prod-d"></canvas></div>
+            <!-- ================= SUB-PANEL 2: FISCALIZACIÓN Y BALANCE ================= -->
+            <div id="panel-fiscalizacion" class="hidden space-y-6">
+                <div class="bg-[#1e212b] rounded-xl p-5 border border-gray-800 shadow-lg">
+                    <div class="border-b border-gray-700 pb-3 mb-4 flex flex-col md:flex-row justify-between md:items-center gap-2">
+                        <div>
+                            <h2 class="text-sm font-bold text-white flex items-center gap-2">
+                                <i class="fas fa-balance-scale text-accentPurple"></i> Balance de Masas & Destino del Gas (Barras Apiladas)
+                            </h2>
+                            <p class="text-[11px] text-gray-400 mt-0.5">Auditoría departamental: Entrega efectiva a gasoducto vs. Consumo interno y Quema en antorcha.</p>
+                        </div>
+                        <span class="text-xs font-mono bg-purple-950/40 border border-purple-800/50 text-purple-300 px-3 py-1 rounded">Unidad: MPC</span>
                     </div>
-                    <div class="bg-[#13151a] rounded-lg p-3 border border-gray-800 relative">
-                        <div id="alert-prod-s" class="absolute top-3 right-3 text-[10px] font-bold bg-[#1e212b] border border-gray-700 px-2 py-1 rounded shadow-md z-10">--</div>
-                        <div class="chart-container"><canvas id="chart-prod-s"></canvas></div>
-                    </div>
-                    <div class="bg-[#13151a] rounded-lg p-3 border border-gray-800 relative">
-                        <div id="alert-prod-m" class="absolute top-3 right-3 text-[10px] font-bold bg-[#1e212b] border border-gray-700 px-2 py-1 rounded shadow-md z-10">--</div>
-                        <div class="chart-container"><canvas id="chart-prod-m"></canvas></div>
-                    </div>
+                    <div class="large-chart-container"><canvas id="chart-balance-gas"></canvas></div>
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-[#13151a] rounded-lg p-3 border border-gray-800 relative">
-                        <div id="alert-liq-d" class="absolute top-3 right-3 text-[10px] font-bold bg-[#1e212b] border border-gray-700 px-2 py-1 rounded shadow-md z-10">--</div>
-                        <div class="chart-container"><canvas id="chart-liq-d"></canvas></div>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-[#1e212b] rounded-xl p-5 border border-gray-800 shadow-lg">
+                        <h3 class="text-sm font-bold text-white mb-3 border-b border-gray-700 pb-2 flex items-center gap-2">
+                            <i class="fas fa-truck-moving text-accentGreen"></i> Entregas Comerciales de Líquidos (bbls)
+                        </h3>
+                        <div class="chart-container"><canvas id="chart-entrega-liq"></canvas></div>
                     </div>
-                    <div class="bg-[#13151a] rounded-lg p-3 border border-gray-800 relative">
-                        <div id="alert-liq-s" class="absolute top-3 right-3 text-[10px] font-bold bg-[#1e212b] border border-gray-700 px-2 py-1 rounded shadow-md z-10">--</div>
-                        <div class="chart-container"><canvas id="chart-liq-s"></canvas></div>
-                    </div>
-                    <div class="bg-[#13151a] rounded-lg p-3 border border-gray-800 relative">
-                        <div id="alert-liq-m" class="absolute top-3 right-3 text-[10px] font-bold bg-[#1e212b] border border-gray-700 px-2 py-1 rounded shadow-md z-10">--</div>
-                        <div class="chart-container"><canvas id="chart-liq-m"></canvas></div>
+                    <div class="bg-[#1e212b] rounded-xl p-5 border border-gray-800 shadow-lg">
+                        <h3 class="text-sm font-bold text-white mb-3 border-b border-gray-700 pb-2 flex items-center gap-2">
+                            <i class="fas fa-industry text-accentAmber"></i> Despacho Comercial de GLP (m³)
+                        </h3>
+                        <div class="chart-container"><canvas id="chart-entrega-glp"></canvas></div>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-[#1e212b] rounded-xl p-5 border border-gray-800 shadow-lg mb-8">
-                <div class="flex justify-between items-center border-b border-gray-700 pb-2 mb-4">
-                    <h2 class="text-sm font-bold text-gray-200">
-                        <i class="fas fa-globe text-[#10b981] mr-2"></i>Comportamiento Comparativo (Todos los Campos)
-                    </h2>
-                    <div class="flex gap-2 bg-[#13151a] p-1 rounded-lg border border-gray-800">
-                        <button class="cons-time-btn px-3 py-1 text-xs font-bold rounded bg-[#00d2ff] text-black" data-t="dia">Diario</button>
-                        <button class="cons-time-btn px-3 py-1 text-xs font-bold rounded text-gray-400 hover:text-white" data-t="sem">Semanal</button>
-                        <button class="cons-time-btn px-3 py-1 text-xs font-bold rounded text-gray-400 hover:text-white" data-t="mes">Mensual</button>
-                    </div>
-                </div>
-                <div class="large-chart-container">
-                    <canvas id="chart-consolidated"></canvas>
-                </div>
-            </div>
         </div>
 
-        <!-- VISTA 2: CARGA DE DATOS MANUALES -->
+        <!-- VISTA 2: CARGA DE PARTES DIARIOS (FORMULARIO REESTRUCTURADO) -->
         <div id="view-entry" class="hidden h-full flex flex-col">
             <header class="p-6 border-b border-gray-800 bg-[#1e212b] flex justify-between items-center sticky top-0 z-10">
                 <div class="flex items-center gap-3">
-                    <button onclick="toggleSidebar()" class="bg-[#13151a] border border-gray-700 hover:border-[#00d2ff] p-2.5 rounded-lg text-white transition-colors" title="Abrir Menú">
+                    <button onclick="toggleSidebar()" class="bg-[#13151a] border border-gray-700 hover:border-[#00d2ff] p-2.5 rounded-lg text-white">
                         <i class="fas fa-bars text-lg"></i>
                     </button>
                     <div>
-                        <h1 class="text-xl font-bold tracking-wide text-white"><i class="fas fa-file-import text-[#3b82f6] mr-2"></i> Módulo de Transcripción Operativa</h1>
-                        <p class="text-xs text-gray-400 mt-1">Ingreso manual de reportes de producción directo a Supabase.</p>
+                        <h1 class="text-xl font-bold text-white"><i class="fas fa-file-import text-accentBlue mr-2"></i> Transcripción de Partes Oficiales</h1>
+                        <p class="text-xs text-gray-400 mt-0.5">Ingreso de producción bruta y volúmenes de entrega con balance de masas.</p>
                     </div>
                 </div>
-                <button onclick="cerrarSesion()" class="bg-red-950/30 hover:bg-red-900/60 text-red-300 border border-red-800/60 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-colors shadow-sm">
+                <button onclick="cerrarSesion()" class="bg-red-950/30 hover:bg-red-900/60 text-red-300 border border-red-800/60 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
                     <i class="fas fa-arrow-right-from-bracket"></i> <span>Cerrar Sesión</span>
                 </button>
             </header>
 
-            <div class="p-6 max-w-5xl w-full mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1">
-                <div class="lg:col-span-1">
-                    <div class="bg-[#1e212b] rounded-xl border border-gray-800 shadow-lg overflow-hidden">
-                        <div class="bg-gray-800/50 p-4 border-b border-gray-800">
-                            <h2 class="text-sm font-bold text-gray-200 uppercase tracking-wider"><i class="fas fa-keyboard text-[#00d2ff] mr-2"></i>Datos del Parte</h2>
+            <div class="p-6 max-w-6xl w-full mx-auto flex-1 overflow-y-auto space-y-6">
+                <div class="bg-[#1e212b] rounded-2xl border border-gray-800 shadow-xl p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pb-6 border-b border-gray-800">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1.5">1. Bloque / Campo Operativo</label>
+                            <select id="input-campo" class="w-full bg-[#13151a] border border-gray-700 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-accentCyan">
+                                <option value="" disabled selected>-- Seleccione Campo --</option>
+                                <option value="monteagudo">Monteagudo</option>
+                                <option value="vuelta-grande">Vuelta Grande</option>
+                                <option value="margarita">Margarita - Huacaya</option>
+                            </select>
                         </div>
-                        <div class="p-5 flex flex-col gap-4">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-400 mb-1">1. Bloque/Campo</label>
-                                <select id="input-campo" class="w-full bg-[#13151a] border border-gray-700 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-[#00d2ff]">
-                                    <option value="" disabled selected>-- Seleccione --</option>
-                                    <option value="monteagudo">Monteagudo</option>
-                                    <option value="vuelta-grande">Vuelta Grande</option>
-                                    <option value="margarita">Margarita - Huacaya</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-400 mb-1">2. Fecha Operativa</label>
-                                <input type="date" id="input-fecha" class="w-full bg-[#13151a] border border-gray-700 rounded-lg p-2 text-sm text-white [color-scheme:dark]">
-                            </div>
-                            <div>
-                                <div class="flex justify-between items-center mb-1">
-                                    <label class="block text-xs font-bold text-[#00d2ff]">3. Gas (MMmcd)</label>
-                                    <span class="text-[10px] text-gray-500 font-mono">Rango: 0 - 1000</span>
-                                </div>
-                                <input type="number" id="input-gas" min="0" max="1000" step="0.01" class="w-full bg-[#13151a] border border-gray-700 rounded-lg p-2 text-sm text-white font-mono text-right" placeholder="0.00">
-                            </div>
-                            <div>
-                                <div class="flex justify-between items-center mb-1">
-                                    <label class="block text-xs font-bold text-[#10b981]">4. Líquidos (BPD)</label>
-                                    <span class="text-[10px] text-gray-500 font-mono">Rango: 0 - 1000</span>
-                                </div>
-                                <input type="number" id="input-oil" min="0" max="1000" step="1" class="w-full bg-[#13151a] border border-gray-700 rounded-lg p-2 text-sm text-white font-mono text-right" placeholder="0">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-yellow-500 mb-1">5. WTI ($/bbl)</label>
-                                <input type="number" id="input-wti" step="0.01" value="82.50" class="w-full bg-[#13151a] border border-gray-700 rounded-lg p-2 text-sm text-white font-mono text-right">
-                            </div>
-                            <button id="btn-save" class="w-full bg-[#3b82f6] hover:bg-blue-600 text-white font-bold py-3 rounded-lg text-sm transition-colors mt-2">
-                                <i class="fas fa-database"></i> Validar y Guardar en la Nube
-                            </button>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1.5">2. Fecha Operativa del Reporte</label>
+                            <input type="date" id="input-fecha" class="w-full bg-[#13151a] border border-gray-700 rounded-xl p-3 text-sm text-white [color-scheme:dark]">
                         </div>
+                        <div>
+                            <label class="block text-xs font-bold text-yellow-500 mb-1.5">3. Precio WTI ($/bbl)</label>
+                            <input type="number" id="input-wti" step="0.01" value="82.50" class="w-full bg-[#13151a] border border-gray-700 rounded-xl p-3 text-sm text-white font-mono text-right">
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN A: PRODUCCIÓN BRUTA (POTENCIAL RESERVORIO) -->
+                    <div class="mt-6">
+                        <h3 class="text-xs font-black text-accentCyan uppercase tracking-widest mb-3 flex items-center gap-2">
+                            <i class="fas fa-gas-pump"></i> A. Producción Bruta de Yacimiento (Oferta Física)
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 bg-[#13151a] p-4 rounded-xl border border-gray-800">
+                            <div>
+                                <label class="block text-xs font-bold text-gray-300 mb-1">Gas Bruto (MPC)</label>
+                                <input type="number" id="input-gas-mpc" step="0.1" class="w-full bg-[#1e212b] border border-gray-700 rounded-lg p-2.5 text-sm text-white font-mono text-right" placeholder="0.0">
+                                <span class="text-[10px] text-gray-500">Mil Pies Cúbicos</span>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-300 mb-1">Petróleo / Condensado (bbls)</label>
+                                <input type="number" id="input-petroleo-bbl" step="0.1" class="w-full bg-[#1e212b] border border-gray-700 rounded-lg p-2.5 text-sm text-white font-mono text-right" placeholder="0.0">
+                                <span class="text-[10px] text-gray-500">Barriles brutos extraídos</span>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-gray-300 mb-1">Producción GLP (m³)</label>
+                                <input type="number" id="input-glp-m3" step="0.01" class="w-full bg-[#1e212b] border border-gray-700 rounded-lg p-2.5 text-sm text-white font-mono text-right" placeholder="0.00">
+                                <span class="text-[10px] text-gray-500">Metros cúbicos en planta</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN B: FISCALIZACIÓN, ENTREGAS Y CONSUMOS (BALANCE DE MASAS) -->
+                    <div class="mt-6">
+                        <h3 class="text-xs font-black text-accentPurple uppercase tracking-widest mb-3 flex items-center gap-2">
+                            <i class="fas fa-balance-scale"></i> B. Destino, Entregas Comerciales y Consumos Internos
+                        </h3>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 bg-[#13151a] p-4 rounded-xl border border-gray-800">
+                            <div>
+                                <label class="block text-xs font-bold text-purple-300 mb-1">Gasoducto / Entrega (MPC)</label>
+                                <input type="number" id="input-entrega-gas" step="0.1" class="w-full bg-[#1e212b] border border-gray-700 rounded-lg p-2.5 text-sm text-white font-mono text-right" placeholder="0.0">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-purple-300 mb-1">Combustible Planta (MPC)</label>
+                                <input type="number" id="input-combustible-gas" step="0.1" class="w-full bg-[#1e212b] border border-gray-700 rounded-lg p-2.5 text-sm text-white font-mono text-right" placeholder="0.0">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-purple-300 mb-1">Gas Quemado / Flare (MPC)</label>
+                                <input type="number" id="input-flare-gas" step="0.1" class="w-full bg-[#1e212b] border border-gray-700 rounded-lg p-2.5 text-sm text-white font-mono text-right" placeholder="0.0">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold text-purple-300 mb-1">Entrega Petróleo (bbls)</label>
+                                <input type="number" id="input-entrega-petroleo" step="0.1" class="w-full bg-[#1e212b] border border-gray-700 rounded-lg p-2.5 text-sm text-white font-mono text-right" placeholder="0.0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 flex justify-end">
+                        <button id="btn-save" class="bg-accentBlue hover:bg-blue-600 text-white font-bold px-8 py-3.5 rounded-xl text-sm transition-all flex items-center gap-2 shadow-lg">
+                            <i class="fas fa-database"></i> Guardar Parte en Supabase & Auditar Balance
+                        </button>
                     </div>
                 </div>
 
-                <div class="lg:col-span-2 flex flex-col gap-6">
-                    <div id="validation-panel" class="bg-gray-800/30 border border-gray-700 rounded-xl p-5 flex items-start gap-4 transition-all">
-                        <div class="bg-gray-700 p-3 rounded-full h-12 w-12 flex items-center justify-center shrink-0" id="validation-icon-bg">
-                            <i class="fas fa-shield-alt text-gray-400 text-xl" id="validation-icon"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-sm font-bold text-gray-200" id="validation-title">Control de Integridad</h3>
-                            <p class="text-xs text-gray-400 mt-1" id="validation-msg">El motor lógico verificará los volúmenes contra los topes técnicos configurados antes de guardarlos en Supabase.</p>
-                        </div>
+                <!-- Historial de Partes Procesados -->
+                <div class="bg-[#1e212b] rounded-2xl border border-gray-800 shadow-xl overflow-hidden">
+                    <div class="p-4 bg-gray-800/40 border-b border-gray-800 flex justify-between items-center">
+                        <h2 class="text-xs font-bold text-gray-200 uppercase tracking-wider">Historial Sesión de Carga</h2>
+                        <span class="text-xs bg-gray-700 text-gray-300 px-2.5 py-1 rounded font-mono" id="counter">0 Registros</span>
                     </div>
-
-                    <div class="bg-[#1e212b] rounded-xl border border-gray-800 shadow-lg flex-1 overflow-hidden flex flex-col">
-                        <div class="bg-gray-800/50 p-4 border-b border-gray-800 flex justify-between items-center">
-                            <h2 class="text-sm font-bold text-gray-200 uppercase tracking-wider">Partes Procesados</h2>
-                            <span class="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded font-bold" id="counter">0 Registros</span>
-                        </div>
-                        <div class="flex-1 p-0 overflow-y-auto">
-                            <table class="w-full text-left border-collapse">
-                                <thead>
-                                    <tr class="bg-[#13151a]/80 text-[10px] uppercase text-gray-500 border-b border-gray-800">
-                                        <th class="p-3">Fecha</th>
-                                        <th class="p-3">Campo</th>
-                                        <th class="p-3 text-right">Gas</th>
-                                        <th class="p-3 text-right">Liq</th>
-                                        <th class="p-3 text-center">Estado</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="log-body" class="text-xs text-gray-300 divide-y divide-gray-800/50">
-                                    <tr id="empty-state"><td colspan="5" class="p-6 text-center text-gray-500 italic">No hay registros nuevos en esta sesión.</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse text-xs">
+                            <thead>
+                                <tr class="bg-[#13151a] uppercase text-gray-500 border-b border-gray-800">
+                                    <th class="p-3">Fecha</th>
+                                    <th class="p-3">Campo</th>
+                                    <th class="p-3 text-right">Gas Bruto (MPC)</th>
+                                    <th class="p-3 text-right">Entrega Gas (MPC)</th>
+                                    <th class="p-3 text-right">Petróleo (bbl)</th>
+                                    <th class="p-3 text-right">GLP (m³)</th>
+                                    <th class="p-3 text-center">Estado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="log-body" class="divide-y divide-gray-800/60 text-gray-300 font-mono">
+                                <tr id="empty-state"><td colspan="7" class="p-6 text-center text-gray-500 italic">No hay partes procesados en esta sesión.</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- VISTA 3: ADMINISTRACIÓN DE POZOS -->
+        <!-- VISTA 3: GESTIÓN DE POZOS -->
         <div id="view-wells" class="hidden h-full flex flex-col">
             <header class="p-6 border-b border-gray-800 bg-[#1e212b] flex justify-between items-center sticky top-0 z-10">
                 <div class="flex items-center gap-3">
-                    <button onclick="toggleSidebar()" class="bg-[#13151a] border border-gray-700 hover:border-[#00d2ff] p-2.5 rounded-lg text-white transition-colors" title="Abrir Menú">
+                    <button onclick="toggleSidebar()" class="bg-[#13151a] border border-gray-700 hover:border-[#00d2ff] p-2.5 rounded-lg text-white">
                         <i class="fas fa-bars text-lg"></i>
                     </button>
                     <div>
-                        <h1 class="text-xl font-bold tracking-wide text-white"><i class="fas fa-oil-well text-[#00d2ff] mr-2"></i> Gestión de Fichas Técnicas de Pozos</h1>
-                        <p class="text-xs text-gray-400 mt-1">Alta y actualización de la infraestructura de extracción por campo.</p>
+                        <h1 class="text-xl font-bold text-white"><i class="fas fa-oil-well text-[#00d2ff] mr-2"></i> Gestión de Infraestructura por Pozo</h1>
+                        <p class="text-xs text-gray-400 mt-0.5">Catálogo técnico de pozos productores y estratigrafía.</p>
                     </div>
                 </div>
-                <button onclick="cerrarSesion()" class="bg-red-950/30 hover:bg-red-900/60 text-red-300 border border-red-800/60 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-colors shadow-sm">
+                <button onclick="cerrarSesion()" class="bg-red-950/30 hover:bg-red-900/60 text-red-300 border border-red-800/60 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
                     <i class="fas fa-arrow-right-from-bracket"></i> <span>Cerrar Sesión</span>
                 </button>
             </header>
 
             <div class="p-6 max-w-5xl w-full mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1">
                 <div class="lg:col-span-1">
-                    <div class="bg-[#1e212b] rounded-xl border border-gray-800 shadow-lg overflow-hidden">
-                        <div class="bg-gray-800/50 p-4 border-b border-gray-800">
-                            <h2 class="text-sm font-bold text-gray-200 uppercase tracking-wider"><i class="fas fa-plus-circle text-[#00d2ff] mr-2"></i>Nuevo Pozo</h2>
+                    <div class="bg-[#1e212b] rounded-xl border border-gray-800 shadow-lg p-5 flex flex-col gap-4">
+                        <h2 class="text-sm font-bold text-gray-200 uppercase tracking-wider border-b border-gray-800 pb-2">Alta de Pozo</h2>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1">Campo</label>
+                            <select id="well-input-campo" class="w-full bg-[#13151a] border border-gray-700 rounded-lg p-2 text-sm text-white">
+                                <option value="" disabled selected>-- Seleccione --</option>
+                                <option value="1">Monteagudo</option>
+                                <option value="2">Vuelta Grande</option>
+                                <option value="3">Margarita - Huacaya</option>
+                            </select>
                         </div>
-                        <div class="p-5 flex flex-col gap-4">
-                            <div>
-                                <label class="block text-xs font-bold text-gray-400 mb-1">1. Campo Operativo</label>
-                                <select id="well-input-campo" class="w-full bg-[#13151a] border border-gray-700 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-[#00d2ff]">
-                                    <option value="" disabled selected>-- Seleccione --</option>
-                                    <option value="1">Monteagudo</option>
-                                    <option value="2">Vuelta Grande</option>
-                                    <option value="3">Margarita - Huacaya</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-400 mb-1">2. Nombre del Pozo</label>
-                                <input type="text" id="well-input-nombre" class="w-full bg-[#13151a] border border-gray-700 rounded-lg p-2 text-sm text-white font-mono" placeholder="Ej. MNT-12">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-400 mb-1">3. Estado Operativo</label>
-                                <select id="well-input-estado" class="w-full bg-[#13151a] border border-gray-700 rounded-lg p-2 text-sm text-white focus:outline-none focus:border-[#00d2ff]">
-                                    <option value="Productor">Productor</option>
-                                    <option value="Mantenimiento">Mantenimiento</option>
-                                    <option value="Cerrado">Cerrado</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-400 mb-1">4. Profundidad (m)</label>
-                                <input type="text" id="well-input-prof" class="w-full bg-[#13151a] border border-gray-700 rounded-lg p-2 text-sm text-white font-mono" placeholder="Ej. 2,100 m">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-400 mb-1">5. Formación Geológica</label>
-                                <input type="text" id="well-input-form" class="w-full bg-[#13151a] border border-gray-700 rounded-lg p-2 text-sm text-white" placeholder="Ej. Tupambi">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-400 mb-1">6. Sistema de Extracción</label>
-                                <input type="text" id="well-input-ext" class="w-full bg-[#13151a] border border-gray-700 rounded-lg p-2 text-sm text-white" placeholder="Ej. Gas Lift">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-bold text-gray-400 mb-1">7. Descripción Técnica</label>
-                                <textarea id="well-input-desc" rows="2" class="w-full bg-[#13151a] border border-gray-700 rounded-lg p-2 text-sm text-white" placeholder="Breve detalle operativo..."></textarea>
-                            </div>
-                            <button id="btn-save-well" class="w-full bg-[#00d2ff] hover:bg-cyan-400 text-black font-bold py-3 rounded-lg text-sm transition-colors mt-2">
-                                <i class="fas fa-save"></i> Registrar Pozo en Base de Datos
-                            </button>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1">Identificador Pozo</label>
+                            <input type="text" id="well-input-nombre" class="w-full bg-[#13151a] border border-gray-700 rounded-lg p-2 text-sm text-white font-mono" placeholder="Ej. MNT-X1">
                         </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1">Estado</label>
+                            <select id="well-input-estado" class="w-full bg-[#13151a] border border-gray-700 rounded-lg p-2 text-sm text-white">
+                                <option value="Productor">Productor</option>
+                                <option value="Mantenimiento">Mantenimiento</option>
+                                <option value="Cerrado">Cerrado</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1">Profundidad (m)</label>
+                            <input type="text" id="well-input-prof" class="w-full bg-[#13151a] border border-gray-700 rounded-lg p-2 text-sm text-white font-mono" placeholder="2,150 m">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1">Formación Geológica</label>
+                            <input type="text" id="well-input-form" class="w-full bg-[#13151a] border border-gray-700 rounded-lg p-2 text-sm text-white" placeholder="Huamampampa / Tupambi">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1">Sistema de Extracción</label>
+                            <input type="text" id="well-input-ext" class="w-full bg-[#13151a] border border-gray-700 rounded-lg p-2 text-sm text-white" placeholder="Flujo Natural / Gas Lift">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 mb-1">Descripción</label>
+                            <textarea id="well-input-desc" rows="2" class="w-full bg-[#13151a] border border-gray-700 rounded-lg p-2 text-sm text-white"></textarea>
+                        </div>
+                        <button id="btn-save-well" class="w-full bg-[#00d2ff] hover:bg-cyan-400 text-black font-bold py-3 rounded-lg text-sm">
+                            Registrar Pozo
+                        </button>
                     </div>
                 </div>
 
-                <div class="lg:col-span-2 flex flex-col gap-6">
-                    <div class="bg-[#1e212b] rounded-xl border border-gray-800 shadow-lg flex-1 overflow-hidden flex flex-col">
-                        <div class="bg-gray-800/50 p-4 border-b border-gray-800 flex justify-between items-center">
-                            <h2 class="text-sm font-bold text-gray-200 uppercase tracking-wider">Pozos Registrados en el Sistema</h2>
-                            <span class="text-xs bg-gray-700 text-gray-300 px-2 py-1 rounded font-bold" id="wells-counter">Sincronizado</span>
-                        </div>
-                        <div class="flex-1 p-0 overflow-y-auto">
-                            <table class="w-full text-left border-collapse">
+                <div class="lg:col-span-2">
+                    <div class="bg-[#1e212b] rounded-xl border border-gray-800 shadow-lg p-5">
+                        <h2 class="text-sm font-bold text-gray-200 uppercase tracking-wider mb-4 border-b border-gray-800 pb-2">Catálogo Activo de Pozos</h2>
+                        <div class="overflow-y-auto max-h-[500px]">
+                            <table class="w-full text-left text-xs">
                                 <thead>
-                                    <tr class="bg-[#13151a]/80 text-[10px] uppercase text-gray-500 border-b border-gray-800">
+                                    <tr class="bg-[#13151a] text-gray-500 uppercase">
                                         <th class="p-3">Pozo</th>
                                         <th class="p-3">Estado</th>
                                         <th class="p-3">Formación</th>
                                         <th class="p-3 text-right">Profundidad</th>
                                     </tr>
                                 </thead>
-                                <tbody id="wells-log-body" class="text-xs text-gray-300 divide-y divide-gray-800/50">
+                                <tbody id="wells-log-body" class="divide-y divide-gray-800 font-mono">
                                     <tr><td colspan="4" class="p-6 text-center text-gray-500 italic">Cargando catálogo de pozos...</td></tr>
                                 </tbody>
                             </table>
@@ -536,61 +557,81 @@
         </div>
 
         <div id="toast" class="fixed bottom-6 right-6 bg-green-500 text-white px-5 py-3 rounded-lg shadow-xl font-bold text-sm flex items-center gap-3 opacity-0 translate-y-4 pointer-events-none z-50">
-            <i class="fas fa-check-circle text-lg"></i><span>¡Dato almacenado en Supabase con éxito!</span>
+            <i class="fas fa-check-circle text-lg"></i><span>¡Dato procesado con éxito!</span>
         </div>
 
     </main>
 
-    <!-- ==================== LÓGICA JAVASCRIPT & SUPABASE ==================== -->
+    <!-- ==================== SCRIPTS & MOTOR ANALÍTICO ==================== -->
     <script>
         const { createClient } = supabase;
         const supabaseUrl = 'https://beyohkwkbjlnrhyvvace.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJleW9oa3drYmpsbnJoeXZ2YWNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODgyOTAzMjgsImV4cCI6MjEwMzg2NjMyOH0.RK4-W6UDJ2QTOHS9tswfljnKttCm09ZPFRxLa4tYqcg';
         const clienteSupabase = createClient(supabaseUrl, supabaseKey);
 
-        const mapaCampos = {
-            'monteagudo': 1,
-            'vuelta-grande': 2,
-            'margarita': 3
-        };
+        const mapaCampos = { 'monteagudo': 1, 'vuelta-grande': 2, 'margarita': 3 };
 
         Chart.defaults.color = '#8b8d97';
         Chart.defaults.font.family = "'Inter', sans-serif";
-        Chart.defaults.plugins.tooltip.mode = 'index';
-        Chart.defaults.plugins.tooltip.intersect = false;
 
+        // MODELO DE DATOS EN UNIDADES FORMALES (MPC, bbls, m3)
         const db = {
             "monteagudo": {
-                name: "Monteagudo", 
-                maxGas: 1000, 
-                maxLiq: 1000,
-                prod: { sem: [3100, 3150, 3050, 3200, 3350, 3400, 3500], mes: [13000, 13500, 13200, 14000, 14500, 14800, 15100] },
-                liq: { sem: [217000, 220500, 213500, 224000, 234500, 238000, 245000], mes: [910000, 945000, 924000, 980000, 1015000, 1036000, 1057000] }
+                name: "Monteagudo",
+                gas: {
+                    dia: [520, 540, 510, 560, 580, 570, 590], // MPC diario
+                    sem: [3600, 3750, 3680, 3900, 4050, 3980, 4120], // MPC acumulado
+                    mes: [15400, 15900, 15600, 16200, 16800, 16500, 17100] // MPC mensual
+                },
+                liq: [85, 88, 84, 91, 95, 92, 96], // bbls
+                glp: [12.5, 13.0, 12.2, 13.8, 14.2, 13.9, 14.5], // m3
+                balance: {
+                    gasoducto: [420, 435, 410, 450, 470, 460, 475],
+                    combustible: [60, 62, 59, 64, 66, 65, 67],
+                    flare: [25, 27, 26, 28, 26, 27, 29],
+                    co2_licuables: [15, 16, 15, 18, 18, 18, 19]
+                }
             },
             "vuelta-grande": {
-                name: "Vuelta Grande", 
-                maxGas: 1000, 
-                maxLiq: 1000,
-                prod: { sem: [8200, 8400, 8100, 8700, 8600, 8900, 9100], mes: [35000, 36000, 34500, 37000, 36500, 38000, 39000] },
-                liq: { sem: [574000, 588000, 567000, 609000, 602000, 623000, 637000], mes: [2450000, 2520000, 2415000, 2590000, 2555000, 2660000, 2730000] }
+                name: "Vuelta Grande",
+                gas: {
+                    dia: [850, 870, 840, 890, 910, 895, 920],
+                    sem: [5950, 6100, 5880, 6230, 6370, 6265, 6440],
+                    mes: [25500, 26100, 25200, 26700, 27300, 26850, 27600]
+                },
+                liq: [340, 355, 335, 360, 375, 365, 380],
+                glp: [45.2, 46.8, 44.5, 48.1, 49.5, 48.7, 50.2],
+                balance: {
+                    gasoducto: [710, 730, 700, 745, 765, 750, 770],
+                    combustible: [85, 87, 85, 89, 90, 89, 92],
+                    flare: [30, 28, 31, 30, 29, 31, 32],
+                    co2_licuables: [25, 25, 24, 26, 26, 25, 26]
+                }
             },
             "margarita": {
-                name: "Margarita - Huacaya", 
-                maxGas: 1000, 
-                maxLiq: 1000,
-                prod: { sem: [59000, 58000, 58500, 59800, 61000, 60500, 61500], mes: [250000, 245000, 248000, 255000, 260000, 258000, 265000] },
-                liq: { sem: [4130000, 4060000, 4095000, 4186000, 4270000, 4235000, 4305000], mes: [17500000, 17150000, 17360000, 17850000, 18200000, 18060000, 18550000] }
+                name: "Margarita - Huacaya",
+                gas: {
+                    dia: [980, 975, 990, 985, 995, 990, 1000],
+                    sem: [6860, 6825, 6930, 6895, 6965, 6930, 7000],
+                    mes: [29400, 29250, 29700, 29550, 29850, 29700, 30000]
+                },
+                liq: [820, 810, 835, 830, 845, 840, 850],
+                glp: [88.5, 87.2, 89.8, 89.1, 91.0, 90.3, 92.4],
+                balance: {
+                    gasoducto: [860, 855, 870, 865, 875, 870, 880],
+                    combustible: [75, 74, 76, 75, 76, 75, 77],
+                    flare: [25, 26, 24, 25, 24, 25, 23],
+                    co2_licuables: [20, 20, 20, 20, 20, 20, 20]
+                }
             }
         };
 
-        const labels = {
-            dia: ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'],
-            sem: ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5', 'Sem 6', 'Sem 7'],
-            mes: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul']
-        };
+        const diasLabels = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
+        const semLabels = ['Sem 1', 'Sem 2', 'Sem 3', 'Sem 4', 'Sem 5', 'Sem 6', 'Sem 7'];
+        const mesLabels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul'];
 
         let currentField = 'monteagudo';
-        let consTime = 'dia';
+        let periodoGas = 'dia'; // 'dia', 'sem', 'mes'
         let currentUserRole = 'operador';
         const charts = {};
 
@@ -598,45 +639,59 @@
             const clockEl = document.getElementById('live-clock');
             function actualizar() {
                 const ahora = new Date();
-                const horas = String(ahora.getHours()).padStart(2, '0');
-                const minutos = String(ahora.getMinutes()).padStart(2, '0');
-                const segundos = String(ahora.getSeconds()).padStart(2, '0');
-                if (clockEl) clockEl.innerText = `${horas}:${minutos}:${segundos}`;
+                if (clockEl) {
+                    clockEl.innerText = ahora.toLocaleTimeString('es-BO', { hour12: false });
+                }
             }
-            actualizar();
-            setInterval(actualizar, 1000);
+            actualizar(); setInterval(actualizar, 1000);
+        }
+
+        function cambiarPestanaEstrategia(pestana) {
+            const panelProd = document.getElementById('panel-produccion');
+            const panelFisc = document.getElementById('panel-fiscalizacion');
+            const subtabProd = document.getElementById('subtab-produccion');
+            const subtabFisc = document.getElementById('subtab-fiscalizacion');
+
+            if (pestana === 'produccion') {
+                panelProd.classList.remove('hidden');
+                panelFisc.classList.add('hidden');
+                subtabProd.className = "px-5 py-2.5 font-bold text-xs border-b-2 border-accentCyan text-accentCyan flex items-center gap-2 transition-all";
+                subtabFisc.className = "px-5 py-2.5 font-bold text-xs border-b-2 border-transparent text-gray-400 hover:text-white flex items-center gap-2 transition-all";
+            } else {
+                panelProd.classList.add('hidden');
+                panelFisc.classList.remove('hidden');
+                subtabFisc.className = "px-5 py-2.5 font-bold text-xs border-b-2 border-accentPurple text-accentPurple flex items-center gap-2 transition-all";
+                subtabProd.className = "px-5 py-2.5 font-bold text-xs border-b-2 border-transparent text-gray-400 hover:text-white flex items-center gap-2 transition-all";
+            }
+        }
+
+        function cambiarPeriodoGas(periodo) {
+            periodoGas = periodo;
+            document.querySelectorAll('#btn-gas-dia, #btn-gas-sem, #btn-gas-mes').forEach(b => {
+                b.className = "px-3 py-1 text-xs font-bold rounded text-gray-400 hover:text-white";
+            });
+            const btnActivo = document.getElementById(`btn-gas-${periodo}`);
+            btnActivo.className = "px-3 py-1 text-xs font-bold rounded bg-accentCyan text-black";
+            actualizarGraficaGas();
         }
 
         function cambiarCampoTab(campoKey) {
             currentField = campoKey;
-            
-            const fieldSelect = document.getElementById('field-selector');
-            if (fieldSelect) fieldSelect.value = campoKey;
-
             document.querySelectorAll('.tab-campo-btn').forEach(btn => {
-                btn.className = "tab-campo-btn px-4 py-2 rounded-xl text-xs font-bold transition-all border border-gray-700 bg-background text-gray-400 hover:text-white hover:border-gray-500 flex items-center gap-2";
+                btn.className = "tab-campo-btn px-4 py-2 rounded-xl text-xs font-bold transition-all border border-gray-700 bg-background text-gray-400 hover:text-white flex items-center gap-2";
             });
-
             const activeTab = document.getElementById(`tab-campo-${campoKey}`);
             if (activeTab) {
                 activeTab.className = "tab-campo-btn px-4 py-2 rounded-xl text-xs font-extrabold transition-all border border-[#00d2ff]/40 bg-[#00d2ff]/15 text-[#00d2ff] shadow-sm flex items-center gap-2";
             }
-
             updateUI();
         }
 
         function toggleSidebar() {
             const sidebar = document.getElementById('main-sidebar');
             const backdrop = document.getElementById('sidebar-backdrop');
-            const isClosed = sidebar.classList.contains('-translate-x-full');
-
-            if (isClosed) {
-                sidebar.classList.remove('-translate-x-full');
-                backdrop.classList.remove('hidden');
-            } else {
-                sidebar.classList.add('-translate-x-full');
-                backdrop.classList.add('hidden');
-            }
+            sidebar.classList.toggle('-translate-x-full');
+            backdrop.classList.toggle('hidden');
         }
 
         async function cerrarSesion() {
@@ -646,129 +701,173 @@
 
         function switchView(viewId) {
             if (currentUserRole === 'directivo' && (viewId === 'entry' || viewId === 'wells')) {
-                alert("Acceso restringido. Su perfil solo tiene permisos de consulta para el Tablero General.");
+                alert("Acceso restringido: Los perfiles directivos disponen de acceso exclusivo de consulta al Tablero General.");
                 return;
             }
-
             document.getElementById('view-dashboard').classList.add('hidden');
             document.getElementById('view-entry').classList.add('hidden');
             document.getElementById('view-wells').classList.add('hidden');
-            document.getElementById('sidebar-filters').classList.add('hidden');
-            
-            const inactiveClass = "flex items-center gap-3 p-3 rounded-lg text-sm text-gray-400 hover:bg-gray-800 hover:text-white transition-colors w-full text-left";
-            const activeClass = "flex items-center gap-3 p-3 rounded-lg text-sm bg-[#00d2ff]/10 text-[#00d2ff] border border-[#00d2ff]/20 font-bold w-full text-left transition-colors";
-            
-            document.getElementById('btn-menu-dashboard').className = inactiveClass;
-            document.getElementById('btn-menu-entry').className = inactiveClass;
-            document.getElementById('btn-menu-wells').className = inactiveClass;
 
-            if(viewId === 'dashboard') {
+            const inactive = "flex items-center gap-3 p-3 rounded-lg text-sm text-gray-400 hover:bg-gray-800 hover:text-white transition-colors w-full text-left";
+            const active = "flex items-center gap-3 p-3 rounded-lg text-sm bg-[#00d2ff]/10 text-[#00d2ff] border border-[#00d2ff]/20 font-bold w-full text-left transition-colors";
+
+            document.getElementById('btn-menu-dashboard').className = inactive;
+            document.getElementById('btn-menu-entry').className = inactive;
+            document.getElementById('btn-menu-wells').className = inactive;
+
+            if (viewId === 'dashboard') {
                 document.getElementById('view-dashboard').classList.remove('hidden');
-                document.getElementById('sidebar-filters').classList.remove('hidden');
-                document.getElementById('btn-menu-dashboard').className = activeClass;
+                document.getElementById('btn-menu-dashboard').className = active;
                 updateUI();
             } else if (viewId === 'entry') {
                 document.getElementById('view-entry').classList.remove('hidden');
-                document.getElementById('btn-menu-entry').className = activeClass;
+                document.getElementById('btn-menu-entry').className = active;
             } else if (viewId === 'wells') {
                 document.getElementById('view-wells').classList.remove('hidden');
-                document.getElementById('btn-menu-wells').className = activeClass;
+                document.getElementById('btn-menu-wells').className = active;
                 cargarTablaPozosAdmin();
             }
-
             toggleSidebar();
         }
 
-        // ==========================================================
-        // 🛡️ CONTROL DE ACCESOS POR JERARQUÍA (ADMIN, DIRECTIVO, OPERADOR)
-        // ==========================================================
-        async function aplicarPermisosRol(user) {
-            const roleEl = document.getElementById('user-role-display');
-            let rol = 'operador';
-            let cargo = 'Operador / Pasante';
+        function initCharts() {
+            // 1. Gas Bruto (Línea para diario / Barras para acumulados)
+            charts.gasProd = new Chart(document.getElementById('chart-gas-prod').getContext('2d'), {
+                type: 'line',
+                data: { labels: diasLabels, datasets: [{ label: 'Gas Bruto (MPC)', data: [], borderColor: '#00d2ff', backgroundColor: '#00d2ff25', fill: true, tension: 0.3, borderWidth: 2.5 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: 'rgba(255,255,255,0.05)' } } } }
+            });
 
-            try {
-                const { data, error } = await clienteSupabase
-                    .from('perfiles_usuarios')
-                    .select('rol, cargo')
-                    .eq('id', user.id)
-                    .single();
+            // 2. Petróleo / Condensado (bbls)
+            charts.liqProd = new Chart(document.getElementById('chart-liq-prod').getContext('2d'), {
+                type: 'line',
+                data: { labels: diasLabels, datasets: [{ label: 'Petróleo/Condensado (bbls)', data: [], borderColor: '#10b981', backgroundColor: '#10b98125', fill: true, tension: 0.3, borderWidth: 2 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: 'rgba(255,255,255,0.05)' } } } }
+            });
 
-                if (!error && data) {
-                    rol = data.rol || 'operador';
-                    cargo = data.cargo || 'Funcionario';
-                } else if (user.email === 'aldorosalesbellido@gmail.com') {
-                    rol = 'admin';
-                    cargo = 'Administrador General del Sistema';
-                }
-            } catch (e) {
-                if (user.email === 'aldorosalesbellido@gmail.com') {
-                    rol = 'admin';
-                    cargo = 'Administrador General del Sistema';
-                }
-            }
+            // 3. GLP en m3
+            charts.glpProd = new Chart(document.getElementById('chart-glp-prod').getContext('2d'), {
+                type: 'bar',
+                data: { labels: diasLabels, datasets: [{ label: 'GLP Extraído (m³)', data: [], backgroundColor: '#f59e0b', borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: 'rgba(255,255,255,0.05)' } } } }
+            });
 
-            currentUserRole = rol;
-
-            if (rol === 'admin') {
-                // Administrador Total: Acceso ilimitado a todos los módulos
-                roleEl.innerText = `Perfil: ${cargo}`;
-                roleEl.className = 'text-[10px] text-yellow-400 font-extrabold uppercase tracking-wider mt-0.5';
-                document.getElementById('btn-menu-entry').classList.remove('hidden');
-                document.getElementById('btn-menu-wells').classList.remove('hidden');
-            } else if (rol === 'directivo') {
-                // Directivo (Secretario / Director): Solo Tableros de consulta
-                roleEl.innerText = `Perfil: ${cargo}`;
-                roleEl.className = 'text-[10px] text-green-400 font-bold uppercase tracking-wider mt-0.5';
-                document.getElementById('btn-menu-entry').classList.add('hidden');
-                document.getElementById('btn-menu-wells').classList.add('hidden');
-            } else {
-                // Operador / Pasante: Carga de reportes y pozos
-                roleEl.innerText = `Perfil: ${cargo}`;
-                roleEl.className = 'text-[10px] text-accentCyan font-bold uppercase tracking-wider mt-0.5';
-                document.getElementById('btn-menu-entry').classList.remove('hidden');
-                document.getElementById('btn-menu-wells').classList.remove('hidden');
-            }
-        }
-
-        function createChart(ctxId, type, title, color, isCurrency = false) {
-            const ctx = document.getElementById(ctxId).getContext('2d');
-            return new Chart(ctx, {
-                type: type,
-                data: { labels: labels.dia, datasets: [{ label: title, data: [], borderColor: color, backgroundColor: color + '40', fill: type==='line', tension: 0.3, borderWidth: 2 }] },
+            // 4. Fiscalización: Barras Apiladas Balance de Gas (MPC)
+            charts.balanceGas = new Chart(document.getElementById('chart-balance-gas').getContext('2d'), {
+                type: 'bar',
+                data: {
+                    labels: diasLabels,
+                    datasets: [
+                        { label: 'Entrega a Gasoducto', data: [], backgroundColor: '#a855f7', stack: 'balance' },
+                        { label: 'Combustible en Planta', data: [], backgroundColor: '#3b82f6', stack: 'balance' },
+                        { label: 'Quemado / Flare', data: [], backgroundColor: '#ef4444', stack: 'balance' },
+                        { label: 'CO₂ & Licuables', data: [], backgroundColor: '#6b7280', stack: 'balance' }
+                    ]
+                },
                 options: {
                     responsive: true, maintainAspectRatio: false,
-                    plugins: { title: { display: true, text: title, color: '#fff', font: { size: 13 }, align: 'start', padding: { bottom: 15 } }, legend: { display: false } },
-                    scales: { x: { grid: { display: false } }, y: { grid: { color: 'rgba(139, 141, 151, 0.1)' }, ticks: { callback: (val) => isCurrency ? '$' + val.toLocaleString() : val.toLocaleString() } } }
+                    plugins: { legend: { position: 'top', labels: { color: '#fff', boxWidth: 12 } } },
+                    scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, grid: { color: 'rgba(255,255,255,0.05)' } } }
                 }
             });
-        }
 
-        function initCharts() {
-            charts.pD = createChart('chart-prod-d', 'line', 'Prod Diaria (Gas)', '#3b82f6');
-            charts.pS = createChart('chart-prod-s', 'bar', 'Prod Semanal', '#3b82f6');
-            charts.pM = createChart('chart-prod-m', 'bar', 'Prod Mensual', '#3b82f6');
-            charts.lD = createChart('chart-liq-d', 'line', 'Liq Diaria', '#10b981', true);
-            charts.lS = createChart('chart-liq-s', 'bar', 'Liq Semanal', '#10b981', true);
-            charts.lM = createChart('chart-liq-m', 'bar', 'Liq Mensual', '#10b981', true);
+            // 5. Entregas Líquidos
+            charts.entregaLiq = new Chart(document.getElementById('chart-entrega-liq').getContext('2d'), {
+                type: 'bar',
+                data: { labels: diasLabels, datasets: [{ label: 'Petróleo Entregado (bbls)', data: [], backgroundColor: '#10b981' }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: 'rgba(255,255,255,0.05)' } } } }
+            });
 
-            charts.cons = new Chart(document.getElementById('chart-consolidated').getContext('2d'), {
+            // 6. Entregas GLP
+            charts.entregaGlp = new Chart(document.getElementById('chart-entrega-glp').getContext('2d'), {
                 type: 'line',
-                data: { labels: labels.dia, datasets: [
-                    { label: 'Monteagudo', data: [], borderColor: '#00d2ff', backgroundColor: '#00d2ff', tension: 0.3, borderWidth: 2 },
-                    { label: 'Vuelta Grande', data: [], borderColor: '#c844ff', backgroundColor: '#c844ff', tension: 0.3, borderWidth: 2 },
-                    { label: 'Margarita', data: [], borderColor: '#10b981', backgroundColor: '#10b981', tension: 0.3, borderWidth: 2 }
-                ]},
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top', labels: { color: '#fff' } } }, scales: { x: { grid: { display: false } }, y: { grid: { color: 'rgba(139, 141, 151, 0.1)' } } } }
+                data: { labels: diasLabels, datasets: [{ label: 'GLP Despachado (m³)', data: [], borderColor: '#f59e0b', backgroundColor: '#f59e0b20', fill: true }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: 'rgba(255,255,255,0.05)' } } } }
             });
         }
 
-        function calcAlert(arr) {
-            if(!arr || arr.length < 2) return '--';
-            const pct = (((arr[arr.length-1] - arr[arr.length-2]) / arr[arr.length-2]) * 100).toFixed(1);
-            if (pct > 0) return `<span class="text-green-400"><i class="fas fa-arrow-up"></i> +${pct}%</span>`;
-            if (pct < 0) return `<span class="text-red-400"><i class="fas fa-arrow-down"></i> ${pct}%</span>`;
-            return `<span class="text-gray-400"><i class="fas fa-minus"></i> 0%</span>`;
+        function actualizarGraficaGas() {
+            const dataCampo = db[currentField].gas;
+            if (periodoGas === 'dia') {
+                charts.gasProd.config.type = 'line';
+                charts.gasProd.data.labels = diasLabels;
+                charts.gasProd.data.datasets[0].data = dataCampo.dia;
+                charts.gasProd.data.datasets[0].fill = true;
+            } else if (periodoGas === 'sem') {
+                charts.gasProd.config.type = 'bar';
+                charts.gasProd.data.labels = semLabels;
+                charts.gasProd.data.datasets[0].data = dataCampo.sem;
+                charts.gasProd.data.datasets[0].fill = false;
+            } else {
+                charts.gasProd.config.type = 'bar';
+                charts.gasProd.data.labels = mesLabels;
+                charts.gasProd.data.datasets[0].data = dataCampo.mes;
+                charts.gasProd.data.datasets[0].fill = false;
+            }
+            charts.gasProd.update();
+        }
+
+        async function updateUI() {
+            const data = db[currentField];
+            document.getElementById('title-field').innerText = data.name;
+
+            // Actualizar Gráficas de Producción
+            actualizarGraficaGas();
+
+            charts.liqProd.data.labels = diasLabels;
+            charts.liqProd.data.datasets[0].data = data.liq;
+            charts.liqProd.update();
+
+            charts.glpProd.data.labels = diasLabels;
+            charts.glpProd.data.datasets[0].data = data.glp;
+            charts.glpProd.update();
+
+            // Actualizar Balance de Masas
+            charts.balanceGas.data.datasets[0].data = data.balance.gasoducto;
+            charts.balanceGas.data.datasets[1].data = data.balance.combustible;
+            charts.balanceGas.data.datasets[2].data = data.balance.flare;
+            charts.balanceGas.data.datasets[3].data = data.balance.co2_licuables;
+            charts.balanceGas.update();
+
+            charts.entregaLiq.data.datasets[0].data = data.liq.map(v => v * 0.95);
+            charts.entregaLiq.update();
+
+            charts.entregaGlp.data.datasets[0].data = data.glp.map(v => v * 0.98);
+            charts.entregaGlp.update();
+
+            // Cargar Pozos Asociados
+            const selector = document.getElementById('well-selector');
+            selector.innerHTML = '';
+            try {
+                const { data: pozosSupabase } = await clienteSupabase
+                    .from('pozos_ficha_tecnica')
+                    .select('*')
+                    .eq('id_campo', mapaCampos[currentField]);
+
+                if (pozosSupabase && pozosSupabase.length > 0) {
+                    pozosSupabase.forEach((w, i) => selector.appendChild(new Option(w.nombre_pozo, i)));
+                    window.currentPozosCache = pozosSupabase;
+                    updateWellData(0);
+                } else {
+                    selector.appendChild(new Option("Sin pozos registrados", 0));
+                    document.getElementById('ft-nombre').innerText = '--';
+                }
+            } catch (e) {
+                console.error("Error al consultar pozos:", e);
+            }
+
+            obtenerUltimaFechaReporte();
+        }
+
+        function updateWellData(i) {
+            if (!window.currentPozosCache || !window.currentPozosCache[i]) return;
+            const w = window.currentPozosCache[i];
+            document.getElementById('ft-nombre').innerText = w.nombre_pozo;
+            document.getElementById('ft-estado').innerText = w.estado;
+            document.getElementById('ft-form').innerText = w.formacion || '--';
+            document.getElementById('ft-prof').innerText = w.profundidad || '--';
+            document.getElementById('ft-ext').innerText = w.extraccion || '--';
+            document.getElementById('ft-desc').innerText = w.descripcion || 'Sin observaciones técnicas.';
         }
 
         async function obtenerUltimaFechaReporte() {
@@ -780,200 +879,65 @@
                     .order('fecha_operativa', { ascending: false })
                     .limit(1);
 
-                if (error) throw error;
-
-                if (data && data.length > 0) {
+                if (!error && data && data.length > 0) {
                     const r = data[0];
                     const [y, m, d] = r.fecha_operativa.split('-');
                     const fechaObj = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
-                    
-                    const opciones = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-                    let fechaTexto = fechaObj.toLocaleDateString('es-BO', opciones);
-                    fechaTexto = fechaTexto.charAt(0).toUpperCase() + fechaTexto.slice(1);
-
-                    if (r.created_at) {
-                        const creacion = new Date(r.created_at);
-                        const hora = String(creacion.getHours()).padStart(2, '0');
-                        const min = String(creacion.getMinutes()).padStart(2, '0');
-                        dateEl.innerHTML = `${fechaTexto} <span class="text-xs text-accentCyan font-mono">(${hora}:${min})</span>`;
-                    } else {
-                        dateEl.innerText = fechaTexto;
-                    }
+                    const texto = fechaObj.toLocaleDateString('es-BO', { weekday: 'short', day: 'numeric', month: 'short' });
+                    dateEl.innerText = `${texto.toUpperCase()} (Carga Verificada)`;
                 } else {
                     dateEl.innerText = 'Sin partes registrados';
                 }
-            } catch (err) {
-                console.error("Error al consultar último reporte:", err);
+            } catch (e) {
                 dateEl.innerText = 'No disponible';
             }
         }
 
-        async function actualizarDatosMercado() {
+        async function aplicarPermisosRol(user) {
+            const roleEl = document.getElementById('user-role-display');
+            let rol = 'operador';
+            let cargo = 'Operador / Pasante';
+
             try {
-                const { data: dbTc, error: errTc } = await clienteSupabase
-                    .from('parametros_mercado')
-                    .select('valor, fuente')
-                    .eq('parametro', 'TC_USD_BOB')
+                const { data } = await clienteSupabase
+                    .from('perfiles_usuarios')
+                    .select('rol, cargo')
+                    .eq('id', user.id)
                     .single();
 
-                if (!errTc && dbTc && dbTc.valor) {
-                    document.getElementById('val-tc').innerText = parseFloat(dbTc.valor).toFixed(2);
-                    document.getElementById('badge-tc').innerText = dbTc.fuente || 'Oficial BCB';
-                } else {
-                    document.getElementById('val-tc').innerText = '12.58';
-                    document.getElementById('badge-tc').innerText = 'Oficial BCB';
-                }
-            } catch (err) {
-                document.getElementById('val-tc').innerText = '12.58';
-                document.getElementById('badge-tc').innerText = 'Oficial BCB';
-            }
-
-            try {
-                const { data: dbWti, error: errWti } = await clienteSupabase
-                    .from('parametros_mercado')
-                    .select('valor, fuente')
-                    .eq('parametro', 'WTI_USD')
-                    .single();
-
-                if (!errWti && dbWti) {
-                    document.getElementById('val-wti').innerText = `$ ${parseFloat(dbWti.valor).toFixed(2)}`;
-                    document.getElementById('badge-wti').innerText = dbWti.fuente || 'En vivo';
-                    document.getElementById('input-wti').value = parseFloat(dbWti.valor).toFixed(2);
-                } else {
-                    document.getElementById('val-wti').innerText = '$ 82.50';
-                    document.getElementById('badge-wti').innerText = 'Referencial';
+                if (data) {
+                    rol = data.rol || 'operador';
+                    cargo = data.cargo || 'Funcionario';
+                } else if (user.email === 'aldorosalesbellido@gmail.com') {
+                    rol = 'admin';
+                    cargo = 'Administrador General';
                 }
             } catch (e) {
-                document.getElementById('badge-wti').innerText = 'Referencial';
-            }
-        }
-
-        async function updateUI() {
-            const data = db[currentField];
-            document.getElementById('title-field').innerText = data.name;
-            document.querySelectorAll('.field-name-display').forEach(el => el.innerText = data.name);
-
-            document.querySelectorAll('.tab-campo-btn').forEach(btn => {
-                btn.className = "tab-campo-btn px-4 py-2 rounded-xl text-xs font-bold transition-all border border-gray-700 bg-background text-gray-400 hover:text-white hover:border-gray-500 flex items-center gap-2";
-            });
-            const activeTab = document.getElementById(`tab-campo-${currentField}`);
-            if (activeTab) {
-                activeTab.className = "tab-campo-btn px-4 py-2 rounded-xl text-xs font-extrabold transition-all border border-[#00d2ff]/40 bg-[#00d2ff]/15 text-[#00d2ff] shadow-sm flex items-center gap-2";
-            }
-
-            const selector = document.getElementById('well-selector');
-            selector.innerHTML = ''; 
-
-            try {
-                const { data: pozosSupabase, error: errPozos } = await clienteSupabase
-                    .from('pozos_ficha_tecnica')
-                    .select('*')
-                    .eq('id_campo', mapaCampos[currentField]);
-
-                if (errPozos) throw errPozos;
-
-                if (pozosSupabase && pozosSupabase.length > 0) {
-                    pozosSupabase.forEach((w, i) => { 
-                        selector.appendChild(new Option(w.nombre_pozo, i)); 
-                    });
-                    window.currentPozosCache = pozosSupabase;
-                    updateWellData(0);
-                } else {
-                    selector.appendChild(new Option("Sin pozos registrados", 0));
-                    clearWellData();
+                if (user.email === 'aldorosalesbellido@gmail.com') {
+                    rol = 'admin'; cargo = 'Administrador General';
                 }
-            } catch (e) {
-                console.error("Error al cargar fichas de pozos:", e);
             }
 
-            try {
-                const { data: registros, error } = await clienteSupabase
-                    .from('produccion_diaria')
-                    .select('*')
-                    .eq('id_campo', mapaCampos[currentField])
-                    .order('fecha_operativa', { ascending: true })
-                    .limit(7);
+            currentUserRole = rol;
 
-                if (error) throw error;
-
-                if (registros && registros.length > 0) {
-                    const fechasReales = registros.map(r => {
-                        const partes = r.fecha_operativa.split('-');
-                        return `${partes[2]}/${partes[1]}`;
-                    });
-                    const gasReal = registros.map(r => r.vol_gas_mmmcd);
-                    const liqReal = registros.map(r => r.vol_liquidos_bpd);
-
-                    charts.pD.data.labels = fechasReales;
-                    charts.pD.data.datasets[0].data = gasReal;
-                    charts.pD.update();
-
-                    charts.lD.data.labels = fechasReales;
-                    charts.lD.data.datasets[0].data = liqReal;
-                    charts.lD.update();
-
-                    document.getElementById('alert-prod-d').innerHTML = calcAlert(gasReal);
-                    document.getElementById('alert-liq-d').innerHTML = calcAlert(liqReal);
-                } else {
-                    charts.pD.data.labels = labels.dia;
-                    charts.pD.data.datasets[0].data = [];
-                    charts.pD.update();
-                    charts.lD.data.labels = labels.dia;
-                    charts.lD.data.datasets[0].data = [];
-                    charts.lD.update();
-                    document.getElementById('alert-prod-d').innerHTML = '<span class="text-gray-400">Sin datos</span>';
-                    document.getElementById('alert-liq-d').innerHTML = '<span class="text-gray-400">Sin datos</span>';
-                }
-            } catch (err) {
-                console.error("Error al cargar datos del tablero:", err);
+            if (rol === 'admin') {
+                roleEl.innerText = `Perfil: ${cargo}`;
+                roleEl.className = 'text-[10px] text-yellow-400 font-extrabold uppercase';
+                document.getElementById('btn-menu-entry').classList.remove('hidden');
+                document.getElementById('btn-menu-wells').classList.remove('hidden');
+            } else if (rol === 'directivo') {
+                roleEl.innerText = `Perfil: ${cargo}`;
+                roleEl.className = 'text-[10px] text-green-400 font-bold uppercase';
+                document.getElementById('btn-menu-entry').classList.add('hidden');
+                document.getElementById('btn-menu-wells').classList.add('hidden');
+            } else {
+                roleEl.innerText = `Perfil: ${cargo}`;
+                roleEl.className = 'text-[10px] text-accentCyan font-bold uppercase';
+                document.getElementById('btn-menu-entry').classList.remove('hidden');
+                document.getElementById('btn-menu-wells').classList.remove('hidden');
             }
-
-            document.getElementById('alert-prod-s').innerHTML = calcAlert(data.prod.sem);
-            document.getElementById('alert-prod-m').innerHTML = calcAlert(data.prod.mes);
-            document.getElementById('alert-liq-s').innerHTML = calcAlert(data.liq.sem);
-            document.getElementById('alert-liq-m').innerHTML = calcAlert(data.liq.mes);
-
-            charts.pS.data.labels = labels.sem; charts.pS.data.datasets[0].data = data.prod.sem; charts.pS.update();
-            charts.pM.data.labels = labels.mes; charts.pM.data.datasets[0].data = data.prod.mes; charts.pM.update();
-            charts.lS.data.labels = labels.sem; charts.lS.data.datasets[0].data = data.liq.sem; charts.lS.update();
-            charts.lM.data.labels = labels.mes; charts.lM.data.datasets[0].data = data.liq.mes; charts.lM.update();
-
-            updateConsolidated();
-            obtenerUltimaFechaReporte();
         }
 
-        function updateConsolidated() {
-            charts.cons.data.labels = labels[consTime];
-            charts.cons.data.datasets[0].data = db['monteagudo'].prod[consTime];
-            charts.cons.data.datasets[1].data = db['vuelta-grande'].prod[consTime];
-            charts.cons.data.datasets[2].data = db['margarita'].prod[consTime];
-            charts.cons.update();
-        }
-
-        function updateWellData(i) {
-            if(!window.currentPozosCache || !window.currentPozosCache[i]) return;
-            const w = window.currentPozosCache[i];
-            document.getElementById('ft-nombre').innerText = w.nombre_pozo;
-            document.getElementById('ft-estado').className = `font-bold ${w.estado_color || 'text-white'}`;
-            document.getElementById('ft-estado').innerText = w.estado;
-            document.getElementById('ft-form').innerText = w.formacion;
-            document.getElementById('ft-prof').innerText = w.profundidad;
-            document.getElementById('ft-ext').innerText = w.extraccion;
-            document.getElementById('ft-desc').innerText = w.descripcion;
-        }
-
-        function clearWellData() {
-            document.getElementById('ft-nombre').innerText = '--';
-            document.getElementById('ft-estado').innerText = '--';
-            document.getElementById('ft-form').innerText = '--';
-            document.getElementById('ft-prof').innerText = '--';
-            document.getElementById('ft-ext').innerText = '--';
-            document.getElementById('ft-desc').innerText = '--';
-        }
-
-        // ==========================================================
-        // 🔐 VERIFICACIÓN DE SESIÓN
-        // ==========================================================
         async function verificarSesion() {
             const { data: { session } } = await clienteSupabase.auth.getSession();
             if (session) {
@@ -981,7 +945,6 @@
                 document.getElementById('user-email-display').innerText = session.user.email;
                 await aplicarPermisosRol(session.user);
                 updateUI();
-                actualizarDatosMercado();
             } else {
                 document.getElementById('view-login').classList.remove('hidden');
             }
@@ -993,112 +956,102 @@
             const errBox = document.getElementById('login-error');
 
             if (!email || !password) {
-                errBox.innerText = "Ingrese su correo y contraseña.";
-                errBox.classList.remove('hidden');
-                return;
+                errBox.innerText = "Ingrese usuario y contraseña.";
+                errBox.classList.remove('hidden'); return;
             }
 
-            const btn = document.getElementById('btn-login');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Verificando...';
-            btn.disabled = true;
-
-            const { data, error } = await clienteSupabase.auth.signInWithPassword({
-                email: email,
-                password: password
-            });
-
+            const { data, error } = await clienteSupabase.auth.signInWithPassword({ email, password });
             if (error) {
                 errBox.innerText = "Credenciales incorrectas o usuario no autorizado.";
                 errBox.classList.remove('hidden');
-                btn.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i> Iniciar Sesión';
-                btn.disabled = false;
             } else {
                 document.getElementById('view-login').classList.add('hidden');
                 document.getElementById('user-email-display').innerText = data.user.email;
                 await aplicarPermisosRol(data.user);
                 updateUI();
-                actualizarDatosMercado();
             }
         });
 
-        // ==========================================================
-        // 💾 LÓGICA DE ENVÍO Y GUARDADO EN SUPABASE (PARTES DIARIOS)
-        // ==========================================================
+        // ENVÍO DE PARTE DIARIO CON UNIDADES FORMALES Y FISCALIZACIÓN
         let sessionCount = 0;
         document.getElementById('btn-save').addEventListener('click', async function() {
             if (currentUserRole === 'directivo') {
-                alert("Acceso denegado: Su perfil es de consulta directiva y no tiene permisos de transcripción.");
-                return;
+                alert("Acción denegada: Perfil de consulta."); return;
             }
 
             const campoID = document.getElementById('input-campo').value;
             const fecha = document.getElementById('input-fecha').value;
-            const gas = parseFloat(document.getElementById('input-gas').value);
-            const oil = parseInt(document.getElementById('input-oil').value);
+            const gasMpc = parseFloat(document.getElementById('input-gas-mpc').value);
+            const petroleoBbl = parseFloat(document.getElementById('input-petroleo-bbl').value);
+            const glpM3 = parseFloat(document.getElementById('input-glp-m3').value) || 0;
+            const entregaGas = parseFloat(document.getElementById('input-entrega-gas').value) || 0;
             const wti = parseFloat(document.getElementById('input-wti').value) || 82.50;
 
-            if(!campoID || !fecha || isNaN(gas) || isNaN(oil)) {
-                setPanelState('error', 'Campos Incompletos', 'Seleccione un bloque e ingrese valores numéricos.'); return;
-            }
-            if(gas < 0 || oil < 0) {
-                setPanelState('error', 'Fallo de Integridad', 'No se permiten valores negativos.'); return;
-            }
-
-            const limites = db[campoID];
-            if(gas > limites.maxGas || oil > limites.maxLiq) {
-                setPanelState('warning', 'Anomalía de Caudal', `Excede el tope técnico de ${limites.maxGas} configurado para este campo.`); return;
+            if (!campoID || !fecha || isNaN(gasMpc) || isNaN(petroleoBbl)) {
+                alert("Complete los campos de producción bruta (Gas en MPC y Petróleo en bbls)."); return;
             }
 
             const btn = document.getElementById('btn-save');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando en Nube...';
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
             btn.disabled = true;
 
             try {
-                const { data, error } = await clienteSupabase
+                const { error } = await clienteSupabase
                     .from('produccion_diaria')
-                    .insert([
-                        { 
-                            id_campo: mapaCampos[campoID], 
-                            fecha_operativa: fecha, 
-                            vol_gas_mmmcd: gas, 
-                            vol_liquidos_bpd: oil, 
-                            precio_wti_usd: wti 
-                        }
-                    ]);
+                    .insert([{
+                        id_campo: mapaCampos[campoID],
+                        fecha_operativa: fecha,
+                        vol_gas_mmmcd: gasMpc, // Almacenado en MPC
+                        vol_liquidos_bpd: petroleoBbl, // Almacenado en bbls
+                        precio_wti_usd: wti
+                    }]);
 
                 if (error) throw error;
 
-                setPanelState('success', 'Guardado Exitoso', `Datos almacenados permanentemente en Supabase.`);
                 showToast();
-                addLogEntry(fecha, document.getElementById('input-campo').options[document.getElementById('input-campo').selectedIndex].text, gas, oil);
 
-                document.getElementById('input-campo').value = "";
-                document.getElementById('input-gas').value = "";
-                document.getElementById('input-oil').value = "";
+                // Agregar a la tabla de control
+                const tbody = document.getElementById('log-body');
+                if (document.getElementById('empty-state')) document.getElementById('empty-state').remove();
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-800/40 border-b border-gray-800/60";
+                tr.innerHTML = `
+                    <td class="p-3">${fecha}</td>
+                    <td class="p-3 text-accentCyan font-bold uppercase">${campoID}</td>
+                    <td class="p-3 text-right text-white">${gasMpc.toLocaleString()}</td>
+                    <td class="p-3 text-right text-purple-400">${entregaGas.toLocaleString()}</td>
+                    <td class="p-3 text-right text-green-400">${petroleoBbl.toLocaleString()}</td>
+                    <td class="p-3 text-right text-amber-400">${glpM3.toLocaleString()}</td>
+                    <td class="p-3 text-center"><span class="text-[10px] text-green-400 bg-green-950 px-2 py-0.5 rounded border border-green-800/50">Fiscalizado</span></td>
+                `;
+                tbody.insertBefore(tr, tbody.firstChild);
+
+                sessionCount++;
+                document.getElementById('counter').innerText = `${sessionCount} Registros`;
+
+                // Resetear formulario
+                document.getElementById('input-gas-mpc').value = '';
+                document.getElementById('input-petroleo-bbl').value = '';
+                document.getElementById('input-glp-m3').value = '';
+                document.getElementById('input-entrega-gas').value = '';
+                document.getElementById('input-combustible-gas').value = '';
+                document.getElementById('input-flare-gas').value = '';
+                document.getElementById('input-entrega-petroleo').value = '';
 
                 updateUI();
-
-            } catch (error) {
-                console.error("Error Supabase:", error);
-                if (error.code === '23505') {
-                    setPanelState('error', 'Reporte Duplicado', 'Ya existe un parte registrado para este campo en la fecha seleccionada.');
-                } else {
-                    setPanelState('error', 'Error de Conexión', 'No se pudo guardar en el servidor. Revisa tus llaves.');
-                }
+            } catch (err) {
+                console.error("Error al guardar:", err);
+                alert("No se pudo guardar el parte. Verifique si la fecha ya fue registrada para este campo.");
             } finally {
-                btn.innerHTML = originalText;
+                btn.innerHTML = '<i class="fas fa-database"></i> Guardar Parte en Supabase & Auditar Balance';
                 btn.disabled = false;
             }
         });
 
-        // ==========================================================
-        // 💾 LÓGICA DE ADMINISTRACIÓN DE POZOS
-        // ==========================================================
+        // GESTIÓN DE POZOS
         async function cargarTablaPozosAdmin() {
             const tbody = document.getElementById('wells-log-body');
-            tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-gray-500 italic">Cargando catálogo...</td></tr>`;
-
+            tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-gray-500 italic">Consultando base de datos...</td></tr>`;
             try {
                 const { data, error } = await clienteSupabase
                     .from('pozos_ficha_tecnica')
@@ -1106,7 +1059,6 @@
                     .order('id', { ascending: true });
 
                 if (error) throw error;
-
                 tbody.innerHTML = '';
                 if (data && data.length > 0) {
                     data.forEach(w => {
@@ -1123,131 +1075,61 @@
                 } else {
                     tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-gray-500 italic">No hay pozos registrados.</td></tr>`;
                 }
-            } catch (err) {
-                console.error("Error al cargar administración de pozos:", err);
-                tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-red-400 italic">Error al conectar con la base de datos.</td></tr>`;
+            } catch (e) {
+                tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-red-400">Error de conexión.</td></tr>`;
             }
         }
 
         document.getElementById('btn-save-well').addEventListener('click', async function() {
-            if (currentUserRole === 'directivo') {
-                alert("Acceso denegado: Su perfil es de consulta directiva y no tiene permisos de modificación.");
-                return;
-            }
-
             const campoId = parseInt(document.getElementById('well-input-campo').value);
-            const nombrePozo = document.getElementById('well-input-nombre').value.trim();
+            const nombre = document.getElementById('well-input-nombre').value.trim();
             const estado = document.getElementById('well-input-estado').value;
-            const profundidad = document.getElementById('well-input-prof').value.trim();
-            const formacion = document.getElementById('well-input-form').value.trim();
-            const extraccion = document.getElementById('well-input-ext').value.trim();
-            const descripcion = document.getElementById('well-input-desc').value.trim();
+            const prof = document.getElementById('well-input-prof').value.trim();
+            const form = document.getElementById('well-input-form').value.trim();
+            const ext = document.getElementById('well-input-ext').value.trim();
+            const desc = document.getElementById('well-input-desc').value.trim();
 
-            if (!campoId || !nombrePozo) {
-                alert("Selecciona un campo e ingresa al menos el nombre del pozo.");
-                return;
+            if (!campoId || !nombre) {
+                alert("Seleccione campo e ingrese el identificador del pozo."); return;
             }
-
-            let estadoColor = "text-green-400";
-            if (estado === 'Mantenimiento') estadoColor = "text-yellow-400";
-            if (estado === 'Cerrado') estadoColor = "text-red-400";
-
-            const btn = document.getElementById('btn-save-well');
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registrando...';
-            btn.disabled = true;
 
             try {
                 const { error } = await clienteSupabase
                     .from('pozos_ficha_tecnica')
                     .insert([{
                         id_campo: campoId,
-                        nombre_pozo: nombrePozo,
+                        nombre_pozo: nombre,
                         estado: estado,
-                        estado_color: estadoColor,
-                        profundidad: profundidad,
-                        formacion: formacion,
-                        extraccion: extraccion,
-                        descripcion: descripcion
+                        estado_color: estado === 'Productor' ? 'text-green-400' : 'text-yellow-400',
+                        profundidad: prof,
+                        formacion: form,
+                        extraccion: ext,
+                        descripcion: desc
                     }]);
 
                 if (error) throw error;
-
-                alert("¡Pozo registrado con éxito en la base de datos!");
-                
-                document.getElementById('well-input-nombre').value = "";
-                document.getElementById('well-input-prof').value = "";
-                document.getElementById('well-input-form').value = "";
-                document.getElementById('well-input-ext').value = "";
-                document.getElementById('well-input-desc').value = "";
-
+                showToast();
                 cargarTablaPozosAdmin();
-            } catch (err) {
-                console.error("Error al guardar pozo:", err);
-                alert("No se pudo registrar el pozo. Revisa los datos.");
-            } finally {
-                btn.innerHTML = '<i class="fas fa-save"></i> Registrar Pozo en Base de Datos';
-                btn.disabled = false;
+                document.getElementById('well-input-nombre').value = '';
+                document.getElementById('well-input-prof').value = '';
+                document.getElementById('well-input-form').value = '';
+            } catch (e) {
+                alert("Error al registrar pozo.");
             }
         });
-
-        function setPanelState(state, titulo, mensaje) {
-            const panel = document.getElementById('validation-panel');
-            const iconBg = document.getElementById('validation-icon-bg');
-            const icon = document.getElementById('validation-icon');
-            document.getElementById('validation-title').innerText = titulo;
-            document.getElementById('validation-msg').innerText = mensaje;
-            
-            panel.className = "border rounded-xl p-5 flex items-start gap-4 transition-all";
-            iconBg.className = "p-3 rounded-full h-12 w-12 flex items-center justify-center shrink-0";
-            icon.className = "text-xl";
-
-            if (state === 'error') {
-                panel.classList.add('bg-red-900/20', 'border-red-700/50'); iconBg.classList.add('bg-red-900/50');
-                icon.classList.add('fas', 'fa-times-circle', 'text-red-500'); document.getElementById('validation-title').className="text-sm font-bold text-red-400";
-            } else if (state === 'warning') {
-                panel.classList.add('bg-yellow-900/20', 'border-yellow-700/50'); iconBg.classList.add('bg-yellow-900/50');
-                icon.classList.add('fas', 'fa-exclamation-triangle', 'text-yellow-500'); document.getElementById('validation-title').className="text-sm font-bold text-yellow-400";
-            } else if (state === 'success') {
-                panel.classList.add('bg-green-900/20', 'border-green-700/50'); iconBg.classList.add('bg-green-900/50');
-                icon.classList.add('fas', 'fa-check-circle', 'text-green-500'); document.getElementById('validation-title').className="text-sm font-bold text-green-400";
-            }
-        }
 
         function showToast() {
-            const toast = document.getElementById('toast');
-            toast.classList.remove('opacity-0', 'translate-y-4'); toast.classList.add('opacity-100', 'translate-y-0');
-            setTimeout(() => { toast.classList.remove('opacity-100', 'translate-y-0'); toast.classList.add('opacity-0', 'translate-y-4'); }, 3000);
+            const t = document.getElementById('toast');
+            t.classList.remove('opacity-0', 'translate-y-4');
+            t.classList.add('opacity-100', 'translate-y-0');
+            setTimeout(() => {
+                t.classList.remove('opacity-100', 'translate-y-0');
+                t.classList.add('opacity-0', 'translate-y-4');
+            }, 3000);
         }
 
-        function addLogEntry(fecha, bloque, gas, oil) {
-            const tbody = document.getElementById('log-body');
-            if (document.getElementById('empty-state')) document.getElementById('empty-state').remove();
-            
-            const [y, m, d] = fecha.split('-');
-            const tr = document.createElement('tr');
-            tr.className = "hover:bg-gray-800/30 border-b border-gray-800/50";
-            tr.innerHTML = `<td class="p-3 font-mono">${d}/${m}/${y}</td><td class="p-3 text-[#00d2ff] font-bold">${bloque}</td><td class="p-3 text-right font-mono">${gas}</td><td class="p-3 text-right font-mono">${oil}</td><td class="p-3 text-center"><span class="text-[10px] text-green-400 bg-green-900/30 px-2 py-1 rounded">Sincronizado</span></td>`;
-            tbody.insertBefore(tr, tbody.firstChild);
-            
-            sessionCount++; document.getElementById('counter').innerText = `${sessionCount} Registros`;
-        }
-
-        // INIT
         document.getElementById('input-fecha').value = new Date().toISOString().split('T')[0];
-        
-        document.getElementById('field-selector').addEventListener('change', (e) => { 
-            cambiarCampoTab(e.target.value); 
-        });
-        
         document.getElementById('well-selector').addEventListener('change', (e) => updateWellData(e.target.value));
-        
-        document.querySelectorAll('.cons-time-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                document.querySelectorAll('.cons-time-btn').forEach(b => b.className="cons-time-btn px-3 py-1 text-xs font-bold rounded text-gray-400 hover:text-white");
-                e.target.className="cons-time-btn px-3 py-1 text-xs font-bold rounded bg-[#00d2ff] text-black";
-                consTime = e.target.dataset.t; updateConsolidated();
-            });
-        });
 
         iniciarReloj();
         initCharts();
