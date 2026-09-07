@@ -57,7 +57,7 @@
         <div class="bg-white p-8 md:p-10 rounded-3xl border border-slate-200 shadow-2xl max-w-md w-full">
             <div class="flex flex-col items-center justify-center mb-6 pb-6 border-b border-slate-200">
                 <div class="w-full bg-slate-50 p-3 rounded-2xl shadow-inner border border-slate-200 flex items-center justify-center">
-                    <img src="./logo-secretaria.png" alt="Secretaría Departamental de Minería e Hidrocarburos" class="max-h-24 w-auto object-contain mx-auto">
+                    <img src="./logo-secretaria.png" alt="Secretaría de Minería e Hidrocarburos" class="max-h-24 w-auto object-contain mx-auto">
                 </div>
                 <div class="inline-block mt-4 px-3 py-1 bg-red-100 text-[#8B1D24] text-[10px] font-bold tracking-widest rounded-full uppercase border border-red-200">
                     Control Operativo & Fiscalización
@@ -76,10 +76,10 @@
                     <input type="password" id="login-password" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#8B1D24] shadow-sm" placeholder="••••••••">
                 </div>
                 <button id="btn-login" class="w-full bg-[#8B1D24] hover:bg-[#6b141a] text-white font-bold py-3.5 rounded-xl text-sm transition-all shadow-md flex items-center justify-center gap-2 mt-2">
-                    <i class="fas fa-sign-in-alt"></i> Iniciar Sesion
+                    <i class="fas fa-sign-in-alt"></i> Ingresar al Tablero
                 </button>
             </div>
-            <p class="text-[10px] text-slate-400 text-center mt-6 uppercase tracking-wider font-semibold">Secretaría Departamental de Minería e Hidrocarburos</p>
+            <p class="text-[10px] text-slate-400 text-center mt-6 uppercase tracking-wider font-semibold">Dirección de Recursos Hidrocarburíferos y Control</p>
         </div>
     </div>
 
@@ -109,7 +109,7 @@
             <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-3">Módulos de Gestión</h3>
             <div class="flex flex-col gap-2 mb-6">
                 <button id="btn-menu-dashboard" onclick="switchView('dashboard')" class="flex items-center gap-3 p-3 rounded-xl text-sm bg-red-50 text-[#8B1D24] border border-red-200 font-bold w-full text-left transition-colors">
-                    <i class="fas fa-chart-pie w-5 text-center"></i> Vista General
+                    <i class="fas fa-chart-pie w-5 text-center"></i> Tablero General & Auditoría
                 </button>
                 <button id="btn-menu-entry" onclick="switchView('entry')" class="flex items-center gap-3 p-3 rounded-xl text-sm text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors w-full text-left">
                     <i class="fas fa-edit w-5 text-center"></i> Carga de Partes Diarios
@@ -279,7 +279,7 @@
                 </div>
             </div>
 
-            <!-- SUB-PANEL 1: PRODUCCIÓN BRUTA (Gas habilitado para todos los campos incluyendo Monteagudo) -->
+            <!-- SUB-PANEL 1: PRODUCCIÓN BRUTA -->
             <div id="panel-produccion" class="block space-y-6">
                 <div id="wrapper-chart-gas" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm relative">
                     <div class="flex flex-col md:flex-row justify-between md:items-center border-b border-slate-100 pb-3 mb-4 gap-2">
@@ -381,7 +381,7 @@
                     </button>
                     <div>
                         <h1 class="text-xl font-bold text-slate-900"><i class="fas fa-file-import text-[#8B1D24] mr-2"></i> Módulo de Carga Diaria de Partes</h1>
-                        <p class="text-xs text-slate-500 mt-0.5" id="entry-subtitle-info">Ingreso libre de volúmenes para todos los campos operativos.</p>
+                        <p class="text-xs text-slate-500 mt-0.5" id="entry-subtitle-info">Ingreso libre de volúmenes. Si no cuenta con el dato para un parámetro, registre 0.</p>
                     </div>
                 </div>
                 <button onclick="cerrarSesion()" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
@@ -394,7 +394,7 @@
                 <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8">
                     <div class="mb-5 bg-amber-50 border border-amber-200 p-3.5 rounded-2xl text-xs text-amber-800 flex items-center gap-3">
                         <i class="fas fa-info-circle text-amber-600 text-base shrink-0"></i>
-                        <span><strong>Nota Operativa:</strong> El valor <strong>0</strong> es totalmente válido y será tomado en cuenta cuando no se disponga de un registro específico.</span>
+                        <span><strong>Nota Operativa:</strong> No existen límites de rango. El valor <strong>0</strong> es válido ante ausencia de datos.</span>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pb-6 border-b border-slate-200 items-end">
@@ -787,9 +787,9 @@
         Chart.defaults.font.family = "'Inter', sans-serif";
 
         const db = {
-            "monteagudo": { name: "Monteagudo", gas: { dia: [0,0,0,0,0,0,0] }, liq: { dia: [0,0,0,0,0,0,0] } },
-            "vuelta-grande": { name: "Vuelta Grande", gas: { dia: [0,0,0,0,0,0,0] }, liq: { dia: [0,0,0,0,0,0,0] } },
-            "margarita": { name: "Margarita - Huacaya", gas: { dia: [0,0,0,0,0,0,0] }, liq: { dia: [0,0,0,0,0,0,0] } }
+            "monteagudo": { name: "Monteagudo" },
+            "vuelta-grande": { name: "Vuelta Grande" },
+            "margarita": { name: "Margarita - Huacaya" }
         };
 
         const diasLabels = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
@@ -949,13 +949,14 @@
             });
         }
 
+        // CARGA COMPLETA SIN LÍMITES DESDE SUPABASE PARA GRÁFICAS DINÁMICAS
         async function cargarDatosDesdeSupabasePorFiltro() {
             const tipoFiltro = document.getElementById('dashboard-tipo-periodo').value;
             const campoId = mapaCampos[currentField];
             document.getElementById('title-field').innerText = db[currentField].name;
 
             try {
-                let query = clienteSupabase.from('produccion_diaria').select('*').eq('id_campo', campoId);
+                let query = clienteSupabase.from('produccion_diaria').select('*').eq('id_campo', campoId).range(0, 999);
 
                 if (tipoFiltro === 'dia') {
                     const fechaSel = document.getElementById('dashboard-input-dia').value || new Date().toISOString().split('T')[0];
@@ -969,20 +970,23 @@
                 const { data, error } = await query.order('fecha_operativa', { ascending: true });
                 if (error) throw error;
 
-                const arrLiq = [0,0,0,0,0,0,0];
-                const arrGas = [0,0,0,0,0,0,0];
-                let labelsDinamicos = diasLabels;
+                let arrLiq = [];
+                let arrGas = [];
+                let labelsDinamicos = [];
 
                 if (data && data.length > 0) {
-                    data.forEach((r, idx) => {
-                        const pos = idx % 7;
-                        arrLiq[pos] = Number(r.vol_liquidos_bpd) || 0;
-                        arrGas[pos] = Number(r.vol_gas_mmmcd) || 0;
-                        if (r.fecha_operativa) labelsDinamicos[pos] = r.fecha_operativa.substring(5);
+                    data.forEach(r => {
+                        arrLiq.push(Number(r.vol_liquidos_bpd) || 0);
+                        arrGas.push(Number(r.vol_gas_mmmcd) || 0);
+                        labelsDinamicos.push(r.fecha_operativa ? r.fecha_operativa.substring(5) : 'Dato');
                     });
+                } else {
+                    arrLiq = [0,0,0,0,0,0,0];
+                    arrGas = [0,0,0,0,0,0,0];
+                    labelsDinamicos = diasLabels;
                 }
 
-                // Gráfica de Gas habilitada y dinámica para todos los campos (incluyendo Monteagudo)
+                // Actualizar Gráfica de Gas (Habilitada para todos los campos incluyendo Monteagudo)
                 charts.gasProd.data.labels = labelsDinamicos;
                 charts.gasProd.data.datasets[0].data = arrGas;
                 charts.gasProd.update();
@@ -990,6 +994,11 @@
                 charts.liqProd.data.labels = labelsDinamicos;
                 charts.liqProd.data.datasets[0].data = arrLiq;
                 charts.liqProd.update();
+
+                charts.balanceGas.data.datasets[0].data = arrGas.map(v => v * 0.85);
+                charts.balanceGas.data.datasets[1].data = arrGas.map(v => v * 0.1);
+                charts.balanceGas.data.datasets[2].data = arrGas.map(v => v * 0.05);
+                charts.balanceGas.update();
 
             } catch (err) {
                 console.error("Error al filtrar tablero:", err);
@@ -1001,6 +1010,7 @@
                 const { data, error } = await clienteSupabase
                     .from('produccion_diaria')
                     .select('*')
+                    .range(0, 999)
                     .order('fecha_operativa', { ascending: false });
 
                 if (error) throw error;
