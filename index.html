@@ -56,10 +56,9 @@
     <div id="view-login" class="fixed inset-0 bg-gradient-to-br from-slate-100 via-white to-red-50 z-50 flex items-center justify-center p-4">
         <div class="bg-white p-8 md:p-10 rounded-3xl border border-slate-200 shadow-2xl max-w-md w-full">
             <div class="flex flex-col items-center justify-center mb-6 pb-6 border-b border-slate-200">
-                <div class="w-full flex flex-col items-center justify-center bg-slate-50 p-4 rounded-2xl shadow-inner border border-slate-200">
-                    <div class="w-full flex items-center justify-center mb-2">
-                        <img src="./logo-secretaria.png" alt="Secretaría de Minería e Hidrocarburos" class="h-20 w-auto object-contain">
-                    </div>
+                <div class="w-full flex flex-col items-center justify-center bg-slate-50 p-3 rounded-2xl shadow-inner border border-slate-200 overflow-hidden">
+                    <!-- LOGOTIPO LLENANDO TODO EL ANCHO DEL RECUADRO -->
+                    <img src="./logo-secretaria.png" alt="Secretaría de Minería e Hidrocarburos" class="w-full h-auto object-cover rounded-xl">
                 </div>
                 <div class="inline-block mt-4 px-3 py-1 bg-red-100 text-[#8B1D24] text-[10px] font-bold tracking-widest rounded-full uppercase border border-red-200">
                     Control Operativo & Fiscalización
@@ -95,8 +94,8 @@
                 <i class="fas fa-arrow-left text-base"></i>
             </button>
 
-            <div class="bg-white p-3 rounded-2xl w-full flex flex-col items-center justify-center shadow-sm border border-slate-200 mt-6 mb-2">
-                <img src="./logo-secretaria.png" alt="Logo Institucional" class="h-12 w-auto object-contain">
+            <div class="bg-white p-2 rounded-2xl w-full flex flex-col items-center justify-center shadow-sm border border-slate-200 mt-6 mb-2 overflow-hidden">
+                <img src="./logo-secretaria.png" alt="Logo Institucional" class="w-full h-auto object-cover rounded-xl">
             </div>
 
             <p class="text-[9px] text-accentBlue mt-2 border-t border-slate-200 pt-1.5 w-full text-center font-mono truncate" id="user-email-display">usuario@chuquisaca.gob.bo</p>
@@ -658,10 +657,10 @@
 
                 <!-- HOJA DE REPORTE OFICIAL (ÁREA DE IMPRESIÓN FORMAL) -->
                 <div id="print-report-area" class="bg-white p-8 md:p-12 rounded-3xl border border-slate-300 shadow-xl text-slate-800 space-y-6">
-                    <!-- Membrete con LOGOTIPO OFICIAL -->
+                    <!-- Membrete con Logotipo Oficial Completo y Relleno -->
                     <div class="flex justify-between items-center border-b-2 border-[#8B1D24] pb-6">
-                        <div class="flex items-center gap-4">
-                            <img src="./logo-secretaria.png" alt="Logotipo Institucional" class="h-16 w-auto object-contain">
+                        <div class="flex items-center gap-4 w-1/2">
+                            <img src="./logo-secretaria.png" alt="Logotipo Institucional" class="w-full h-auto object-cover rounded-lg">
                         </div>
                         <div class="text-right">
                             <div class="text-xs font-mono font-bold text-slate-700" id="rep-print-fecha">Fecha Emisión: --/--/2026</div>
