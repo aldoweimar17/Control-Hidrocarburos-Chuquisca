@@ -57,27 +57,8 @@
         <div class="bg-white p-8 md:p-10 rounded-3xl border border-slate-200 shadow-2xl max-w-md w-full">
             <div class="flex flex-col items-center justify-center mb-6 pb-6 border-b border-slate-200">
                 <div class="w-full flex flex-col items-center justify-center bg-slate-50 p-4 rounded-2xl shadow-inner border border-slate-200">
-                    <!-- LOGOTIPO OFICIAL VECTORIAL -->
-                    <div class="w-full mb-2 flex flex-col items-center justify-center text-[#8B1D24]">
-                        <svg viewBox="0 0 320 110" class="w-56 h-auto" fill="currentColor">
-                            <!-- Torre de perforación / Balancín -->
-                            <g transform="translate(135, 0) scale(0.65)">
-                                <path d="M48 6 C48 6 52 14 47 18 C44 21 44 26 50 30 C56 26 56 21 53 18 C48 14 52 6 52 6 C50 10 46 12 48 6 Z"/>
-                                <polygon points="43,30 57,30 63,75 37,75" stroke="#8B1D24" stroke-width="3" fill="none"/>
-                                <line x1="43" y1="40" x2="57" y2="40" stroke="#8B1D24" stroke-width="2.5"/>
-                                <line x1="40" y1="52" x2="60" y2="52" stroke="#8B1D24" stroke-width="2.5"/>
-                                <line x1="38" y1="65" x2="62" y2="65" stroke="#8B1D24" stroke-width="2.5"/>
-                                <path d="M35 55 L75 38 L78 68 Z" fill="none" stroke="#8B1D24" stroke-width="3"/>
-                                <path d="M22 100 C22 75 78 75 78 100 Z" fill="none" stroke="#8B1D24" stroke-width="3.5"/>
-                                <line x1="16" y1="100" x2="84" y2="100" stroke="#8B1D24" stroke-width="4.5"/>
-                            </g>
-                        </svg>
-                        <h2 class="text-xs font-black text-center text-[#8B1D24] tracking-tight uppercase leading-tight font-serif mt-1">
-                            SECRETARÍA DEPARTAMENTAL<br>DE MINERÍA E HIDROCARBUROS
-                        </h2>
-                        <div class="flex items-center gap-1.5 mt-1.5 text-[8px] font-bold text-[#8B1D24] tracking-widest uppercase">
-                            <span>▶▶▶</span> GOBERNACION DE CHUQUISACA <span>◀◀◀</span>
-                        </div>
+                    <div class="w-full flex items-center justify-center mb-2">
+                        <img src="./logo-secretaria.png" alt="Secretaría de Minería e Hidrocarburos" class="h-20 w-auto object-contain">
                     </div>
                 </div>
                 <div class="inline-block mt-4 px-3 py-1 bg-red-100 text-[#8B1D24] text-[10px] font-bold tracking-widest rounded-full uppercase border border-red-200">
@@ -115,11 +96,7 @@
             </button>
 
             <div class="bg-white p-3 rounded-2xl w-full flex flex-col items-center justify-center shadow-sm border border-slate-200 mt-6 mb-2">
-                <div class="w-full flex flex-col items-center justify-center text-[#8B1D24]">
-                    <h3 class="text-[8px] font-black text-center uppercase leading-tight font-serif">
-                        Secretaría Departamental<br>de Minería e Hidrocarburos
-                    </h3>
-                </div>
+                <img src="./logo-secretaria.png" alt="Logo Institucional" class="h-12 w-auto object-contain">
             </div>
 
             <p class="text-[9px] text-accentBlue mt-2 border-t border-slate-200 pt-1.5 w-full text-center font-mono truncate" id="user-email-display">usuario@chuquisaca.gob.bo</p>
@@ -681,19 +658,10 @@
 
                 <!-- HOJA DE REPORTE OFICIAL (ÁREA DE IMPRESIÓN FORMAL) -->
                 <div id="print-report-area" class="bg-white p-8 md:p-12 rounded-3xl border border-slate-300 shadow-xl text-slate-800 space-y-6">
-                    <!-- Membrete -->
+                    <!-- Membrete con LOGOTIPO OFICIAL -->
                     <div class="flex justify-between items-center border-b-2 border-[#8B1D24] pb-6">
                         <div class="flex items-center gap-4">
-                            <svg viewBox="0 0 100 120" class="h-14 w-auto text-[#8B1D24]" fill="currentColor">
-                                <polygon points="43,30 57,30 63,75 37,75" stroke="#8B1D24" stroke-width="2.5" fill="none"/>
-                                <path d="M35 55 L75 38 L78 68 Z" fill="none" stroke="#8B1D24" stroke-width="3"/>
-                                <path d="M22 100 C22 75 78 75 78 100 Z" fill="none" stroke="#8B1D24" stroke-width="3.5"/>
-                            </svg>
-                            <div>
-                                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Gobierno Autónomo Departamental de Chuquisaca</h3>
-                                <h2 class="text-sm font-black text-[#8B1D24] uppercase">Secretaría Departamental de Minería e Hidrocarburos</h2>
-                                <p class="text-[10px] text-slate-400">Dirección de Recursos Hidrocarburíferos y Control</p>
-                            </div>
+                            <img src="./logo-secretaria.png" alt="Logotipo Institucional" class="h-16 w-auto object-contain">
                         </div>
                         <div class="text-right">
                             <div class="text-xs font-mono font-bold text-slate-700" id="rep-print-fecha">Fecha Emisión: --/--/2026</div>
