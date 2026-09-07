@@ -56,9 +56,27 @@
     <div id="view-login" class="fixed inset-0 bg-gradient-to-br from-slate-100 via-white to-red-50 z-50 flex items-center justify-center p-4">
         <div class="bg-white p-8 md:p-10 rounded-3xl border border-slate-200 shadow-2xl max-w-md w-full">
             <div class="flex flex-col items-center justify-center mb-6 pb-6 border-b border-slate-200">
-                <div class="w-full flex flex-col items-center justify-center bg-slate-50 p-3 rounded-2xl shadow-inner border border-slate-200 overflow-hidden">
-                    <!-- LOGOTIPO LLENANDO TODO EL ANCHO DEL RECUADRO -->
-                    <img src="./logo-secretaria.png" alt="Secretaría de Minería e Hidrocarburos" class="w-full h-auto object-cover rounded-xl">
+                <div class="w-full flex flex-col items-center justify-center bg-slate-50 p-4 rounded-2xl shadow-inner border border-slate-200">
+                    <div class="w-20 h-20 mb-3 flex items-center justify-center">
+                        <svg viewBox="0 0 100 120" class="h-full w-auto text-[#8B1D24]" fill="currentColor">
+                            <path d="M48 6 C48 6 52 14 47 18 C44 21 44 26 50 30 C56 26 56 21 53 18 C48 14 52 6 52 6 C50 10 46 12 48 6 Z"/>
+                            <polygon points="43,30 57,30 63,75 37,75" stroke="#8B1D24" stroke-width="2.5" fill="none"/>
+                            <line x1="43" y1="40" x2="57" y2="40" stroke="#8B1D24" stroke-width="2.5"/>
+                            <line x1="40" y1="52" x2="60" y2="52" stroke="#8B1D24" stroke-width="2.5"/>
+                            <line x1="38" y1="65" x2="62" y2="65" stroke="#8B1D24" stroke-width="2.5"/>
+                            <path d="M35 55 L75 38 L78 68 Z" fill="none" stroke="#8B1D24" stroke-width="3"/>
+                            <path d="M22 100 C22 75 78 75 78 100 Z" fill="none" stroke="#8B1D24" stroke-width="3.5"/>
+                            <line x1="16" y1="100" x2="84" y2="100" stroke="#8B1D24" stroke-width="4.5"/>
+                        </svg>
+                    </div>
+                    <h2 class="text-base font-black text-center text-[#8B1D24] tracking-tight uppercase leading-tight font-serif">
+                        Secretaría Departamental<br>de Minería e Hidrocarburos
+                    </h2>
+                    <div class="flex items-center gap-2 mt-2">
+                        <span class="text-[#8B1D24] font-bold text-xs">➤➤➤</span>
+                        <span class="text-[9px] font-black text-[#8B1D24] tracking-widest uppercase">Gobernación de Chuquisaca</span>
+                        <span class="text-[#8B1D24] font-bold text-xs">➤➤➤</span>
+                    </div>
                 </div>
                 <div class="inline-block mt-4 px-3 py-1 bg-red-100 text-[#8B1D24] text-[10px] font-bold tracking-widest rounded-full uppercase border border-red-200">
                     Control Operativo & Fiscalización
@@ -407,7 +425,7 @@
 
         </div>
 
-        <!-- VISTA 2: SECCIÓN DE INGRESO DE DATOS -->
+        <!-- VISTA 2: SECCIÓN DE INGRESO DE DATOS (SIN LÍMITES DE RANGO Y CON NOTA PARA VALOR 0) -->
         <div id="view-entry" class="hidden h-full flex flex-col">
             <header class="p-6 border-b border-slate-200 bg-white flex justify-between items-center sticky top-0 z-10 shadow-sm">
                 <div class="flex items-center gap-3">
@@ -416,7 +434,7 @@
                     </button>
                     <div>
                         <h1 class="text-xl font-bold text-slate-900"><i class="fas fa-file-import text-[#8B1D24] mr-2"></i> Módulo de Carga Diaria de Partes</h1>
-                        <p class="text-xs text-slate-500 mt-0.5" id="entry-subtitle-info">Ingreso de volúmenes de producción, destinos, densidad y entregas fiscales.</p>
+                        <p class="text-xs text-slate-500 mt-0.5" id="entry-subtitle-info">Ingreso libre de volúmenes. Si no cuenta con el dato para un parámetro, se puede considerar y registrar el valor de 0.</p>
                     </div>
                 </div>
                 <button onclick="cerrarSesion()" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
@@ -427,6 +445,12 @@
             <div class="p-6 max-w-6xl w-full mx-auto flex-1 overflow-y-auto space-y-6">
                 
                 <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8">
+                    <!-- Nota Informativa de Cero -->
+                    <div class="mb-5 bg-amber-50 border border-amber-200 p-3.5 rounded-2xl text-xs text-amber-800 flex items-center gap-3">
+                        <i class="fas fa-info-circle text-amber-600 text-base shrink-0"></i>
+                        <span><strong>Nota de Registro:</strong> Los campos no tienen restricciones de límite superior. El valor <strong>0</strong> es totalmente válido y será tomado en cuenta por el sistema cuando no se disponga de un registro específico.</span>
+                    </div>
+
                     <!-- Parámetros Generales -->
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pb-6 border-b border-slate-200 items-end">
                         <div class="w-full">
@@ -444,7 +468,7 @@
                         </div>
                         <div class="w-full">
                             <label class="block text-xs font-bold text-amber-700 mb-1.5">3. WTI del Día ($/bbl)</label>
-                            <input type="number" id="input-wti" min="0" max="1000" step="0.01" value="82.50" class="w-full h-11 bg-slate-50 border border-slate-300 rounded-xl px-3 text-sm text-slate-900 font-mono text-right focus:outline-none focus:ring-2 focus:ring-[#8B1D24]">
+                            <input type="number" id="input-wti" step="0.01" value="82.50" class="w-full h-11 bg-slate-50 border border-slate-300 rounded-xl px-3 text-sm text-slate-900 font-mono text-right focus:outline-none focus:ring-2 focus:ring-[#8B1D24]">
                         </div>
                     </div>
 
@@ -454,36 +478,36 @@
                             <h3 class="text-xs font-black text-emerald-700 uppercase tracking-wider flex items-center gap-2">
                                 <i class="fas fa-oil-well text-base"></i> A. Líquidos (en bbls)
                             </h3>
-                            <span class="text-[10px] text-slate-400 font-mono font-semibold">Rangos: 0 a 2000</span>
+                            <span class="text-[10px] text-slate-400 font-mono font-semibold">Sin restricciones de rango (0 permitido)</span>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 bg-emerald-50/50 p-4 rounded-2xl border border-emerald-100">
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-700 mb-1">Prod. de Líquidos</label>
-                                <input type="number" id="liq-prod" min="0" max="2000" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
+                                <input type="number" id="liq-prod" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-700 mb-1">Petróleo</label>
-                                <input type="number" id="liq-petroleo" min="0" max="2000" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
+                                <input type="number" id="liq-petroleo" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-700 mb-1">Condensado</label>
-                                <input type="number" id="liq-condensado" min="0" max="1500" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
+                                <input type="number" id="liq-condensado" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-700 mb-1">Densidad</label>
-                                <input type="number" id="liq-densidad" min="0" max="1000" step="0.01" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.00">
+                                <input type="number" id="liq-densidad" step="0.01" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.00">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-700 mb-1">Gasolina</label>
-                                <input type="number" id="liq-gasolina" min="0" max="1000" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
+                                <input type="number" id="liq-gasolina" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-700 mb-1">Agua</label>
-                                <input type="number" id="liq-agua" min="0" max="1000" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
+                                <input type="number" id="liq-agua" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
                             </div>
                             <div class="sm:col-span-2">
                                 <label class="block text-[11px] font-bold text-emerald-800 mb-1">Petróleo Entregado (Fiscal)</label>
-                                <input type="number" id="liq-entregado" min="0" max="2000" step="0.1" class="w-full bg-white border border-emerald-300 rounded-lg p-2 text-xs text-emerald-900 font-mono font-bold text-right" placeholder="0.0">
+                                <input type="number" id="liq-entregado" step="0.1" class="w-full bg-white border border-emerald-300 rounded-lg p-2 text-xs text-emerald-900 font-mono font-bold text-right" placeholder="0.0">
                             </div>
                         </div>
                     </div>
@@ -494,40 +518,40 @@
                             <h3 class="text-xs font-black text-sky-700 uppercase tracking-wider flex items-center gap-2">
                                 <i class="fas fa-fire-flame-curved text-base"></i> B. Gas (en MPC)
                             </h3>
-                            <span class="text-[10px] text-slate-400 font-mono font-semibold">Rangos: 0 a 50000</span>
+                            <span class="text-[10px] text-slate-400 font-mono font-semibold">Sin restricciones de rango (0 permitido)</span>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 bg-sky-50/50 p-4 rounded-2xl border border-sky-100">
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-700 mb-1">Prod. Actual de Gas</label>
-                                <input type="number" id="gas-prod" min="0" max="50000" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
+                                <input type="number" id="gas-prod" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-700 mb-1">Entrega Gasoducto</label>
-                                <input type="number" id="gas-gasoducto" min="0" max="50000" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
+                                <input type="number" id="gas-gasoducto" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-700 mb-1">Entrega Proceso</label>
-                                <input type="number" id="gas-proceso" min="0" max="50000" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
+                                <input type="number" id="gas-proceso" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-700 mb-1">Licuables</label>
-                                <input type="number" id="gas-licuables" min="0" max="50000" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
+                                <input type="number" id="gas-licuables" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-700 mb-1">Combustible</label>
-                                <input type="number" id="gas-combustible" min="0" max="50000" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
+                                <input type="number" id="gas-combustible" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-700 mb-1">Residual</label>
-                                <input type="number" id="gas-residual" min="0" max="50000" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
+                                <input type="number" id="gas-residual" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold text-red-600 mb-1">Quemado / Flare</label>
-                                <input type="number" id="gas-quemado" min="0" max="1000" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-red-700 font-mono text-right" placeholder="0.0">
+                                <input type="number" id="gas-quemado" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-red-700 font-mono text-right" placeholder="0.0">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-bold text-slate-700 mb-1">CO₂</label>
-                                <input type="number" id="gas-co2" min="0" max="1000" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
+                                <input type="number" id="gas-co2" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs text-slate-900 font-mono text-right" placeholder="0.0">
                             </div>
                         </div>
                     </div>
@@ -538,16 +562,16 @@
                             <h3 class="text-xs font-black text-amber-700 uppercase tracking-wider flex items-center gap-2">
                                 <i class="fas fa-gas-pump text-base"></i> C. GLP (en m³)
                             </h3>
-                            <span class="text-[10px] text-slate-400 font-mono font-semibold">Rangos: 0 a 50000</span>
+                            <span class="text-[10px] text-slate-400 font-mono font-semibold">Sin restricciones de rango (0 permitido)</span>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-amber-50/50 p-4 rounded-2xl border border-amber-100">
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-1">Producción GLP (m³)</label>
-                                <input type="number" id="glp-prod" min="0" max="50000" step="0.01" class="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900 font-mono text-right" placeholder="0.00">
+                                <input type="number" id="glp-prod" step="0.01" class="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900 font-mono text-right" placeholder="0.00">
                             </div>
                             <div>
                                 <label class="block text-xs font-bold text-slate-700 mb-1">Entrega GLP (m³)</label>
-                                <input type="number" id="glp-entrega" min="0" max="50000" step="0.01" class="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900 font-mono text-right" placeholder="0.00">
+                                <input type="number" id="glp-entrega" step="0.01" class="w-full bg-white border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900 font-mono text-right" placeholder="0.00">
                             </div>
                         </div>
                     </div>
@@ -901,7 +925,7 @@
             } else {
                 wrapGas.classList.remove('hidden');
                 wrapGlp.classList.remove('hidden');
-                subInfo.innerText = "Ingreso de volúmenes de producción, destinos, densidad y entregas fiscales.";
+                subInfo.innerText = "Ingreso libre de volúmenes. Si no cuenta con el dato, se puede considerar 0.";
             }
         }
 
@@ -1485,7 +1509,7 @@
                 await aplicarPermisosRol(session.user);
                 updateUI();
             } else {
-                document.getElementById('view-login').classList.remove('hidden');
+                document.getElementById('view-login').classList.add('hidden');
             }
         }
 
@@ -1515,7 +1539,7 @@
             ajustarFormularioPorCampo(e.target.value);
         });
 
-        // VALIDACIÓN Y GUARDADO DE DATOS (0 A 1000)
+        // VALIDACIÓN Y GUARDADO DE DATOS (SIN LÍMITES DE RANGO)
         let sessionCount = 0;
         document.getElementById('btn-save').addEventListener('click', async function() {
             if (currentUserRole === 'directivo') {
@@ -1549,12 +1573,6 @@
 
             if (!campoID || !fecha) {
                 alert("Seleccione un campo y especifique la fecha del reporte."); return;
-            }
-
-            const valores = [liqProd, petroleo, condensado, densidad, gasolina, agua, liqEntregado, gasProd, gasGasoducto, gasProceso, gasLicuables, gasCombustible, gasResidual, gasQuemado, gasCo2, glpProd, glpEntrega];
-            const fueraDeRango = valores.some(v => v < 0 || v > 1000);
-            if (fueraDeRango) {
-                alert("Uno o más valores están fuera del rango permitido (0 a 1000). Verifique los datos ingresados."); return;
             }
 
             const btn = document.getElementById('btn-save');
@@ -1606,7 +1624,7 @@
                 updateUI();
             } catch (err) {
                 console.error(err);
-                alert("Error al guardar en Supabase. Verifique si la fecha ya fue registrada para este campo.");
+                alert("Error al guardar en Supabase. Revisa los datos o si la fecha ya fue registrada.");
             } finally {
                 btn.innerHTML = '<i class="fas fa-database"></i> Validar y Guardar Parte Diario en Supabase';
                 btn.disabled = false;
