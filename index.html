@@ -381,7 +381,7 @@
                     </button>
                     <div>
                         <h1 class="text-xl font-bold text-slate-900"><i class="fas fa-file-import text-[#8B1D24] mr-2"></i> Módulo de Carga Diaria de Partes</h1>
-                        <p class="text-xs text-slate-500 mt-0.5" id="entry-subtitle-info">Ingreso libre de volúmenes. Si no cuenta con el dato para un parámetro, registre 0.</p>
+                        <p class="text-xs text-slate-500 mt-0.5" id="entry-subtitle-info">Ingreso libre de volúmenes para todos los campos operativos.</p>
                     </div>
                 </div>
                 <button onclick="cerrarSesion()" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
@@ -394,7 +394,7 @@
                 <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8">
                     <div class="mb-5 bg-amber-50 border border-amber-200 p-3.5 rounded-2xl text-xs text-amber-800 flex items-center gap-3">
                         <i class="fas fa-info-circle text-amber-600 text-base shrink-0"></i>
-                        <span><strong>Nota Operativa:</strong> No existen límites de rango. El valor <strong>0</strong> es válido ante ausencia de datos.</span>
+                        <span><strong>Nota Operativa:</strong> El valor <strong>0</strong> es totalmente válido y será tomado en cuenta cuando no se disponga de un registro específico.</span>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pb-6 border-b border-slate-200 items-end">
@@ -949,7 +949,6 @@
             });
         }
 
-        // CARGA COMPLETA SIN LÍMITES DESDE SUPABASE PARA GRÁFICAS DINÁMICAS
         async function cargarDatosDesdeSupabasePorFiltro() {
             const tipoFiltro = document.getElementById('dashboard-tipo-periodo').value;
             const campoId = mapaCampos[currentField];
@@ -986,7 +985,6 @@
                     labelsDinamicos = diasLabels;
                 }
 
-                // Actualizar Gráfica de Gas (Habilitada para todos los campos incluyendo Monteagudo)
                 charts.gasProd.data.labels = labelsDinamicos;
                 charts.gasProd.data.datasets[0].data = arrGas;
                 charts.gasProd.update();
