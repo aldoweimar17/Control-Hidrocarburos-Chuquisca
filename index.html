@@ -279,7 +279,7 @@
                 </div>
             </div>
 
-            <!-- SUB-PANEL 1: PRODUCCIÓN BRUTA -->
+            <!-- SUB-PANEL 1: PRODUCCIÓN BRUTA (Gas habilitado para todos los campos incluyendo Monteagudo) -->
             <div id="panel-produccion" class="block space-y-6">
                 <div id="wrapper-chart-gas" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm relative">
                     <div class="flex flex-col md:flex-row justify-between md:items-center border-b border-slate-100 pb-3 mb-4 gap-2">
@@ -332,21 +332,6 @@
 
             <!-- SUB-PANEL 2: FISCALIZACIÓN & BALANCE DE MATERIA -->
             <div id="panel-fiscalizacion" class="hidden space-y-6">
-                <div id="wrapper-balance-monteagudo" class="hidden bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
-                    <div class="border-b border-slate-100 pb-3 mb-4 flex flex-col md:flex-row justify-between md:items-center gap-3">
-                        <div class="flex items-center gap-3">
-                            <div>
-                                <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-                                    <i class="fas fa-balance-scale text-[#8B1D24]"></i> Fiscalización & Balance de Materia: Monteagudo (bbls)
-                                </h2>
-                                <p class="text-[11px] text-slate-500 mt-0.5">Desglose integral de componentes líquidos extraídos: Petróleo, Condensado, Gasolina y Agua.</p>
-                            </div>
-                            <div id="alert-balance-monteagudo" class="text-xs font-bold px-2.5 py-1 rounded-xl shadow-sm border border-slate-200 bg-slate-50">--</div>
-                        </div>
-                    </div>
-                    <div class="large-chart-container"><canvas id="chart-balance-monteagudo"></canvas></div>
-                </div>
-
                 <div id="wrapper-balance-gas" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
                     <div class="border-b border-slate-100 pb-3 mb-4 flex flex-col md:flex-row justify-between md:items-center gap-2">
                         <div class="flex items-center gap-3">
@@ -396,7 +381,7 @@
                     </button>
                     <div>
                         <h1 class="text-xl font-bold text-slate-900"><i class="fas fa-file-import text-[#8B1D24] mr-2"></i> Módulo de Carga Diaria de Partes</h1>
-                        <p class="text-xs text-slate-500 mt-0.5" id="entry-subtitle-info">Ingreso libre de volúmenes. Si no cuenta con el dato para un parámetro, registre 0.</p>
+                        <p class="text-xs text-slate-500 mt-0.5" id="entry-subtitle-info">Ingreso libre de volúmenes para todos los campos operativos.</p>
                     </div>
                 </div>
                 <button onclick="cerrarSesion()" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
@@ -405,16 +390,17 @@
             </header>
 
             <div class="p-6 max-w-6xl w-full mx-auto flex-1 overflow-y-auto space-y-6">
+                
                 <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8">
                     <div class="mb-5 bg-amber-50 border border-amber-200 p-3.5 rounded-2xl text-xs text-amber-800 flex items-center gap-3">
                         <i class="fas fa-info-circle text-amber-600 text-base shrink-0"></i>
-                        <span><strong>Nota Operativa:</strong> No existen límites de rango. El valor <strong>0</strong> es válido ante ausencia de datos.</span>
+                        <span><strong>Nota Operativa:</strong> El valor <strong>0</strong> es totalmente válido y será tomado en cuenta cuando no se disponga de un registro específico.</span>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pb-6 border-b border-slate-200 items-end">
                         <div class="w-full">
                             <label class="block text-xs font-bold text-slate-700 mb-1.5">1. Bloque / Campo Operativo</label>
-                            <select id="input-campo" onchange="manejarCambioCampoFormulario(this.value)" class="w-full h-11 bg-slate-50 border border-slate-300 rounded-xl px-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#8B1D24]">
+                            <select id="input-campo" class="w-full h-11 bg-slate-50 border border-slate-300 rounded-xl px-3 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-[#8B1D24]">
                                 <option value="" disabled selected>-- Seleccione Campo --</option>
                                 <option value="monteagudo">Monteagudo (Líquidos, Gas y GLP)</option>
                                 <option value="vuelta-grande">Vuelta Grande</option>
@@ -539,10 +525,10 @@
                     </div>
                 </div>
 
-                <!-- Historial de Partes Procesados -->
+                <!-- Historial de Partes Procesados con Botón de Edición Rápida -->
                 <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
                     <div class="p-4 bg-slate-50 border-b border-slate-200 flex justify-between items-center">
-                        <h2 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Historial de Partes Transcritos</h2>
+                        <h2 class="text-xs font-bold text-slate-700 uppercase tracking-wider">Historial de Partes Transcritos (Click en Editar para modificar)</h2>
                         <span class="text-xs bg-slate-200 text-slate-700 px-2.5 py-1 rounded-full font-mono font-bold" id="counter">0 Registros</span>
                     </div>
                     <div class="overflow-x-auto">
@@ -554,8 +540,7 @@
                                     <th class="p-3 text-right">Gas (MPC)</th>
                                     <th class="p-3 text-right">Líquidos (bbl)</th>
                                     <th class="p-3 text-right">Petróleo (bbl)</th>
-                                    <th class="p-3 text-right">Condensado (bbl)</th>
-                                    <th class="p-3 text-center">Estado</th>
+                                    <th class="p-3 text-center">Acción</th>
                                 </tr>
                             </thead>
                             <tbody id="log-body" class="divide-y divide-slate-100 text-slate-700 font-mono">
@@ -568,7 +553,7 @@
             </div>
         </div>
 
-        <!-- VISTA: GENERADOR DE REPORTE PDF & EDICIÓN DE REGISTROS -->
+        <!-- VISTA: GENERADOR DE REPORTE PDF -->
         <div id="view-reports" class="hidden h-full flex flex-col bg-slate-100">
             <header class="p-6 border-b border-slate-200 bg-white flex justify-between items-center sticky top-0 z-10 shadow-sm no-print">
                 <div class="flex items-center gap-3">
@@ -576,8 +561,8 @@
                         <i class="fas fa-bars text-lg"></i>
                     </button>
                     <div>
-                        <h1 class="text-xl font-bold text-slate-900"><i class="fas fa-print text-[#8B1D24] mr-2"></i> Generador de Reportes y Módulo de Edición</h1>
-                        <p class="text-xs text-slate-500 mt-0.5">Emisión de actas oficiales y corrección rápida de datos ya cargados.</p>
+                        <h1 class="text-xl font-bold text-slate-900"><i class="fas fa-print text-[#8B1D24] mr-2"></i> Generador de Reportes Oficiales en PDF</h1>
+                        <p class="text-xs text-slate-500 mt-0.5">Emisión de actas oficiales con selección de fechas, rangos y gráficas de respaldo.</p>
                     </div>
                 </div>
                 <button onclick="cerrarSesion()" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
@@ -586,12 +571,11 @@
             </header>
 
             <div class="p-6 max-w-4xl w-full mx-auto flex-1 overflow-y-auto space-y-6">
-                <!-- Filtros y Edición Interactiva (No se imprimen) -->
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 no-print">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">Campo Operativo</label>
-                            <select id="report-campo" onchange="cargarDatosParaEdicion()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900">
+                            <select id="report-campo" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900">
                                 <option value="monteagudo">Monteagudo</option>
                                 <option value="vuelta-grande">Vuelta Grande</option>
                                 <option value="margarita">Margarita - Huacaya</option>
@@ -610,7 +594,7 @@
                     <div id="container-calendarios" class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2 border-t border-slate-100">
                         <div id="box-fecha-unica">
                             <label class="block text-xs font-bold text-slate-600 mb-1">Seleccionar Día</label>
-                            <input type="date" id="report-fecha-unica" onchange="cargarDatosParaEdicion()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-xs text-slate-900">
+                            <input type="date" id="report-fecha-unica" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-xs text-slate-900">
                         </div>
                         <div id="box-rango-inicio" class="hidden">
                             <label class="block text-xs font-bold text-slate-600 mb-1">Fecha de Inicio</label>
@@ -622,31 +606,11 @@
                         </div>
                         <div id="box-mes-picker" class="hidden">
                             <label class="block text-xs font-bold text-slate-600 mb-1">Seleccionar Mes y Año</label>
-                            <input type="month" id="report-mes-val" onchange="cargarDatosParaEdicion()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-xs text-slate-900" value="2026-09">
+                            <input type="month" id="report-mes-val" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-xs text-slate-900" value="2026-09">
                         </div>
                     </div>
 
-                    <!-- PANEL DE EDICIÓN RÁPIDA DE DATOS CARGADOS -->
-                    <div class="pt-3 border-t border-slate-200">
-                        <h3 class="text-xs font-bold text-[#8B1D24] uppercase tracking-wider mb-2"><i class="fas fa-edit mr-1"></i> Corrección y Edición de Registro en Supabase</h3>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-slate-50 p-3 rounded-xl border border-slate-200 items-end">
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Gas (MPC)</label>
-                                <input type="number" id="edit-val-gas" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs font-mono text-right" placeholder="0.0">
-                            </div>
-                            <div>
-                                <label class="block text-[11px] font-bold text-slate-600 mb-1">Líquidos / Petróleo (bbl)</label>
-                                <input type="number" id="edit-val-liq" step="0.1" class="w-full bg-white border border-slate-300 rounded-lg p-2 text-xs font-mono text-right" placeholder="0.0">
-                            </div>
-                            <div>
-                                <button onclick="guardarEdicionRegistro()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold p-2.5 rounded-lg text-xs transition-all shadow-sm flex items-center justify-center gap-1.5">
-                                    <i class="fas fa-save"></i> Guardar Cambios
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="flex justify-end pt-2 gap-3">
+                    <div class="flex justify-end pt-2">
                         <button onclick="generarReportePDF()" class="bg-[#8B1D24] hover:bg-[#6b141a] text-white font-bold px-6 py-2.5 rounded-xl text-xs transition-all flex items-center gap-2 shadow-md">
                             <i class="fas fa-file-pdf"></i> Imprimir / Guardar PDF Oficial
                         </button>
@@ -832,7 +796,6 @@
         let currentField = 'monteagudo';
         let currentUserRole = 'operador';
         let chartPdfRespaldoInstance = null;
-        let registroEnEdicionId = null;
         const charts = {};
 
         function iniciarReloj() {
@@ -931,7 +894,7 @@
             } else if (viewId === 'reports') {
                 document.getElementById('view-reports').classList.remove('hidden');
                 document.getElementById('btn-menu-reports').className = active;
-                cargarDatosParaEdicion();
+                prepararVistaReportePDF();
             } else if (viewId === 'wells') {
                 document.getElementById('view-wells').classList.remove('hidden');
                 document.getElementById('btn-menu-wells').className = active;
@@ -957,20 +920,6 @@
                 type: 'bar',
                 data: { labels: diasLabels, datasets: [{ label: 'GLP (m³)', data: [0,0,0,0,0,0,0], backgroundColor: '#d97706', borderRadius: 6 }] },
                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' } } } }
-            });
-
-            charts.balanceMonteagudo = new Chart(document.getElementById('chart-balance-monteagudo').getContext('2d'), {
-                type: 'bar',
-                data: {
-                    labels: diasLabels,
-                    datasets: [
-                        { label: 'Petróleo (bbls)', data: [0,0,0,0,0,0,0], backgroundColor: '#059669', stack: 'm' },
-                        { label: 'Condensado (bbls)', data: [0,0,0,0,0,0,0], backgroundColor: '#0284c7', stack: 'm' },
-                        { label: 'Gasolina (bbls)', data: [0,0,0,0,0,0,0], backgroundColor: '#d97706', stack: 'm' },
-                        { label: 'Agua de Formación (bbls)', data: [0,0,0,0,0,0,0], backgroundColor: '#64748b', stack: 'm' }
-                    ]
-                },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, grid: { color: '#f1f5f9' }, min: 0 } } }
             });
 
             charts.balanceGas = new Chart(document.getElementById('chart-balance-gas').getContext('2d'), {
@@ -1022,7 +971,6 @@
 
                 const arrLiq = [0,0,0,0,0,0,0];
                 const arrGas = [0,0,0,0,0,0,0];
-                const arrPet = [0,0,0,0,0,0,0];
                 let labelsDinamicos = diasLabels;
 
                 if (data && data.length > 0) {
@@ -1030,32 +978,14 @@
                         const pos = idx % 7;
                         arrLiq[pos] = Number(r.vol_liquidos_bpd) || 0;
                         arrGas[pos] = Number(r.vol_gas_mmmcd) || 0;
-                        arrPet[pos] = Number(r.vol_liquidos_bpd) || 0;
                         if (r.fecha_operativa) labelsDinamicos[pos] = r.fecha_operativa.substring(5);
                     });
                 }
 
-                const wrapChartGas = document.getElementById('wrapper-chart-gas');
-                const wrapBalGas = document.getElementById('wrapper-balance-gas');
-                const wrapBalMonteagudo = document.getElementById('wrapper-balance-monteagudo');
-
-                if (currentField === 'monteagudo') {
-                    wrapChartGas.classList.add('hidden');
-                    wrapBalGas.classList.add('hidden');
-                    wrapBalMonteagudo.classList.remove('hidden');
-
-                    charts.balanceMonteagudo.data.labels = labelsDinamicos;
-                    charts.balanceMonteagudo.data.datasets[0].data = arrPet;
-                    charts.balanceMonteagudo.update();
-                } else {
-                    wrapChartGas.classList.remove('hidden');
-                    wrapBalGas.classList.remove('hidden');
-                    wrapBalMonteagudo.classList.add('hidden');
-
-                    charts.gasProd.data.labels = labelsDinamicos;
-                    charts.gasProd.data.datasets[0].data = arrGas;
-                    charts.gasProd.update();
-                }
+                // Gráfica de Gas habilitada y dinámica para todos los campos (incluyendo Monteagudo)
+                charts.gasProd.data.labels = labelsDinamicos;
+                charts.gasProd.data.datasets[0].data = arrGas;
+                charts.gasProd.update();
 
                 charts.liqProd.data.labels = labelsDinamicos;
                 charts.liqProd.data.datasets[0].data = arrLiq;
@@ -1091,8 +1021,11 @@
                             <td class="p-3 text-right text-sky-700 font-bold">${(r.vol_gas_mmmcd || 0).toFixed(1)}</td>
                             <td class="p-3 text-right text-emerald-700 font-bold">${(r.vol_liquidos_bpd || 0).toFixed(1)}</td>
                             <td class="p-3 text-right text-slate-800">${(r.vol_liquidos_bpd || 0).toFixed(1)}</td>
-                            <td class="p-3 text-right text-slate-600">0.0</td>
-                            <td class="p-3 text-center"><span class="text-[10px] text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">Sincronizado</span></td>
+                            <td class="p-3 text-center">
+                                <button onclick="cargarRegistroParaEditar('${r.fecha_operativa}', ${r.id_campo}, ${r.vol_gas_mmmcd || 0}, ${r.vol_liquidos_bpd || 0})" class="px-3 py-1 bg-amber-100 text-amber-800 hover:bg-amber-200 rounded-lg text-[10px] font-bold shadow-sm">
+                                    <i class="fas fa-edit"></i> Editar
+                                </button>
+                            </td>
                         `;
                         tbody.appendChild(tr);
                     });
@@ -1100,6 +1033,17 @@
             } catch (err) { console.error(err); }
             await cargarDatosDesdeSupabasePorFiltro();
             obtenerUltimaFechaReporte();
+        }
+
+        function cargarRegistroParaEditar(fecha, idCampo, gas, liq) {
+            switchView('entry');
+            const campoKey = Object.keys(mapaCampos).find(key => mapaCampos[key] === idCampo);
+            document.getElementById('input-campo').value = campoKey;
+            document.getElementById('input-fecha').value = fecha;
+            document.getElementById('gas-prod').value = gas;
+            document.getElementById('liq-petroleo').value = liq;
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            showToastMessage(`Cargado para edición: ${fecha} (${campoKey.toUpperCase()})`);
         }
 
         async function obtenerUltimaFechaReporte() {
@@ -1134,68 +1078,7 @@
             if (tipo === 'dia') boxUnica.classList.remove('hidden');
             else if (tipo === 'sem') { boxInicio.classList.remove('hidden'); boxFin.classList.remove('hidden'); }
             else if (tipo === 'mes') boxMes.classList.remove('hidden');
-            
-            cargarDatosParaEdicion();
-        }
-
-        // CARGAR DATOS EN EL MÓDULO DE REPORTE Y EDICIÓN
-        async function cargarDatosParaEdicion() {
-            const campoKey = document.getElementById('report-campo').value;
-            const fechaSel = document.getElementById('report-fecha-unica').value || new Date().toISOString().split('T')[0];
-            const campoId = mapaCampos[campoKey];
-
-            try {
-                const { data } = await clienteSupabase
-                    .from('produccion_diaria')
-                    .select('*')
-                    .eq('id_campo', campoId)
-                    .eq('fecha_operativa', fechaSel)
-                    .single();
-
-                if (data) {
-                    registroEnEdicionId = data.id;
-                    document.getElementById('edit-val-gas').value = data.vol_gas_mmmcd || 0;
-                    document.getElementById('edit-val-liq').value = data.vol_liquidos_bpd || 0;
-                } else {
-                    registroEnEdicionId = null;
-                    document.getElementById('edit-val-gas').value = 0;
-                    document.getElementById('edit-val-liq').value = 0;
-                }
-            } catch (e) {
-                registroEnEdicionId = null;
-                document.getElementById('edit-val-gas').value = 0;
-                document.getElementById('edit-val-liq').value = 0;
-            }
             prepararVistaReportePDF();
-        }
-
-        async function guardarEdicionRegistro() {
-            const campoKey = document.getElementById('report-campo').value;
-            const fechaSel = document.getElementById('report-fecha-unica').value || new Date().toISOString().split('T')[0];
-            const campoId = mapaCampos[campoKey];
-            const gasMod = parseFloat(document.getElementById('edit-val-gas').value) || 0;
-            const liqMod = parseFloat(document.getElementById('edit-val-liq').value) || 0;
-
-            try {
-                const { error } = await clienteSupabase
-                    .from('produccion_diaria')
-                    .upsert([{
-                        id_campo: campoId,
-                        fecha_operativa: fechaSel,
-                        vol_gas_mmmcd: gasMod,
-                        vol_liquidos_bpd: liqMod
-                    }], { onConflict: 'id_campo, fecha_operativa' });
-
-                if (error) throw error;
-
-                showToast();
-                showToastMessage("¡Registro actualizado con éxito!");
-                await actualizarHistorialYTablero();
-                cargarDatosParaEdicion();
-            } catch (err) {
-                console.error(err);
-                alert("Error al actualizar el registro en Supabase.");
-            }
         }
 
         function prepararVistaReportePDF() {
@@ -1209,8 +1092,8 @@
             if (tipoReporte === 'dia') {
                 const valFec = document.getElementById('report-fecha-unica').value || new Date().toISOString().split('T')[0];
                 const [y, m, d] = valFec.split('-');
-                const fechaFmt = new Date(y, m - 1, d).toLocaleDateString('es-BO', { day: 'numeric', month: 'long', year: 'numeric' });
-                textoPeriodo = `(Período: ${fechaFmt})`;
+                const fObj = new Date(y, m - 1, d);
+                textoPeriodo = `(Período: ${fObj.toLocaleDateString('es-BO', { day: 'numeric', month: 'long', year: 'numeric' })})`;
             } else {
                 textoPeriodo = `(Período Seleccionado Oficial)`;
             }
@@ -1220,12 +1103,9 @@
             const tbody = document.getElementById('rep-table-body');
             tbody.innerHTML = '';
 
-            const gasVal = parseFloat(document.getElementById('edit-val-gas').value) || 0;
-            const liqVal = parseFloat(document.getElementById('edit-val-liq').value) || 0;
-
             let filas = [
-                ['Producción de Líquidos / Petróleo', 'bbls', liqVal.toFixed(1), 'Registrado y verificado'],
-                ['Gas Natural Bruto', 'MPC', gasVal.toFixed(1), 'Oferta de reservorio']
+                ['Producción de Líquidos / Petróleo', 'bbls', '0.0', 'Registrado en planta'],
+                ['Gas Natural Bruto', 'MPC', '0.0', 'Oferta de reservorio']
             ];
 
             filas.forEach(f => {
@@ -1238,16 +1118,16 @@
             if (chartPdfRespaldoInstance) chartPdfRespaldoInstance.destroy();
             chartPdfRespaldoInstance = new Chart(ctxPdf, {
                 type: 'bar',
-                data: { labels: diasLabels, datasets: [{ label: `Respaldo`, data: [liqVal, liqVal, liqVal, liqVal, liqVal, liqVal, liqVal], backgroundColor: '#8B1D24', borderRadius: 4 }] },
+                data: { labels: diasLabels, datasets: [{ label: `Respaldo`, data: [0,0,0,0,0,0,0], backgroundColor: '#8B1D24', borderRadius: 4 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
             });
         }
 
         function generarReportePDF() { prepararVistaReportePDF(); window.print(); }
 
-        document.getElementById('report-campo').addEventListener('change', cargarDatosParaEdicion);
+        document.getElementById('report-campo').addEventListener('change', prepararVistaReportePDF);
         document.getElementById('report-tipo').addEventListener('change', actualizarControlesCalendario);
-        document.getElementById('report-fecha-unica').addEventListener('change', cargarDatosParaEdicion);
+        document.getElementById('report-fecha-unica').addEventListener('change', prepararVistaReportePDF);
 
         async function aplicarPermisosRol(user) {
             const roleEl = document.getElementById('user-role-display');
@@ -1295,15 +1175,14 @@
             }
         });
 
-        document.getElementById('input-campo').addEventListener('change', function(e) { manejarCambioCampoFormulario(e.target.value); });
-
+        let sessionCount = 0;
         document.getElementById('btn-save').addEventListener('click', async function() {
             if (currentUserRole === 'directivo') { alert("Perfil de consulta."); return; }
 
             const campoID = document.getElementById('input-campo').value;
             const fecha = document.getElementById('input-fecha').value;
             const wti = parseFloat(document.getElementById('input-wti').value) || 82.50;
-            const petroleo = parseFloat(document.getElementById('liq-petroleo').value) || 0;
+            const petroleo = parseFloat(document.getElementById('liq-petroleo').value) || parseFloat(document.getElementById('liq-prod').value) || 0;
             const gasProd = parseFloat(document.getElementById('gas-prod').value) || 0;
 
             if (!campoID || !fecha) { alert("Seleccione campo y fecha."); return; }
@@ -1326,7 +1205,7 @@
                 if (error) throw error;
 
                 showToast();
-                showToastMessage("¡Parte diario guardado con éxito!");
+                showToastMessage("¡Parte diario guardado o actualizado con éxito!");
 
                 document.querySelectorAll('#view-entry input[type="number"]').forEach(input => {
                     if (input.id !== 'input-wti') input.value = '';
