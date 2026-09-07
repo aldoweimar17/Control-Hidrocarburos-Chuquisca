@@ -217,12 +217,12 @@
             <div class="bg-white border border-slate-200 p-4 rounded-2xl mb-6 shadow-sm flex flex-wrap items-center justify-between gap-4">
                 <div class="flex items-center gap-2 text-xs font-bold text-slate-700 uppercase">
                     <i class="fas fa-calendar-alt text-[#8B1D24]"></i>
-                    <span>Visualización del Tablero (Día Previo por Defecto):</span>
+                    <span>Visualización del Tablero (Día Anterior por Defecto):</span>
                 </div>
                 <div class="flex flex-wrap items-center gap-3">
                     <select id="dashboard-tipo-periodo" onchange="actualizarFiltrosTableroGlobal()" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#8B1D24]">
                         <option value="dia" selected>Reporte Diario (Día Anterior)</option>
-                        <option value="sem">Reporte Semanal</option>
+                        <option value="sem">Reporte Semanal (Semanas del Mes)</option>
                         <option value="mes">Reporte Mensual</option>
                     </select>
 
@@ -279,7 +279,7 @@
                 </div>
             </div>
 
-            <!-- SUB-PANEL 1: PRODUCCIÓN BRUTA (Con desglose completo de líquidos) -->
+            <!-- SUB-PANEL 1: PRODUCCIÓN BRUTA -->
             <div id="panel-produccion" class="block space-y-6">
                 <div id="wrapper-chart-gas" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm relative">
                     <div class="flex flex-col md:flex-row justify-between md:items-center border-b border-slate-100 pb-3 mb-4 gap-2">
@@ -327,7 +327,7 @@
                 </div>
             </div>
 
-            <!-- SUB-PANEL 2: FISCALIZACIÓN & BALANCE (SINCRONIZADO CON DATOS REALES) -->
+            <!-- SUB-PANEL 2: FISCALIZACIÓN & BALANCE -->
             <div id="panel-fiscalizacion" class="hidden space-y-6">
                 <div id="wrapper-balance-gas" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
                     <div class="border-b border-slate-100 pb-3 mb-4 flex flex-col md:flex-row justify-between md:items-center gap-2">
@@ -378,7 +378,7 @@
                     </button>
                     <div>
                         <h1 class="text-xl font-bold text-slate-900"><i class="fas fa-file-import text-[#8B1D24] mr-2"></i> Módulo de Carga Diaria de Partes</h1>
-                        <p class="text-xs text-slate-500 mt-0.5" id="entry-subtitle-info">Ingreso libre de volúmenes para todos los campos operativos.</p>
+                        <p class="text-xs text-slate-500 mt-0.5">Ingreso libre de volúmenes para todos los campos operativos.</p>
                     </div>
                 </div>
                 <button onclick="cerrarSesion()" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
@@ -966,6 +966,10 @@
                 if (tipoFiltro === 'dia') {
                     const fechaSel = document.getElementById('dashboard-input-dia').value || new Date().toISOString().split('T')[0];
                     query = query.eq('fecha_operativa', fechaSel);
+                } else if (tipoFiltro === 'sem') {
+                    const mesSel = document.getElementById('dashboard-input-mes').value || '2026-09';
+                    const [y, m] = mesSel.split('-');
+                    query = query.gte('fecha_operativa', `${y}-${m}-01`).lte('fecha_operativa', `${y}-${m}-31`);
                 } else if (tipoFiltro === 'mes') {
                     const mesSel = document.getElementById('dashboard-input-mes').value || '2026-09';
                     const [y, m] = mesSel.split('-');
@@ -1047,15 +1051,10 @@
                     sessionCount = data.length;
                     document.getElementById('counter').innerText = `${sessionCount} Registros`;
 
-                    // VISTA POR DEFECTO: DÍA ANTERIOR (ÚLTIMO REPORTE DISPONIBLE)
-                    if (data[0] && data[0].fecha_operativa) {
-                        const [y, m, d] = data[0].fecha_operativa.split('-');
-                        const fechaPrevObj = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
-                        fechaPrevObj.setDate(fechaPrevObj.getDate() - 1);
-                        const fechaPrevStr = fechaPrevObj.toISOString().split('T')[0];
-                        
-                        document.getElementById('dashboard-input-dia').value = fechaPrevStr;
-                    }
+                    // VISTA POR DEFECTO: DÍA ANTERIOR ESTRICTO (-1 DÍA DE LA FECHA ACTUAL REAL)
+                    const hoy = new Date();
+                    hoy.setDate(hoy.getDate() - 1);
+                    document.getElementById('dashboard-input-dia').value = hoy.toISOString().split('T')[0];
 
                     data.forEach(r => {
                         const campoNombre = Object.keys(mapaCampos).find(key => mapaCampos[key] === r.id_campo) || 'campo';
@@ -1097,8 +1096,8 @@
             try {
                 const { data } = await clienteSupabase
                     .from('produccion_diaria')
-                    .select('fecha_operativa, created_at')
-                    .order('created_at', { ascending: false })
+                    .select('fecha_operativa, created_at, updated_at')
+                    .order('updated_at', { ascending: false })
                     .limit(1);
 
                 if (data && data.length > 0) {
@@ -1107,8 +1106,9 @@
                     const fechaFmt = f.toLocaleDateString('es-BO', { day: 'numeric', month: 'short' }).toUpperCase();
                     
                     let horaFmt = "--:--";
-                    if (data[0].created_at) {
-                        const hObj = new Date(data[0].created_at);
+                    const marcaTiempo = data[0].updated_at || data[0].created_at;
+                    if (marcaTiempo) {
+                        const hObj = new Date(marcaTiempo);
                         horaFmt = hObj.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit', hour12: false });
                     }
                     dateEl.innerText = `${fechaFmt} — ${horaFmt} hrs`;
@@ -1228,7 +1228,7 @@
             }
         });
 
-        // CORRECCIÓN DEFINITIVA DE UPSERT CON ONCONFLICT EXACTO COMO STRING EN SUPABASE V2
+        // CORRECCIÓN EXACTA DE UPSERT CON onConflict CORRESPONDIENTE A SUPABASE V2
         let sessionCount = 0;
         document.getElementById('btn-save').addEventListener('click', async function() {
             if (currentUserRole === 'directivo') { alert("Perfil de consulta."); return; }
@@ -1261,7 +1261,7 @@
                 if (error) throw error;
 
                 showToast();
-                showToastMessage("¡Parte diario guardado o actualizado con éxito!");
+                showToastMessage("¡Parte diario guardado o actualizado con éxito en Supabase!");
 
                 document.querySelectorAll('#view-entry input[type="number"]').forEach(input => {
                     if (input.id !== 'input-wti') input.value = '';
