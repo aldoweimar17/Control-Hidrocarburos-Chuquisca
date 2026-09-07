@@ -920,12 +920,12 @@
             if (isMonteagudo) {
                 wrapGas.classList.add('hidden');
                 wrapGlp.classList.add('hidden');
-                subInfo.innerText = "Campo Monteagudo: Ingreso exclusivo de componentes líquidos (Petróleo, Condensado, Gasolina y Agua).";
+                subInfo.innerText = "Campo Monteagudo: Ingreso exclusivo de componentes líquidos (Petróleo, Condensado, Gasolina y Agua). El valor 0 es considerado cuando no hay dato.";
                 document.querySelectorAll('#wrapper-gas-section input, #wrapper-glp-section input').forEach(i => i.value = '0');
             } else {
                 wrapGas.classList.remove('hidden');
                 wrapGlp.classList.remove('hidden');
-                subInfo.innerText = "Ingreso libre de volúmenes. Si no cuenta con el dato, se puede considerar 0.";
+                subInfo.innerText = "Ingreso libre de volúmenes. Si no cuenta con el dato para un parámetro, se puede considerar y registrar el valor de 0.";
             }
         }
 
@@ -1539,6 +1539,44 @@
             ajustarFormularioPorCampo(e.target.value);
         });
 
+        // CARGAR HISTORIAL DESDE SUPABASE PARA MANTENER REGISTROS PREVIOS
+        async function cargarHistorialSupabase() {
+            try {
+                const { data, error } = await clienteSupabase
+                    .from('produccion_diaria')
+                    .select('*')
+                    .order('fecha_operativa', { ascending: false });
+
+                if (error) throw error;
+
+                const tbody = document.getElementById('log-body');
+                if (data && data.length > 0) {
+                    tbody.innerHTML = '';
+                    sessionCount = data.length;
+                    document.getElementById('counter').innerText = `${sessionCount} Registros`;
+
+                    data.forEach(r => {
+                        const campoNombre = Object.keys(mapaCampos).find(key => mapaCampos[key] === r.id_campo) || 'campo';
+                        const tr = document.createElement('tr');
+                        tr.className = "hover:bg-slate-50 border-b border-slate-100";
+                        tr.innerHTML = `
+                            <td class="p-3">${r.fecha_operativa}</td>
+                            <td class="p-3 font-bold text-[#8B1D24] uppercase">${campoNombre}</td>
+                            <td class="p-3 text-right text-emerald-700 font-bold">${(r.vol_liquidos_bpd || 0).toFixed(1)}</td>
+                            <td class="p-3 text-right text-slate-800">${(r.vol_liquidos_bpd || 0).toFixed(1)}</td>
+                            <td class="p-3 text-right text-slate-600">0.0</td>
+                            <td class="p-3 text-right text-amber-700">0.0</td>
+                            <td class="p-3 text-right text-slate-500">0.0</td>
+                            <td class="p-3 text-center"><span class="text-[10px] text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">Sincronizado</span></td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+            } catch (err) {
+                console.error("Error al cargar historial:", err);
+            }
+        }
+
         // VALIDACIÓN Y GUARDADO DE DATOS (SIN LÍMITES Y PERMITIENDO EL VALOR 0)
         let sessionCount = 0;
         document.getElementById('btn-save').addEventListener('click', async function() {
@@ -1560,16 +1598,6 @@
             const liqEntregado = parseFloat(document.getElementById('liq-entregado').value) || 0;
 
             const gasProd = isMonteagudo ? 0 : (parseFloat(document.getElementById('gas-prod').value) || 0);
-            const gasGasoducto = isMonteagudo ? 0 : (parseFloat(document.getElementById('gas-gasoducto').value) || 0);
-            const gasProceso = isMonteagudo ? 0 : (parseFloat(document.getElementById('gas-proceso').value) || 0);
-            const gasLicuables = isMonteagudo ? 0 : (parseFloat(document.getElementById('gas-licuables').value) || 0);
-            const gasCombustible = isMonteagudo ? 0 : (parseFloat(document.getElementById('gas-combustible').value) || 0);
-            const gasResidual = isMonteagudo ? 0 : (parseFloat(document.getElementById('gas-residual').value) || 0);
-            const gasQuemado = isMonteagudo ? 0 : (parseFloat(document.getElementById('gas-quemado').value) || 0);
-            const gasCo2 = isMonteagudo ? 0 : (parseFloat(document.getElementById('gas-co2').value) || 0);
-
-            const glpProd = isMonteagudo ? 0 : (parseFloat(document.getElementById('glp-prod').value) || 0);
-            const glpEntrega = isMonteagudo ? 0 : (parseFloat(document.getElementById('glp-entrega').value) || 0);
 
             if (!campoID || !fecha) {
                 alert("Seleccione un campo y especifique la fecha del reporte."); return;
@@ -1593,25 +1621,7 @@
                 if (error) throw error;
 
                 showToast();
-
-                const tbody = document.getElementById('log-body');
-                if (document.getElementById('empty-state')) document.getElementById('empty-state').remove();
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 border-b border-slate-100";
-                tr.innerHTML = `
-                    <td class="p-3">${fecha}</td>
-                    <td class="p-3 font-bold text-[#8B1D24] uppercase">${campoID}</td>
-                    <td class="p-3 text-right text-emerald-700 font-bold">${liqProd.toFixed(1)}</td>
-                    <td class="p-3 text-right text-slate-800">${petroleo.toFixed(1)}</td>
-                    <td class="p-3 text-right text-slate-600">${condensado.toFixed(1)}</td>
-                    <td class="p-3 text-right text-amber-700">${gasolina.toFixed(1)}</td>
-                    <td class="p-3 text-right text-slate-500">${agua.toFixed(1)}</td>
-                    <td class="p-3 text-center"><span class="text-[10px] text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">Guardado / Actualizado</span></td>
-                `;
-                tbody.insertBefore(tr, tbody.firstChild);
-
-                sessionCount++;
-                document.getElementById('counter').innerText = `${sessionCount} Registros`;
+                showToastMessage("¡Parte diario guardado o actualizado con éxito en Supabase!");
 
                 document.querySelectorAll('#view-entry input[type="number"]').forEach(input => {
                     if (input.id !== 'input-wti') input.value = '';
@@ -1621,10 +1631,11 @@
                     ajustarFormularioPorCampo('monteagudo');
                 }
 
+                await cargarHistorialSupabase();
                 updateUI();
             } catch (err) {
                 console.error(err);
-                alert("Error al guardar en Supabase. Verifique su conexión o permisos.");
+                alert("Error al guardar en Supabase. Verifique su conexión o permisos de red.");
             } finally {
                 btn.innerHTML = '<i class="fas fa-database"></i> Validar y Guardar Parte Diario en Supabase';
                 btn.disabled = false;
@@ -1695,6 +1706,12 @@
             }, 3000);
         }
 
+        function showToastMessage(msg) {
+            const t = document.getElementById('toast');
+            t.querySelector('span').innerText = msg;
+            showToast();
+        }
+
         document.getElementById('input-fecha').value = new Date().toISOString().split('T')[0];
         document.getElementById('report-fecha-unica').value = new Date().toISOString().split('T')[0];
         document.getElementById('well-selector').addEventListener('change', (e) => updateWellData(e.target.value));
@@ -1702,6 +1719,7 @@
         iniciarReloj();
         initCharts();
         verificarSesion();
+        cargarHistorialSupabase();
     </script>
 </body>
 </html>
