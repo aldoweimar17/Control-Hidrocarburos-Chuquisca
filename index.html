@@ -277,7 +277,7 @@
                     <div class="bg-blue-50 p-2.5 rounded-xl text-blue-600 border border-blue-200"><i class="fas fa-calendar-check text-lg"></i></div>
                     <div>
                         <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Último Parte Cargado</div>
-                        <div id="update-date" class="text-xs font-bold text-slate-800">Consultando...</div>
+                        <div id="update-date" class="text-xs font-bold text-slate-800">Sin registros</div>
                     </div>
                 </div>
             </div>
@@ -860,56 +860,30 @@
         Chart.defaults.color = '#64748b';
         Chart.defaults.font.family = "'Inter', sans-serif";
 
+        // DATOS EN BLANCO (INICIO VACÍO ESPERANDO INFORMACIÓN REAL DESDE SUPABASE)
         const db = {
             "monteagudo": {
                 name: "Monteagudo",
-                liq: {
-                    dia: [85, 88, 84, 91, 95, 92, 96],
-                    sem: [595, 616, 588, 637, 665, 644, 672],
-                    mes: [2550, 2640, 2520, 2730, 2850, 2760, 2880]
-                },
+                liq: { dia: [0, 0, 0, 0, 0, 0, 0], sem: [0, 0, 0, 0, 0, 0, 0], mes: [0, 0, 0, 0, 0, 0, 0] },
                 balanceLiquidos: {
-                    dia: {
-                        petroleo: [60, 62, 59, 65, 68, 66, 69],
-                        condensado: [15, 16, 15, 16, 17, 16, 17],
-                        gasolina: [10, 10, 10, 10, 10, 10, 10],
-                        agua: [45, 48, 44, 50, 52, 49, 53]
-                    },
-                    sem: {
-                        petroleo: [420, 434, 413, 455, 476, 462, 483],
-                        condensado: [105, 112, 105, 112, 119, 112, 119],
-                        gasolina: [70, 70, 70, 70, 70, 70, 70],
-                        agua: [315, 336, 308, 350, 364, 343, 371]
-                    },
-                    mes: {
-                        petroleo: [1800, 1860, 1770, 1950, 2040, 1980, 2070],
-                        condensado: [450, 480, 450, 480, 510, 480, 510],
-                        gasolina: [300, 300, 300, 300, 300, 300, 300],
-                        agua: [1350, 1440, 1320, 1500, 1560, 1470, 1590]
-                    }
+                    dia: { petroleo: [0,0,0,0,0,0,0], condensado: [0,0,0,0,0,0,0], gasolina: [0,0,0,0,0,0,0], agua: [0,0,0,0,0,0,0] },
+                    sem: { petroleo: [0,0,0,0,0,0,0], condensado: [0,0,0,0,0,0,0], gasolina: [0,0,0,0,0,0,0], agua: [0,0,0,0,0,0,0] },
+                    mes: { petroleo: [0,0,0,0,0,0,0], condensado: [0,0,0,0,0,0,0], gasolina: [0,0,0,0,0,0,0], agua: [0,0,0,0,0,0,0] }
                 }
             },
             "vuelta-grande": {
                 name: "Vuelta Grande",
-                gas: { dia: [850, 870, 840, 890, 910, 895, 920], sem: [5950, 6100, 5880, 6230, 6370, 6265, 6440], mes: [25500, 26100, 25200, 26700, 27300, 26850, 27600] },
-                liq: {
-                    dia: [340, 355, 335, 360, 375, 365, 380],
-                    sem: [2380, 2485, 2345, 2520, 2625, 2555, 2660],
-                    mes: [10200, 10650, 10050, 10800, 11250, 10950, 11400]
-                },
-                glp: [45.2, 46.8, 44.5, 48.1, 49.5, 48.7, 50.2],
-                balance: { gasoducto: [710, 730, 700, 745, 765, 750, 770], proceso: [85, 87, 85, 89, 90, 89, 92], flare: [30, 28, 31, 30, 29, 31, 32], co2: [25, 25, 24, 26, 26, 25, 26] }
+                gas: { dia: [0,0,0,0,0,0,0], sem: [0,0,0,0,0,0,0], mes: [0,0,0,0,0,0,0] },
+                liq: { dia: [0,0,0,0,0,0,0], sem: [0,0,0,0,0,0,0], mes: [0,0,0,0,0,0,0] },
+                glp: [0,0,0,0,0,0,0],
+                balance: { gasoducto: [0,0,0,0,0,0,0], proceso: [0,0,0,0,0,0,0], flare: [0,0,0,0,0,0,0], co2: [0,0,0,0,0,0,0] }
             },
             "margarita": {
                 name: "Margarita - Huacaya",
-                gas: { dia: [980, 975, 990, 985, 995, 990, 1000], sem: [6860, 6825, 6930, 6895, 6965, 6930, 7000], mes: [29400, 29250, 29700, 29550, 29850, 29700, 30000] },
-                liq: {
-                    dia: [820, 810, 835, 830, 845, 840, 850],
-                    sem: [5740, 5670, 5845, 5810, 5915, 5880, 5950],
-                    mes: [24600, 24300, 25050, 24900, 25350, 25200, 25500]
-                },
-                glp: [88.5, 87.2, 89.8, 89.1, 91.0, 90.3, 92.4],
-                balance: { gasoducto: [860, 855, 870, 865, 875, 870, 880], proceso: [75, 74, 76, 75, 76, 75, 77], flare: [25, 26, 24, 25, 24, 25, 23], co2: [20, 20, 20, 20, 20, 20, 20] }
+                gas: { dia: [0,0,0,0,0,0,0], sem: [0,0,0,0,0,0,0], mes: [0,0,0,0,0,0,0] },
+                liq: { dia: [0,0,0,0,0,0,0], sem: [0,0,0,0,0,0,0], mes: [0,0,0,0,0,0,0] },
+                glp: [0,0,0,0,0,0,0],
+                balance: { gasoducto: [0,0,0,0,0,0,0], proceso: [0,0,0,0,0,0,0], flare: [0,0,0,0,0,0,0], co2: [0,0,0,0,0,0,0] }
             }
         };
 
@@ -1390,14 +1364,13 @@
 
             document.getElementById('rep-print-fecha').innerText = `Fecha Emisión: ${new Date().toLocaleDateString('es-BO', { day: '2-digit', month: 'long', year: 'numeric' })}`;
 
-            // Formatear texto del período según la selección del calendario
             let textoPeriodo = "";
             if (tipoReporte === 'dia') {
                 const valFec = document.getElementById('report-fecha-unica').value || new Date().toISOString().split('T')[0];
                 const partes = valFec.split('-');
                 const fObj = new Date(partes[0], partes[1] - 1, partes[2]);
                 const fechaFmt = fObj.toLocaleDateString('es-BO', { day: 'numeric', month: 'long', year: 'numeric' });
-                textoPeriodo = `(Período: ${fechaFmt} - Diario)`;
+                textoPeriodo = `(Período: ${fechaFmt})`;
             } else if (tipoReporte === 'sem') {
                 const fIni = document.getElementById('report-fecha-inicio').value || '2026-09-01';
                 const fFin = document.getElementById('report-fecha-fin').value || '2026-09-07';
@@ -1405,7 +1378,7 @@
                 const [y2, m2, d2] = fFin.split('-');
                 const fecha1 = new Date(y1, m1 - 1, d1).toLocaleDateString('es-BO', { day: 'numeric', month: 'long', year: 'numeric' });
                 const fecha2 = new Date(y2, m2 - 1, d2).toLocaleDateString('es-BO', { day: 'numeric', month: 'long', year: 'numeric' });
-                textoPeriodo = `(Período: Del ${fecha1} al ${fecha2} - Semanal)`;
+                textoPeriodo = `(Período: Del ${fecha1} al ${fecha2})`;
             } else {
                 const mesVal = document.getElementById('report-mes-val').value || '2026-09';
                 const [y, m] = mesVal.split('-');
@@ -1452,7 +1425,6 @@
                 tbody.appendChild(tr);
             });
 
-            // Renderizar minigráfica en el reporte PDF
             const ctxPdf = document.getElementById('chart-pdf-respaldo').getContext('2d');
             if (chartPdfRespaldoInstance) {
                 chartPdfRespaldoInstance.destroy();
