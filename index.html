@@ -56,27 +56,9 @@
     <div id="view-login" class="fixed inset-0 bg-gradient-to-br from-slate-100 via-white to-red-50 z-50 flex items-center justify-center p-4">
         <div class="bg-white p-8 md:p-10 rounded-3xl border border-slate-200 shadow-2xl max-w-md w-full">
             <div class="flex flex-col items-center justify-center mb-6 pb-6 border-b border-slate-200">
-                <div class="w-full flex flex-col items-center justify-center bg-slate-50 p-4 rounded-2xl shadow-inner border border-slate-200">
-                    <div class="w-20 h-20 mb-3 flex items-center justify-center">
-                        <svg viewBox="0 0 100 120" class="h-full w-auto text-[#8B1D24]" fill="currentColor">
-                            <path d="M48 6 C48 6 52 14 47 18 C44 21 44 26 50 30 C56 26 56 21 53 18 C48 14 52 6 52 6 C50 10 46 12 48 6 Z"/>
-                            <polygon points="43,30 57,30 63,75 37,75" stroke="#8B1D24" stroke-width="2.5" fill="none"/>
-                            <line x1="43" y1="40" x2="57" y2="40" stroke="#8B1D24" stroke-width="2.5"/>
-                            <line x1="40" y1="52" x2="60" y2="52" stroke="#8B1D24" stroke-width="2.5"/>
-                            <line x1="38" y1="65" x2="62" y2="65" stroke="#8B1D24" stroke-width="2.5"/>
-                            <path d="M35 55 L75 38 L78 68 Z" fill="none" stroke="#8B1D24" stroke-width="3"/>
-                            <path d="M22 100 C22 75 78 75 78 100 Z" fill="none" stroke="#8B1D24" stroke-width="3.5"/>
-                            <line x1="16" y1="100" x2="84" y2="100" stroke="#8B1D24" stroke-width="4.5"/>
-                        </svg>
-                    </div>
-                    <h2 class="text-base font-black text-center text-[#8B1D24] tracking-tight uppercase leading-tight font-serif">
-                        Secretaría Departamental<br>de Minería e Hidrocarburos
-                    </h2>
-                    <div class="flex items-center gap-2 mt-2">
-                        <span class="text-[#8B1D24] font-bold text-xs">➤➤➤</span>
-                        <span class="text-[9px] font-black text-[#8B1D24] tracking-widest uppercase">Gobernación de Chuquisaca</span>
-                        <span class="text-[#8B1D24] font-bold text-xs">➤➤➤</span>
-                    </div>
+                <!-- LOGOTIPO LLENANDO EL RECUADRO LIMPIO -->
+                <div class="w-full bg-slate-50 p-3 rounded-2xl shadow-inner border border-slate-200 flex items-center justify-center overflow-hidden">
+                    <img src="./logo-secretaria.png" alt="Secretaría de Minería e Hidrocarburos" class="w-full h-auto object-contain max-h-36 rounded-xl">
                 </div>
                 <div class="inline-block mt-4 px-3 py-1 bg-red-100 text-[#8B1D24] text-[10px] font-bold tracking-widest rounded-full uppercase border border-red-200">
                     Control Operativo & Fiscalización
@@ -113,7 +95,7 @@
             </button>
 
             <div class="bg-white p-2 rounded-2xl w-full flex flex-col items-center justify-center shadow-sm border border-slate-200 mt-6 mb-2 overflow-hidden">
-                <img src="./logo-secretaria.png" alt="Logo Institucional" class="w-full h-auto object-cover rounded-xl">
+                <img src="./logo-secretaria.png" alt="Logo Institucional" class="w-full h-auto object-contain rounded-xl">
             </div>
 
             <p class="text-[9px] text-accentBlue mt-2 border-t border-slate-200 pt-1.5 w-full text-center font-mono truncate" id="user-email-display">usuario@chuquisaca.gob.bo</p>
@@ -1539,7 +1521,6 @@
             ajustarFormularioPorCampo(e.target.value);
         });
 
-        // CARGAR HISTORIAL DESDE SUPABASE PARA MANTENER REGISTROS PREVIOS
         async function cargarHistorialSupabase() {
             try {
                 const { data, error } = await clienteSupabase
@@ -1577,7 +1558,6 @@
             }
         }
 
-        // VALIDACIÓN Y GUARDADO DE DATOS (SIN LÍMITES Y PERMITIENDO EL VALOR 0)
         let sessionCount = 0;
         document.getElementById('btn-save').addEventListener('click', async function() {
             if (currentUserRole === 'directivo') {
@@ -1642,7 +1622,6 @@
             }
         });
 
-        // Pozos
         async function cargarTablaPozosAdmin() {
             const tbody = document.getElementById('wells-log-body');
             tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-slate-400 italic">Consultando base de datos...</td></tr>`;
