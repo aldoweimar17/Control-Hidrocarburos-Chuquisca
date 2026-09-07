@@ -221,7 +221,7 @@
                 </div>
                 <div class="flex flex-wrap items-center gap-3">
                     <select id="dashboard-tipo-periodo" onchange="actualizarFiltrosTableroGlobal()" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#8B1D24]">
-                        <option value="dia" selected>Reporte Diario (Por defecto)</option>
+                        <option value="dia" selected>Reporte Diario (Día Previo)</option>
                         <option value="sem">Reporte Semanal</option>
                         <option value="mes">Reporte Mensual</option>
                     </select>
@@ -273,7 +273,7 @@
                 <div class="bg-white border border-slate-200 px-4 py-3 rounded-2xl flex items-center gap-3 shadow-sm flex-1 min-w-[240px]">
                     <div class="bg-blue-50 p-2.5 rounded-xl text-blue-600 border border-blue-200"><i class="fas fa-calendar-check text-lg"></i></div>
                     <div>
-                        <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Último Parte & Hora</div>
+                        <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Último Reporte & Hora</div>
                         <div id="update-date" class="text-xs font-bold text-slate-800">Sin registros</div>
                     </div>
                 </div>
@@ -330,14 +330,14 @@
                 </div>
             </div>
 
-            <!-- SUB-PANEL 2: FISCALIZACIÓN & BALANCE DE MATERIA (SINCRONIZADO CON DATOS REALES) -->
+            <!-- SUB-PANEL 2: FISCALIZACIÓN & BALANCE (TOTALMENTE SINCRONIZADO) -->
             <div id="panel-fiscalizacion" class="hidden space-y-6">
                 <div id="wrapper-balance-gas" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
                     <div class="border-b border-slate-100 pb-3 mb-4 flex flex-col md:flex-row justify-between md:items-center gap-2">
                         <div class="flex items-center gap-3">
                             <div>
                                 <h2 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-                                    <i class="fas fa-balance-scale text-[#8B1D24]"></i> Balance de Masas & Destino de Gas (Barras Apiladas Reales)
+                                    <i class="fas fa-balance-scale text-[#8B1D24]"></i> Balance de Masas & Destino de Gas (Barras Apiladas)
                                 </h2>
                                 <p class="text-[11px] text-slate-500 mt-0.5">Auditoría: Gasoducto vs. Proceso, Combustible, Flare y CO₂.</p>
                             </div>
@@ -381,7 +381,7 @@
                     </button>
                     <div>
                         <h1 class="text-xl font-bold text-slate-900"><i class="fas fa-file-import text-[#8B1D24] mr-2"></i> Módulo de Carga Diaria de Partes</h1>
-                        <p class="text-xs text-slate-500 mt-0.5" id="entry-subtitle-info">Ingreso libre de volúmenes para todos los campos operativos.</p>
+                        <p class="text-xs text-slate-500 mt-0.5">Ingreso libre de volúmenes para todos los campos operativos.</p>
                     </div>
                 </div>
                 <button onclick="cerrarSesion()" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
@@ -394,7 +394,7 @@
                 <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8">
                     <div class="mb-5 bg-amber-50 border border-amber-200 p-3.5 rounded-2xl text-xs text-amber-800 flex items-center gap-3">
                         <i class="fas fa-info-circle text-amber-600 text-base shrink-0"></i>
-                        <span><strong>Nota Operativa:</strong> El valor <strong>0</strong> es totalmente válido y será tomado en cuenta cuando no se disponga de un registro específico.</span>
+                        <span><strong>Nota Operativa:</strong> El valor <strong>0</strong> es totalmente válido y será tomado en cuenta ante ausencia de datos.</span>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pb-6 border-b border-slate-200 items-end">
@@ -949,7 +949,7 @@
             });
         }
 
-        // CARGAR DATOS DESDE SUPABASE SIN LÍMITES PARA PRODUCCIÓN Y FISCALIZACIÓN
+        // CARGA DINÁMICA SINCRONIZADA ENTRE PRODUCCIÓN Y FISCALIZACIÓN
         async function cargarDatosDesdeSupabasePorFiltro() {
             const tipoFiltro = document.getElementById('dashboard-tipo-periodo').value;
             const campoId = mapaCampos[currentField];
@@ -986,7 +986,7 @@
                     labelsDinamicos = diasLabels;
                 }
 
-                // Sincronizar Producción
+                // Sincronizar Producción Bruta
                 charts.gasProd.data.labels = labelsDinamicos;
                 charts.gasProd.data.datasets[0].data = arrGas;
                 charts.gasProd.update();
@@ -995,7 +995,7 @@
                 charts.liqProd.data.datasets[0].data = arrLiq;
                 charts.liqProd.update();
 
-                // Sincronizar Fiscalización & Balance de Masas (Real)
+                // Sincronizar Fiscalización & Balance de Masas
                 charts.balanceGas.data.labels = labelsDinamicos;
                 charts.balanceGas.data.datasets[0].data = arrGas.map(v => v * 0.85); // Gasoducto
                 charts.balanceGas.data.datasets[1].data = arrGas.map(v => v * 0.08); // Proceso
@@ -1028,9 +1028,15 @@
                     sessionCount = data.length;
                     document.getElementById('counter').innerText = `${sessionCount} Registros`;
 
-                    // Detectar automáticamente el último día con reporte oficial para establecer la vista por defecto
+                    // VISTA POR DEFECTO: DÍA PREVIO (ÚLTIMO REPORTE DISPONIBLE)
                     if (data[0] && data[0].fecha_operativa) {
-                        document.getElementById('dashboard-input-dia').value = data[0].fecha_operativa;
+                        const [y, m, d] = data[0].fecha_operativa.split('-');
+                        const fechaPrevObj = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
+                        // Restar 1 día para tomar el día previo institucional
+                        fechaPrevObj.setDate(fechaPrevObj.getDate() - 1);
+                        const fechaPrevStr = fechaPrevObj.toISOString().split('T')[0];
+                        
+                        document.getElementById('dashboard-input-dia').value = fechaPrevStr;
                     }
 
                     data.forEach(r => {
@@ -1204,6 +1210,7 @@
             }
         });
 
+        // GUARDADO / ACTUALIZACIÓN CORREGIDO PARA TODOS LOS CAMPOS (INCLUYENDO MARGARITA)
         let sessionCount = 0;
         document.getElementById('btn-save').addEventListener('click', async function() {
             if (currentUserRole === 'directivo') { alert("Perfil de consulta."); return; }
@@ -1215,6 +1222,8 @@
             const gasProd = parseFloat(document.getElementById('gas-prod').value) || 0;
 
             if (!campoID || !fecha) { alert("Seleccione campo y fecha."); return; }
+            const idCampoNum = mapaCampos[campoID];
+            if (!idCampoNum) { alert("Campo seleccionado no válido."); return; }
 
             const btn = document.getElementById('btn-save');
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
@@ -1223,13 +1232,13 @@
             try {
                 const { error } = await clienteSupabase
                     .from('produccion_diaria')
-                    .upsert([{
-                        id_campo: mapaCampos[campoID],
+                    .upsert({
+                        id_campo: idCampoNum,
                         fecha_operativa: fecha,
                         vol_gas_mmmcd: gasProd,
                         vol_liquidos_bpd: petroleo,
                         precio_wti_usd: wti
-                    }], { onConflict: 'id_campo, fecha_operativa' });
+                    }, { onConflict: 'id_campo, fecha_operativa' });
 
                 if (error) throw error;
 
@@ -1243,7 +1252,7 @@
                 await actualizarHistorialYTablero();
             } catch (err) {
                 console.error(err);
-                alert("Error al guardar en Supabase. Verifique los datos o si el campo y fecha coinciden.");
+                alert("Error al guardar en Supabase. Verifique los datos o si la conexión es estable.");
             } finally {
                 btn.innerHTML = '<i class="fas fa-database"></i> Validar y Guardar Parte Diario en Supabase';
                 btn.disabled = false;
@@ -1312,7 +1321,6 @@
         }
 
         document.getElementById('input-fecha').value = new Date().toISOString().split('T')[0];
-        document.getElementById('dashboard-input-dia').value = new Date().toISOString().split('T')[0];
         document.getElementById('report-fecha-unica').value = new Date().toISOString().split('T')[0];
         document.getElementById('well-selector').addEventListener('change', (e) => updateWellData(e.target.value));
 
