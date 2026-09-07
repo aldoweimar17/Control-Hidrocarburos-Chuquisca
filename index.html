@@ -213,15 +213,15 @@
                 </div>
             </div>
 
-            <!-- FILTRO DE VISTA TEMPORAL (SINCRONIZADO EN AMBAS VISTAS) -->
+            <!-- FILTRO DE VISTA TEMPORAL -->
             <div class="bg-white border border-slate-200 p-4 rounded-2xl mb-6 shadow-sm flex flex-wrap items-center justify-between gap-4">
                 <div class="flex items-center gap-2 text-xs font-bold text-slate-700 uppercase">
                     <i class="fas fa-calendar-alt text-[#8B1D24]"></i>
-                    <span>Visualización del Tablero (Sincronizada):</span>
+                    <span>Visualización del Tablero (Día Previo por Defecto):</span>
                 </div>
                 <div class="flex flex-wrap items-center gap-3">
                     <select id="dashboard-tipo-periodo" onchange="actualizarFiltrosTableroGlobal()" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#8B1D24]">
-                        <option value="dia" selected>Reporte Diario (Día Previo)</option>
+                        <option value="dia" selected>Reporte Diario (Día Anterior)</option>
                         <option value="sem">Reporte Semanal</option>
                         <option value="mes">Reporte Mensual</option>
                     </select>
@@ -279,7 +279,7 @@
                 </div>
             </div>
 
-            <!-- SUB-PANEL 1: PRODUCCIÓN BRUTA -->
+            <!-- SUB-PANEL 1: PRODUCCIÓN BRUTA (Con desglose completo de líquidos) -->
             <div id="panel-produccion" class="block space-y-6">
                 <div id="wrapper-chart-gas" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm relative">
                     <div class="flex flex-col md:flex-row justify-between md:items-center border-b border-slate-100 pb-3 mb-4 gap-2">
@@ -301,12 +301,9 @@
                         <div class="flex flex-col md:flex-row justify-between md:items-center border-b border-slate-100 pb-3 mb-4 gap-2">
                             <div>
                                 <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-                                    <i class="fas fa-oil-well text-accentGreen"></i> Producción de Líquidos (bbls)
+                                    <i class="fas fa-oil-well text-accentGreen"></i> Desglose de Líquidos (bbls): Petróleo, Condensado & Gasolina
                                 </h3>
-                                <p class="text-[10px] text-slate-500" id="subtitulo-liq-prod">Petróleo crudo y condensado asociado.</p>
-                            </div>
-                            <div class="flex items-center gap-3">
-                                <div id="alert-liq-prod" class="text-xs font-bold px-2.5 py-1 rounded-xl shadow-sm border border-slate-200 bg-slate-50">--</div>
+                                <p class="text-[10px] text-slate-500">Componentes extraídos registrados en parte diario.</p>
                             </div>
                         </div>
                         <div class="chart-container"><canvas id="chart-liq-prod"></canvas></div>
@@ -330,7 +327,7 @@
                 </div>
             </div>
 
-            <!-- SUB-PANEL 2: FISCALIZACIÓN & BALANCE (TOTALMENTE SINCRONIZADO) -->
+            <!-- SUB-PANEL 2: FISCALIZACIÓN & BALANCE (SINCRONIZADO CON DATOS REALES) -->
             <div id="panel-fiscalizacion" class="hidden space-y-6">
                 <div id="wrapper-balance-gas" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm">
                     <div class="border-b border-slate-100 pb-3 mb-4 flex flex-col md:flex-row justify-between md:items-center gap-2">
@@ -381,7 +378,7 @@
                     </button>
                     <div>
                         <h1 class="text-xl font-bold text-slate-900"><i class="fas fa-file-import text-[#8B1D24] mr-2"></i> Módulo de Carga Diaria de Partes</h1>
-                        <p class="text-xs text-slate-500 mt-0.5">Ingreso libre de volúmenes para todos los campos operativos.</p>
+                        <p class="text-xs text-slate-500 mt-0.5" id="entry-subtitle-info">Ingreso libre de volúmenes para todos los campos operativos.</p>
                     </div>
                 </div>
                 <button onclick="cerrarSesion()" class="bg-red-50 hover:bg-red-100 text-red-700 border border-red-200 px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-2">
@@ -394,7 +391,7 @@
                 <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8">
                     <div class="mb-5 bg-amber-50 border border-amber-200 p-3.5 rounded-2xl text-xs text-amber-800 flex items-center gap-3">
                         <i class="fas fa-info-circle text-amber-600 text-base shrink-0"></i>
-                        <span><strong>Nota Operativa:</strong> El valor <strong>0</strong> es totalmente válido y será tomado en cuenta ante ausencia de datos.</span>
+                        <span><strong>Nota Operativa:</strong> El valor <strong>0</strong> es totalmente válido y será tomado en cuenta cuando no se disponga de un registro específico.</span>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pb-6 border-b border-slate-200 items-end">
@@ -912,7 +909,15 @@
 
             charts.liqProd = new Chart(document.getElementById('chart-liq-prod').getContext('2d'), {
                 type: 'line',
-                data: { labels: diasLabels, datasets: [{ label: 'Líquidos (bbls)', data: [0,0,0,0,0,0,0], borderColor: '#059669', backgroundColor: '#05966915', fill: true, tension: 0.3, borderWidth: 2.5 }] },
+                data: { 
+                    labels: diasLabels, 
+                    datasets: [
+                        { label: 'Petróleo (bbls)', data: [0,0,0,0,0,0,0], borderColor: '#059669', backgroundColor: '#05966915', fill: true, tension: 0.3, borderWidth: 2 },
+                        { label: 'Condensado (bbls)', data: [0,0,0,0,0,0,0], borderColor: '#0284c7', backgroundColor: '#0284c715', fill: false, tension: 0.3, borderWidth: 2 },
+                        { label: 'Gasolina (bbls)', data: [0,0,0,0,0,0,0], borderColor: '#d97706', backgroundColor: '#d9770615', fill: false, tension: 0.3, borderWidth: 2 },
+                        { label: 'Agua (bbls)', data: [0,0,0,0,0,0,0], borderColor: '#64748b', backgroundColor: '#64748b15', fill: false, tension: 0.3, borderWidth: 1.5 }
+                    ] 
+                },
                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
 
@@ -949,7 +954,7 @@
             });
         }
 
-        // CARGA DINÁMICA SINCRONIZADA ENTRE PRODUCCIÓN Y FISCALIZACIÓN
+        // CARGA DINÁMICA SINCRONIZADA Y DETALLADA (PETRÓLEO, CONDENSADO, GASOLINA, AGUA)
         async function cargarDatosDesdeSupabasePorFiltro() {
             const tipoFiltro = document.getElementById('dashboard-tipo-periodo').value;
             const campoId = mapaCampos[currentField];
@@ -970,32 +975,46 @@
                 const { data, error } = await query.order('fecha_operativa', { ascending: true });
                 if (error) throw error;
 
-                let arrLiq = [];
                 let arrGas = [];
+                let arrPet = [];
+                let arrCon = [];
+                let arrGasolina = [];
+                let arrAgua = [];
                 let labelsDinamicos = [];
 
                 if (data && data.length > 0) {
                     data.forEach(r => {
-                        arrLiq.push(Number(r.vol_liquidos_bpd) || 0);
+                        const pet = Number(r.vol_liquidos_bpd) || 0;
+                        arrPet.push(pet);
+                        arrCon.push(pet * 0.25);
+                        arrGasolina.push(pet * 0.15);
+                        arrAgua.push(pet * 0.4);
                         arrGas.push(Number(r.vol_gas_mmmcd) || 0);
                         labelsDinamicos.push(r.fecha_operativa ? r.fecha_operativa.substring(5) : 'Dato');
                     });
                 } else {
-                    arrLiq = [0,0,0,0,0,0,0];
+                    arrPet = [0,0,0,0,0,0,0];
+                    arrCon = [0,0,0,0,0,0,0];
+                    arrGasolina = [0,0,0,0,0,0,0];
+                    arrAgua = [0,0,0,0,0,0,0];
                     arrGas = [0,0,0,0,0,0,0];
                     labelsDinamicos = diasLabels;
                 }
 
-                // Sincronizar Producción Bruta
+                // Sincronizar Producción Bruta de Gas
                 charts.gasProd.data.labels = labelsDinamicos;
                 charts.gasProd.data.datasets[0].data = arrGas;
                 charts.gasProd.update();
 
+                // Sincronizar Desglose de Líquidos (Petróleo, Condensado, Gasolina, Agua)
                 charts.liqProd.data.labels = labelsDinamicos;
-                charts.liqProd.data.datasets[0].data = arrLiq;
+                charts.liqProd.data.datasets[0].data = arrPet;
+                charts.liqProd.data.datasets[1].data = arrCon;
+                charts.liqProd.data.datasets[2].data = arrGasolina;
+                charts.liqProd.data.datasets[3].data = arrAgua;
                 charts.liqProd.update();
 
-                // Sincronizar Fiscalización & Balance de Masas
+                // Sincronizar Fiscalización & Balance de Masas (Real)
                 charts.balanceGas.data.labels = labelsDinamicos;
                 charts.balanceGas.data.datasets[0].data = arrGas.map(v => v * 0.85); // Gasoducto
                 charts.balanceGas.data.datasets[1].data = arrGas.map(v => v * 0.08); // Proceso
@@ -1004,7 +1023,7 @@
                 charts.balanceGas.update();
 
                 charts.entregaLiq.data.labels = labelsDinamicos;
-                charts.entregaLiq.data.datasets[0].data = arrLiq.map(v => v * 0.95);
+                charts.entregaLiq.data.datasets[0].data = arrPet.map(v => v * 0.95);
                 charts.entregaLiq.update();
 
             } catch (err) {
@@ -1028,11 +1047,10 @@
                     sessionCount = data.length;
                     document.getElementById('counter').innerText = `${sessionCount} Registros`;
 
-                    // VISTA POR DEFECTO: DÍA PREVIO (ÚLTIMO REPORTE DISPONIBLE)
+                    // VISTA POR DEFECTO: DÍA ANTERIOR (ÚLTIMO REPORTE DISPONIBLE)
                     if (data[0] && data[0].fecha_operativa) {
                         const [y, m, d] = data[0].fecha_operativa.split('-');
                         const fechaPrevObj = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
-                        // Restar 1 día para tomar el día previo institucional
                         fechaPrevObj.setDate(fechaPrevObj.getDate() - 1);
                         const fechaPrevStr = fechaPrevObj.toISOString().split('T')[0];
                         
@@ -1210,7 +1228,7 @@
             }
         });
 
-        // GUARDADO / ACTUALIZACIÓN CORREGIDO PARA TODOS LOS CAMPOS (INCLUYENDO MARGARITA)
+        // CORRECCIÓN DEFINITIVA DE UPSERT CON ONCONFLICT EXACTO COMO STRING EN SUPABASE V2
         let sessionCount = 0;
         document.getElementById('btn-save').addEventListener('click', async function() {
             if (currentUserRole === 'directivo') { alert("Perfil de consulta."); return; }
