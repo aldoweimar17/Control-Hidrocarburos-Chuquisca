@@ -936,7 +936,6 @@
         }
 
         function initCharts() {
-            // GRÁFICAS DE BARRAS CON PALETA PROFESIONAL EJECUTIVA
             charts.gasProd = new Chart(document.getElementById('chart-gas-prod').getContext('2d'), {
                 type: 'bar',
                 data: { labels: diasLabels, datasets: [{ label: 'Gas Bruto (MPC)', data: [0,0,0,0,0,0,0], backgroundColor: '#1e3a8a', borderRadius: 6, barPercentage: 0.65 }] },
@@ -1182,7 +1181,6 @@
             actualizarReportePDFReal();
         }
 
-        // GENERADOR DE REPORTE PDF CON FILTROS EXACTOS Y ROBUSTOS
         async function actualizarReportePDFReal() {
             const campoKey = document.getElementById('report-campo').value;
             const seccionRepo = document.getElementById('report-seccion').value;
@@ -1385,7 +1383,6 @@
             const idCampoNum = mapaCampos[campoID];
             if (!idCampoNum) { alert("Campo seleccionado no válido."); return; }
 
-            // Conversión segura: si está vacío o no es número, se asigna 0 por defecto
             const valNum = (id) => {
                 const el = document.getElementById(id);
                 if (!el || el.value === '') return 0;
@@ -1402,14 +1399,12 @@
             btn.disabled = true;
 
             try {
-                // Inserción segura con manejo de upsert robusto
                 const payload = {
                     id_campo: idCampoNum,
                     fecha_operativa: fecha,
                     vol_gas_mmmcd: gasProd,
                     vol_liquidos_bpd: petroleo,
-                    precio_wti_usd: wti,
-                    usuario: currentUserEmail
+                    precio_wti_usd: wti
                 };
 
                 const { error } = await clienteSupabase
@@ -1497,7 +1492,6 @@
             showToast();
         }
 
-        // INICIALIZACIÓN DE FECHAS POR DEFECTO
         const hoyStr = new Date().toISOString().split('T')[0];
         const mesStr = hoyStr.substring(0, 7);
 
