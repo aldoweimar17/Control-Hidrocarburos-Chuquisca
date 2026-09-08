@@ -832,8 +832,8 @@
             boxDia.classList.add('hidden');
             boxMes.classList.add('hidden');
 
-            if (tipo === 'dia' || tipo === 'sem') boxDia.classList.remove('hidden');
-            else if (tipo === 'mes') boxMes.classList.remove('hidden');
+            if (tipo === 'dia') boxDia.classList.remove('hidden');
+            else if (tipo === 'mes' || tipo === 'sem') boxMes.classList.remove('hidden');
             cargarDatosDesdeSupabasePorFiltro();
         }
 
@@ -954,26 +954,27 @@
             });
         }
 
-        // CARGA DINÁMICA SUPABASE SIN LÍMITES
+        // CARGA DINÁMICA SUPABASE OPTIMIZADA CON FILTRADO ROBUSTO
         async function cargarDatosDesdeSupabasePorFiltro() {
             const tipoFiltro = document.getElementById('dashboard-tipo-periodo').value;
             const campoId = mapaCampos[currentField];
             document.getElementById('title-field').innerText = db[currentField].name;
 
             try {
-                let query = clienteSupabase.from('produccion_diaria').select('*').eq('id_campo', campoId).range(0, 4999);
+                let query = clienteSupabase.from('produccion_diaria').select('*').eq('id_campo', campoId);
 
                 if (tipoFiltro === 'dia') {
                     const fechaSel = document.getElementById('dashboard-input-dia').value || new Date().toISOString().split('T')[0];
                     query = query.eq('fecha_operativa', fechaSel);
-                } else if (tipoFiltro === 'sem') {
+                } else if (tipoFiltro === 'mes' || tipoFiltro === 'sem') {
                     const mesSel = document.getElementById('dashboard-input-mes').value || '2026-09';
                     const [y, m] = mesSel.split('-');
-                    query = query.gte('fecha_operativa', `${y}-${m}-01`).lte('fecha_operativa', `${y}-${m}-31`);
-                } else if (tipoFiltro === 'mes') {
-                    const mesSel = document.getElementById('dashboard-input-mes').value || '2026-09';
-                    const [y, m] = mesSel.split('-');
-                    query = query.gte('fecha_operativa', `${y}-${m}-01`).lte('fecha_operativa', `${y}-${m}-31`);
+                    
+                    if (tipoFiltro === 'sem') {
+                        query = query.gte('fecha_operativa', `${y}-${m}-01`).lte('fecha_operativa', `${y}-${m}-07`);
+                    } else {
+                        query = query.gte('fecha_operativa', `${y}-${m}-01`).lte('fecha_operativa', `${y}-${m}-31`);
+                    }
                 }
 
                 const { data, error } = await query.order('fecha_operativa', { ascending: true });
@@ -997,12 +998,8 @@
                         labelsDinamicos.push(r.fecha_operativa ? r.fecha_operativa.substring(5) : 'Dato');
                     });
                 } else {
-                    arrPet = [0,0,0,0,0,0,0];
-                    arrCon = [0,0,0,0,0,0,0];
-                    arrGasolina = [0,0,0,0,0,0,0];
-                    arrAgua = [0,0,0,0,0,0,0];
-                    arrGas = [0,0,0,0,0,0,0];
-                    labelsDinamicos = diasLabels;
+                    arrPet = [0]; arrCon = [0]; arrGasolina = [0]; arrAgua = [0]; arrGas = [0];
+                    labelsDinamicos = ['Sin registros'];
                 }
 
                 charts.gasProd.data.labels = labelsDinamicos;
@@ -1048,7 +1045,6 @@
                     sessionCount = data.length;
                     document.getElementById('counter').innerText = `${sessionCount} Registros`;
 
-                    // VISTA POR DEFECTO ESTRICTA: DÍA ANTERIOR (-1 DÍA DE LA FECHA ACTUAL REAL)
                     const hoy = new Date();
                     hoy.setDate(hoy.getDate() - 1);
                     document.getElementById('dashboard-input-dia').value = hoy.toISOString().split('T')[0];
@@ -1131,7 +1127,6 @@
             actualizarReportePDFReal();
         }
 
-        // GENERADOR DE REPORTE PDF COMPLETAMENTE DINÁMICO CONECTADO A SUPABASE
         async function actualizarReportePDFReal() {
             const campoKey = document.getElementById('report-campo').value;
             const tipoReporte = document.getElementById('report-tipo').value;
@@ -1267,7 +1262,6 @@
             }
         });
 
-        // GUARDADO / ACTUALIZACIÓN ROBUSTO UNIFICADO
         let sessionCount = 0;
         document.getElementById('btn-save').addEventListener('click', async function() {
             if (currentUserRole === 'directivo') { alert("Perfil de consulta."); return; }
