@@ -217,7 +217,7 @@
             <div class="bg-white border border-slate-200 p-4 rounded-2xl mb-6 shadow-sm flex flex-wrap items-center justify-between gap-4">
                 <div class="flex items-center gap-2 text-xs font-bold text-slate-700 uppercase">
                     <i class="fas fa-calendar-alt text-[#8B1D24]"></i>
-                    <span>Visualización del Tablero (Día Anterior por Defecto):</span>
+                    <span>Visualización del Tablero:</span>
                 </div>
                 <div class="flex flex-wrap items-center gap-3">
                     <select id="dashboard-tipo-periodo" onchange="actualizarFiltrosTableroGlobal()" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#8B1D24]">
@@ -230,7 +230,7 @@
                         <input type="date" id="dashboard-input-dia" onchange="cargarDatosDesdeSupabasePorFiltro()" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-800">
                     </div>
                     <div id="dash-box-mes" class="hidden">
-                        <input type="month" id="dashboard-input-mes" onchange="cargarDatosDesdeSupabasePorFiltro()" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-800" value="2026-09">
+                        <input type="month" id="dashboard-input-mes" onchange="cargarDatosDesdeSupabasePorFiltro()" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-800" value="2026-06">
                     </div>
                 </div>
             </div>
@@ -550,7 +550,7 @@
             </div>
         </div>
 
-        <!-- VISTA: GENERADOR DE REPORTE PDF (CORREGIDO PARA LEER DATOS REALES DE SUPABASE) -->
+        <!-- VISTA: GENERADOR DE REPORTE PDF -->
         <div id="view-reports" class="hidden h-full flex flex-col bg-slate-100">
             <header class="p-6 border-b border-slate-200 bg-white flex justify-between items-center sticky top-0 z-10 shadow-sm no-print">
                 <div class="flex items-center gap-3">
@@ -603,7 +603,7 @@
                         </div>
                         <div id="box-mes-picker" class="hidden">
                             <label class="block text-xs font-bold text-slate-600 mb-1">Seleccionar Mes y Año</label>
-                            <input type="month" id="report-mes-val" onchange="actualizarReportePDFReal()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-xs text-slate-900" value="2026-09">
+                            <input type="month" id="report-mes-val" onchange="actualizarReportePDFReal()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-xs text-slate-900" value="2026-06">
                         </div>
                     </div>
 
@@ -891,7 +891,7 @@
             } else if (viewId === 'reports') {
                 document.getElementById('view-reports').classList.remove('hidden');
                 document.getElementById('btn-menu-reports').className = active;
-                prepararVistaReportePDF();
+                actualizarReportePDFReal();
             } else if (viewId === 'wells') {
                 document.getElementById('view-wells').classList.remove('hidden');
                 document.getElementById('btn-menu-wells').className = active;
@@ -954,7 +954,7 @@
             });
         }
 
-        // CARGA HISTÓRICA MASIVA SIN LÍMITES PARA EL TABLERO GENERAL
+        // CARGA DINÁMICA SUPABASE SIN LÍMITES
         async function cargarDatosDesdeSupabasePorFiltro() {
             const tipoFiltro = document.getElementById('dashboard-tipo-periodo').value;
             const campoId = mapaCampos[currentField];
@@ -1048,7 +1048,7 @@
                     sessionCount = data.length;
                     document.getElementById('counter').innerText = `${sessionCount} Registros`;
 
-                    // VISTA POR DEFECTO ESTRICTA: DÍA ANTERIOR (-1 DÍA DE LA FECHA ACTUAL)
+                    // VISTA POR DEFECTO ESTRICTA: DÍA ANTERIOR (-1 DÍA DE LA FECHA ACTUAL REAL)
                     const hoy = new Date();
                     hoy.setDate(hoy.getDate() - 1);
                     document.getElementById('dashboard-input-dia').value = hoy.toISOString().split('T')[0];
@@ -1128,11 +1128,11 @@
             if (tipo === 'dia') boxUnica.classList.remove('hidden');
             else if (tipo === 'sem') { boxInicio.classList.remove('hidden'); boxFin.classList.remove('hidden'); }
             else if (tipo === 'mes') boxMes.classList.remove('hidden');
-            prepararVistaReportePDF();
+            actualizarReportePDFReal();
         }
 
-        // GENERADOR PDF CORREGIDO PARA LEER DATOS REALES DE SUPABASE SIN LÍMITES
-        async function prepararVistaReportePDF() {
+        // GENERADOR DE REPORTE PDF COMPLETAMENTE DINÁMICO CONECTADO A SUPABASE
+        async function actualizarReportePDFReal() {
             const campoKey = document.getElementById('report-campo').value;
             const tipoReporte = document.getElementById('report-tipo').value;
             const campoId = mapaCampos[campoKey];
@@ -1210,14 +1210,14 @@
             }
         }
 
-        function generarReportePDF() { prepararVistaReportePDF(); window.print(); }
+        function generarReportePDF() { actualizarReportePDFReal(); window.print(); }
 
-        document.getElementById('report-campo').addEventListener('change', prepararVistaReportePDF);
+        document.getElementById('report-campo').addEventListener('change', actualizarReportePDFReal);
         document.getElementById('report-tipo').addEventListener('change', actualizarControlesCalendario);
-        document.getElementById('report-fecha-unica').addEventListener('change', prepararVistaReportePDF);
-        document.getElementById('report-fecha-inicio').addEventListener('change', prepararVistaReportePDF);
-        document.getElementById('report-fecha-fin').addEventListener('change', prepararVistaReportePDF);
-        document.getElementById('report-mes-val').addEventListener('change', prepararVistaReportePDF);
+        document.getElementById('report-fecha-unica').addEventListener('change', actualizarReportePDFReal);
+        document.getElementById('report-fecha-inicio').addEventListener('change', actualizarReportePDFReal);
+        document.getElementById('report-fecha-fin').addEventListener('change', actualizarReportePDFReal);
+        document.getElementById('report-mes-val').addEventListener('change', actualizarReportePDFReal);
 
         async function aplicarPermisosRol(user) {
             const roleEl = document.getElementById('user-role-display');
@@ -1243,6 +1243,7 @@
                 document.getElementById('user-email-display').innerText = session.user.email;
                 await aplicarPermisosRol(session.user);
                 await actualizarHistorialYTablero();
+                await actualizarReportePDFReal();
             } else {
                 document.getElementById('view-login').classList.remove('hidden');
             }
@@ -1262,10 +1263,11 @@
                 document.getElementById('user-email-display').innerText = data.user.email;
                 await aplicarPermisosRol(data.user);
                 await actualizarHistorialYTablero();
+                await actualizarReportePDFReal();
             }
         });
 
-        // GUARDADO ROBUSTO UNIFICADO PARA TODOS LOS CAMPOS (MONTEAGUDO, VUELTA GRANDE Y MARGARITA)
+        // GUARDADO / ACTUALIZACIÓN ROBUSTO UNIFICADO
         let sessionCount = 0;
         document.getElementById('btn-save').addEventListener('click', async function() {
             if (currentUserRole === 'directivo') { alert("Perfil de consulta."); return; }
@@ -1305,6 +1307,7 @@
                 });
 
                 await actualizarHistorialYTablero();
+                await actualizarReportePDFReal();
             } catch (err) {
                 console.error(err);
                 alert("Error al guardar en Supabase. Verifique los datos o si la conexión es estable.");
