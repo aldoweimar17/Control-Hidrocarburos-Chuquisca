@@ -954,14 +954,14 @@
             });
         }
 
-        // CARGA DINÁMICA SUPABASE OPTIMIZADA CON FILTRADO ROBUSTO
+        // CARGA DINÁMICA SUPABASE CORREGIDA PARA VISTA MENSUAL COMPLETA
         async function cargarDatosDesdeSupabasePorFiltro() {
             const tipoFiltro = document.getElementById('dashboard-tipo-periodo').value;
             const campoId = mapaCampos[currentField];
             document.getElementById('title-field').innerText = db[currentField].name;
 
             try {
-                let query = clienteSupabase.from('produccion_diaria').select('*').eq('id_campo', campoId);
+                let query = clienteSupabase.from('produccion_diaria').select('*').eq('id_campo', campoId).range(0, 4999);
 
                 if (tipoFiltro === 'dia') {
                     const fechaSel = document.getElementById('dashboard-input-dia').value || new Date().toISOString().split('T')[0];
@@ -973,7 +973,9 @@
                     if (tipoFiltro === 'sem') {
                         query = query.gte('fecha_operativa', `${y}-${m}-01`).lte('fecha_operativa', `${y}-${m}-07`);
                     } else {
-                        query = query.gte('fecha_operativa', `${y}-${m}-01`).lte('fecha_operativa', `${y}-${m}-31`);
+                        // Rango exacto de inicio a fin de mes (incluyendo el último día 30/31)
+                        const ultimoDia = new Date(y, m, 0).getDate();
+                        query = query.gte('fecha_operativa', `${y}-${m}-01`).lte('fecha_operativa', `${y}-${m}-${ultimoDia}`);
                     }
                 }
 
@@ -995,7 +997,9 @@
                         arrGasolina.push(pet * 0.15);
                         arrAgua.push(pet * 0.4);
                         arrGas.push(Number(r.vol_gas_mmmcd) || 0);
-                        labelsDinamicos.push(r.fecha_operativa ? r.fecha_operativa.substring(5) : 'Dato');
+                        // Extraer día y mes para mostrar limpiamente en el eje X
+                        const partesFecha = r.fecha_operativa ? r.fecha_operativa.split('T')[0].split('-') : ['','',''];
+                        labelsDinamicos.push(partesFecha.length === 3 ? `${partesFecha[2]}/${partesFecha[1]}` : (r.fecha_operativa || 'Dato'));
                     });
                 } else {
                     arrPet = [0]; arrCon = [0]; arrGasolina = [0]; arrAgua = [0]; arrGas = [0];
@@ -1146,7 +1150,8 @@
                 const fObj = new Date(y, m - 1, 1);
                 const mesNom = fObj.toLocaleDateString('es-BO', { month: 'long', year: 'numeric' });
                 textoPeriodo = `(Período Mensual: ${mesNom.charAt(0).toUpperCase() + mesNom.slice(1)})`;
-                query = query.gte('fecha_operativa', `${y}-${m}-01`).lte('fecha_operativa', `${y}-${m}-31`);
+                const ultimoDia = new Date(y, m, 0).getDate();
+                query = query.gte('fecha_operativa', `${y}-${m}-01`).lte('fecha_operativa', `${y}-${m}-${ultimoDia}`);
             } else if (tipoReporte === 'sem') {
                 const fIni = document.getElementById('report-fecha-inicio').value || '2026-06-01';
                 const fFin = document.getElementById('report-fecha-fin').value || '2026-06-07';
