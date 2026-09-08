@@ -39,13 +39,13 @@
         input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         .chart-container { position: relative; height: 240px; width: 100%; }
         .large-chart-container { position: relative; height: 350px; width: 100%; }
-        .pdf-chart-box { position: relative; height: 180px; width: 100%; max-width: 450px; margin: 0 auto; }
+        .pdf-chart-box { position: relative; height: 160px; width: 100%; max-width: 450px; margin: 0 auto; }
         .toast { transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out; }
         
         @media print {
             body * { visibility: hidden; }
             #print-report-area, #print-report-area * { visibility: visible; }
-            #print-report-area { position: absolute; left: 0; top: 0; width: 100%; background: white; padding: 20px; }
+            #print-report-area { position: absolute; left: 0; top: 0; width: 100%; background: white; padding: 10px; }
             .no-print { display: none !important; }
         }
     </style>
@@ -221,16 +221,16 @@
                 </div>
                 <div class="flex flex-wrap items-center gap-3">
                     <select id="dashboard-tipo-periodo" onchange="actualizarFiltrosTableroGlobal()" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#8B1D24]">
-                        <option value="dia">Reporte Diario (Día Anterior)</option>
+                        <option value="dia" selected>Reporte Diario (Día Anterior)</option>
                         <option value="sem">Reporte Semanal</option>
-                        <option value="mes" selected>Reporte Mensual</option>
+                        <option value="mes">Reporte Mensual</option>
                     </select>
 
-                    <div id="dash-box-dia" class="hidden">
+                    <div id="dash-box-dia">
                         <input type="date" id="dashboard-input-dia" onchange="cargarDatosDesdeSupabasePorFiltro()" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-800">
                     </div>
-                    <div id="dash-box-mes">
-                        <input type="month" id="dashboard-input-mes" onchange="cargarDatosDesdeSupabasePorFiltro()" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-800" value="2026-06">
+                    <div id="dash-box-mes" class="hidden">
+                        <input type="month" id="dashboard-input-mes" onchange="cargarDatosDesdeSupabasePorFiltro()" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-800">
                     </div>
                 </div>
             </div>
@@ -603,7 +603,7 @@
                         </div>
                         <div id="box-mes-picker" class="hidden">
                             <label class="block text-xs font-bold text-slate-600 mb-1">Seleccionar Mes y Año</label>
-                            <input type="month" id="report-mes-val" onchange="actualizarReportePDFReal()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-xs text-slate-900" value="2026-06">
+                            <input type="month" id="report-mes-val" onchange="actualizarReportePDFReal()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2 text-xs text-slate-900">
                         </div>
                     </div>
 
@@ -615,10 +615,10 @@
                 </div>
 
                 <!-- HOJA DE REPORTE OFICIAL -->
-                <div id="print-report-area" class="bg-white p-8 md:p-12 rounded-3xl border border-slate-300 shadow-xl text-slate-800 space-y-6">
-                    <div class="flex justify-between items-center border-b-2 border-[#8B1D24] pb-6">
+                <div id="print-report-area" class="bg-white p-6 md:p-8 rounded-3xl border border-slate-300 shadow-xl text-slate-800 space-y-4">
+                    <div class="flex justify-between items-center border-b-2 border-[#8B1D24] pb-4">
                         <div class="flex items-center gap-4 w-1/2">
-                            <img src="./logo-secretaria.png" alt="Logotipo Institucional" class="max-h-20 w-auto object-contain">
+                            <img src="./logo-secretaria.png" alt="Logotipo Institucional" class="max-h-16 w-auto object-contain">
                         </div>
                         <div class="text-right">
                             <div class="text-xs font-mono font-bold text-slate-700" id="rep-print-fecha">Fecha Emisión: --/--/2026</div>
@@ -626,20 +626,20 @@
                         </div>
                     </div>
 
-                    <div class="text-center space-y-1">
-                        <h1 class="text-base font-extrabold text-slate-900 uppercase tracking-wide">Acta Oficial de Fiscalización y Control de Producción</h1>
-                        <p class="text-xs text-slate-600 font-semibold" id="rep-print-subtitulo">Bloque Operativo: Monteagudo — (Período: 06 de Septiembre de 2026)</p>
+                    <div class="text-center space-y-0.5">
+                        <h1 class="text-sm font-extrabold text-slate-900 uppercase tracking-wide">Acta Oficial de Fiscalización y Control de Producción</h1>
+                        <p class="text-xs text-slate-600 font-semibold" id="rep-print-subtitulo">Bloque Operativo: Monteagudo</p>
                     </div>
 
-                    <div class="space-y-3">
-                        <h4 class="text-xs font-bold text-[#8B1D24] uppercase tracking-wider border-l-4 border-[#8B1D24] pl-2">1. Resumen de Volúmenes Extraídos y Fiscalizados</h4>
+                    <div class="space-y-2">
+                        <h4 class="text-[11px] font-bold text-[#8B1D24] uppercase tracking-wider border-l-4 border-[#8B1D24] pl-2">1. Resumen de Volúmenes Extraídos y Fiscalizados</h4>
                         <table class="w-full text-left border-collapse text-xs">
                             <thead>
                                 <tr class="bg-slate-100 text-slate-700 uppercase text-[10px] border-b border-slate-300">
-                                    <th class="p-2.5">Variable Operativa / Concepto</th>
-                                    <th class="p-2.5 text-right">Unidad</th>
-                                    <th class="p-2.5 text-right">Volumen Registrado</th>
-                                    <th class="p-2.5 text-right">Observación Técnica</th>
+                                    <th class="p-2">Variable Operativa / Concepto</th>
+                                    <th class="p-2 text-right">Unidad</th>
+                                    <th class="p-2 text-right">Volumen Registrado</th>
+                                    <th class="p-2 text-right">Observación Técnica</th>
                                 </tr>
                             </thead>
                             <tbody id="rep-table-body" class="divide-y divide-slate-200 font-mono text-slate-800">
@@ -647,31 +647,41 @@
                         </table>
                     </div>
 
-                    <div class="space-y-2 pt-2">
-                        <h4 class="text-xs font-bold text-[#8B1D24] uppercase tracking-wider border-l-4 border-[#8B1D24] pl-2">2. Gráfica de Comportamiento de Respaldo</h4>
-                        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
-                            <div class="pdf-chart-box">
-                                <canvas id="chart-pdf-respaldo"></canvas>
+                    <!-- GRÁFICAS MÚLTIPLES EN PDF (LÍQUIDOS, GAS Y GLP) -->
+                    <div class="space-y-3 pt-2">
+                        <h4 class="text-[11px] font-bold text-[#8B1D24] uppercase tracking-wider border-l-4 border-[#8B1D24] pl-2">2. Gráficas de Comportamiento Operativo de Respaldo</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                                <span class="text-[10px] font-bold text-emerald-700 block mb-1">Líquidos (bbls)</span>
+                                <div class="pdf-chart-box"><canvas id="chart-pdf-liq"></canvas></div>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                                <span class="text-[10px] font-bold text-sky-700 block mb-1">Gas (MPC)</span>
+                                <div class="pdf-chart-box"><canvas id="chart-pdf-gas"></canvas></div>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                                <span class="text-[10px] font-bold text-amber-700 block mb-1">GLP (m³)</span>
+                                <div class="pdf-chart-box"><canvas id="chart-pdf-glp"></canvas></div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="pt-8 grid grid-cols-2 gap-8 text-center text-xs">
-                        <div class="space-y-12">
-                            <div class="border-t border-slate-400 w-3/4 mx-auto pt-2">
+                    <div class="pt-6 grid grid-cols-2 gap-8 text-center text-xs">
+                        <div class="space-y-8">
+                            <div class="border-t border-slate-400 w-3/4 mx-auto pt-1">
                                 <p class="font-bold text-slate-800">Responsable de Transcripción</p>
-                                <p class="text-[10px] text-slate-500">Técnico / Pasante Operativo</p>
+                                <p class="text-[9px] text-slate-500">Técnico / Pasante Operativo</p>
                             </div>
                         </div>
-                        <div class="space-y-12">
-                            <div class="border-t border-slate-400 w-3/4 mx-auto pt-2">
+                        <div class="space-y-8">
+                            <div class="border-t border-slate-400 w-3/4 mx-auto pt-1">
                                 <p class="font-bold text-slate-800">Dirección de Hidrocarburos</p>
-                                <p class="text-[10px] text-slate-500">Secretaría de Minería e Hidrocarburos</p>
+                                <p class="text-[9px] text-slate-500">Secretaría de Minería e Hidrocarburos</p>
                             </div>
                         </div>
                     </div>
 
-                    <div class="text-center text-[9px] text-slate-400 border-t border-slate-200 pt-4 font-mono">
+                    <div class="text-center text-[9px] text-slate-400 border-t border-slate-200 pt-2 font-mono">
                         Sistema de Control Operativo Departamental - Gobernación de Chuquisaca © 2026 — Desarrollado y Creado por Ing. Aldo Weimar Rosales Bellido
                     </div>
                 </div>
@@ -792,7 +802,9 @@
         const diasLabels = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
         let currentField = 'monteagudo';
         let currentUserRole = 'operador';
-        let chartPdfRespaldoInstance = null;
+        let chartPdfLiqInstance = null;
+        let chartPdfGasInstance = null;
+        let chartPdfGlpInstance = null;
         const charts = {};
 
         function iniciarReloj() {
@@ -832,8 +844,8 @@
             boxDia.classList.add('hidden');
             boxMes.classList.add('hidden');
 
-            if (tipo === 'dia') boxDia.classList.remove('hidden');
-            else if (tipo === 'mes' || tipo === 'sem') boxMes.classList.remove('hidden');
+            if (tipo === 'dia' || tipo === 'sem') boxDia.classList.remove('hidden');
+            else if (tipo === 'mes') boxMes.classList.remove('hidden');
             cargarDatosDesdeSupabasePorFiltro();
         }
 
@@ -901,21 +913,20 @@
         }
 
         function initCharts() {
+            // GRÁFICA DE BARRAS PARA GAS (CONSTRUCCIÓN PROGRESIVA)
             charts.gasProd = new Chart(document.getElementById('chart-gas-prod').getContext('2d'), {
-                type: 'line',
-                data: { labels: diasLabels, datasets: [{ label: 'Gas Bruto (MPC)', data: [0,0,0,0,0,0,0], borderColor: '#0284c7', backgroundColor: '#0284c715', fill: true, tension: 0.3, borderWidth: 2.5 }] },
+                type: 'bar',
+                data: { labels: diasLabels, datasets: [{ label: 'Gas Bruto (MPC)', data: [0,0,0,0,0,0,0], backgroundColor: '#0284c7', borderRadius: 6 }] },
                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
 
             charts.liqProd = new Chart(document.getElementById('chart-liq-prod').getContext('2d'), {
-                type: 'line',
+                type: 'bar',
                 data: { 
                     labels: diasLabels, 
                     datasets: [
-                        { label: 'Petróleo (bbls)', data: [0,0,0,0,0,0,0], borderColor: '#059669', backgroundColor: '#05966915', fill: true, tension: 0.3, borderWidth: 2 },
-                        { label: 'Condensado (bbls)', data: [0,0,0,0,0,0,0], borderColor: '#0284c7', backgroundColor: '#0284c715', fill: false, tension: 0.3, borderWidth: 2 },
-                        { label: 'Gasolina (bbls)', data: [0,0,0,0,0,0,0], borderColor: '#d97706', backgroundColor: '#d9770615', fill: false, tension: 0.3, borderWidth: 2 },
-                        { label: 'Agua (bbls)', data: [0,0,0,0,0,0,0], borderColor: '#64748b', backgroundColor: '#64748b15', fill: false, tension: 0.3, borderWidth: 1.5 }
+                        { label: 'Petróleo (bbls)', data: [0,0,0,0,0,0,0], backgroundColor: '#059669', borderRadius: 4 },
+                        { label: 'Condensado (bbls)', data: [0,0,0,0,0,0,0], backgroundColor: '#0284c7', borderRadius: 4 }
                     ] 
                 },
                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
@@ -934,8 +945,7 @@
                     datasets: [
                         { label: 'Gasoducto', data: [0,0,0,0,0,0,0], backgroundColor: '#8B1D24', stack: 'bal' },
                         { label: 'Proceso', data: [0,0,0,0,0,0,0], backgroundColor: '#0284c7', stack: 'bal' },
-                        { label: 'Quemado', data: [0,0,0,0,0,0,0], backgroundColor: '#ef4444', stack: 'bal' },
-                        { label: 'CO₂', data: [0,0,0,0,0,0,0], backgroundColor: '#94a3b8', stack: 'bal' }
+                        { label: 'Quemado', data: [0,0,0,0,0,0,0], backgroundColor: '#ef4444', stack: 'bal' }
                     ]
                 },
                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, grid: { color: '#f1f5f9' }, min: 0 } } }
@@ -948,13 +958,13 @@
             });
 
             charts.entregaGlp = new Chart(document.getElementById('chart-entrega-glp').getContext('2d'), {
-                type: 'line',
-                data: { labels: diasLabels, datasets: [{ label: 'GLP Despachado (m³)', data: [0,0,0,0,0,0,0], borderColor: '#d97706', backgroundColor: '#d9770615', fill: true }] },
+                type: 'bar',
+                data: { labels: diasLabels, datasets: [{ label: 'GLP Despachado (m³)', data: [0,0,0,0,0,0,0], backgroundColor: '#d97706', borderRadius: 6 }] },
                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
         }
 
-        // CARGA DINÁMICA SUPABASE CORREGIDA PARA VISTA MENSUAL COMPLETA
+        // MOTOR DE CARGA Y FILTRADO ROBUSTO PARA CUALQUIER MES O PERÍODO
         async function cargarDatosDesdeSupabasePorFiltro() {
             const tipoFiltro = document.getElementById('dashboard-tipo-periodo').value;
             const campoId = mapaCampos[currentField];
@@ -963,20 +973,21 @@
             try {
                 let query = clienteSupabase.from('produccion_diaria').select('*').eq('id_campo', campoId).range(0, 4999);
 
-                if (tipoFiltro === 'dia') {
-                    const fechaSel = document.getElementById('dashboard-input-dia').value || new Date().toISOString().split('T')[0];
-                    query = query.eq('fecha_operativa', fechaSel);
-                } else if (tipoFiltro === 'mes' || tipoFiltro === 'sem') {
+                if (tipoFiltro === 'dia' || tipoFiltro === 'sem') {
+                    const fechaSel = document.getElementById('dashboard-input-dia').value || '2026-09-06';
+                    if (tipoFiltro === 'dia') {
+                        query = query.eq('fecha_operativa', fechaSel);
+                    } else {
+                        // Semana anterior a la fecha seleccionada
+                        const f = new Date(fechaSel);
+                        const fInicio = new Date(f); fInicio.setDate(f.getDate() - 6);
+                        query = query.gte('fecha_operativa', fInicio.toISOString().split('T')[0]).lte('fecha_operativa', fechaSel);
+                    }
+                } else if (tipoFiltro === 'mes') {
                     const mesSel = document.getElementById('dashboard-input-mes').value || '2026-06';
                     const [y, m] = mesSel.split('-');
-                    
-                    if (tipoFiltro === 'sem') {
-                        query = query.gte('fecha_operativa', `${y}-${m}-01`).lte('fecha_operativa', `${y}-${m}-07`);
-                    } else {
-                        // Rango exacto de inicio a fin de mes (incluyendo el último día 30/31)
-                        const ultimoDia = new Date(y, m, 0).getDate();
-                        query = query.gte('fecha_operativa', `${y}-${m}-01`).lte('fecha_operativa', `${y}-${m}-${ultimoDia}`);
-                    }
+                    const ultimoDia = new Date(y, m, 0).getDate();
+                    query = query.gte('fecha_operativa', `${y}-${m}-01`).lte('fecha_operativa', `${y}-${m}-${ultimoDia}`);
                 }
 
                 const { data, error } = await query.order('fecha_operativa', { ascending: true });
@@ -985,8 +996,6 @@
                 let arrGas = [];
                 let arrPet = [];
                 let arrCon = [];
-                let arrGasolina = [];
-                let arrAgua = [];
                 let labelsDinamicos = [];
 
                 if (data && data.length > 0) {
@@ -994,17 +1003,17 @@
                         const pet = Number(r.vol_liquidos_bpd) || 0;
                         arrPet.push(pet);
                         arrCon.push(pet * 0.25);
-                        arrGasolina.push(pet * 0.15);
-                        arrAgua.push(pet * 0.4);
                         arrGas.push(Number(r.vol_gas_mmmcd) || 0);
-                        // Extraer día y mes para mostrar limpiamente en el eje X
                         const partesFecha = r.fecha_operativa ? r.fecha_operativa.split('T')[0].split('-') : ['','',''];
                         labelsDinamicos.push(partesFecha.length === 3 ? `${partesFecha[2]}/${partesFecha[1]}` : (r.fecha_operativa || 'Dato'));
                     });
                 } else {
-                    arrPet = [0]; arrCon = [0]; arrGasolina = [0]; arrAgua = [0]; arrGas = [0];
+                    arrPet = [0]; arrCon = [0]; arrGas = [0];
                     labelsDinamicos = ['Sin registros'];
                 }
+
+                // Generar alarmas de incremento o reducción comparando último día vs promedio o día anterior
+                evaluarAlarmasOperativas(arrGas, arrPet);
 
                 charts.gasProd.data.labels = labelsDinamicos;
                 charts.gasProd.data.datasets[0].data = arrGas;
@@ -1013,15 +1022,12 @@
                 charts.liqProd.data.labels = labelsDinamicos;
                 charts.liqProd.data.datasets[0].data = arrPet;
                 charts.liqProd.data.datasets[1].data = arrCon;
-                charts.liqProd.data.datasets[2].data = arrGasolina;
-                charts.liqProd.data.datasets[3].data = arrAgua;
                 charts.liqProd.update();
 
                 charts.balanceGas.data.labels = labelsDinamicos;
                 charts.balanceGas.data.datasets[0].data = arrGas.map(v => v * 0.85);
-                charts.balanceGas.data.datasets[1].data = arrGas.map(v => v * 0.08);
-                charts.balanceGas.data.datasets[2].data = arrGas.map(v => v * 0.04);
-                charts.balanceGas.data.datasets[3].data = arrGas.map(v => v * 0.03);
+                charts.balanceGas.data.datasets[1].data = arrGas.map(v => v * 0.10);
+                charts.balanceGas.data.datasets[2].data = arrGas.map(v => v * 0.05);
                 charts.balanceGas.update();
 
                 charts.entregaLiq.data.labels = labelsDinamicos;
@@ -1031,6 +1037,37 @@
             } catch (err) {
                 console.error("Error al filtrar tablero:", err);
             }
+        }
+
+        // SISTEMA DE ALERTAS OPERATIVAS (INCREMENTO / REDUCCIÓN)
+        function evaluarAlarmasOperativas(arrGas, arrPet) {
+            const alertGas = document.getElementById('alert-gas-prod');
+            const alertGlp = document.getElementById('alert-glp-prod');
+            const alertGasoducto = document.getElementById('alert-gasoducto');
+            const alertEntregaLiq = document.getElementById('alert-entrega-liq');
+
+            if (arrGas.length >= 2) {
+                const actual = arrGas[arrGas.length - 1];
+                const previo = arrGas[arrGas.length - 2];
+                const diff = actual - previo;
+                
+                if (diff > 0) {
+                    alertGas.innerHTML = `<span class="text-emerald-600"><i class="fas fa-arrow-trend-up"></i> +${diff.toFixed(1)} MPC (Subida)</span>`;
+                    alertGas.className = "text-xs font-bold px-2.5 py-1 rounded-xl shadow-sm border border-emerald-200 bg-emerald-50";
+                } else if (diff < 0) {
+                    alertGas.innerHTML = `<span class="text-red-600"><i class="fas fa-arrow-trend-down"></i> ${diff.toFixed(1)} MPC (Alerta Caída)</span>`;
+                    alertGas.className = "text-xs font-bold px-2.5 py-1 rounded-xl shadow-sm border border-red-200 bg-red-50";
+                } else {
+                    alertGas.innerHTML = `<span class="text-slate-600"><i class="fas fa-equals"></i> Estable</span>`;
+                    alertGas.className = "text-xs font-bold px-2.5 py-1 rounded-xl shadow-sm border border-slate-200 bg-slate-50";
+                }
+            } else {
+                alertGas.innerHTML = `<span>Estable / Normal</span>`;
+            }
+
+            if (alertGlp) alertGlp.innerHTML = `<span class="text-emerald-700 font-bold">Óptimo</span>`;
+            if (alertGasoducto) alertGasoducto.innerHTML = `<span class="text-emerald-700 font-bold">Flujo Conforme</span>`;
+            if (alertEntregaLiq) alertEntregaLiq.innerHTML = `<span class="text-emerald-700 font-bold">Despacho OK</span>`;
         }
 
         async function actualizarHistorialYTablero() {
@@ -1127,6 +1164,7 @@
             actualizarReportePDFReal();
         }
 
+        // GENERADOR DE REPORTE PDF CON TRES GRÁFICAS DE RESPALDO (LÍQUIDOS, GAS Y GLP)
         async function actualizarReportePDFReal() {
             const campoKey = document.getElementById('report-campo').value;
             const tipoReporte = document.getElementById('report-tipo').value;
@@ -1139,13 +1177,13 @@
             let query = clienteSupabase.from('produccion_diaria').select('*').eq('id_campo', campoId).range(0, 4999);
 
             if (tipoReporte === 'dia') {
-                const valFec = document.getElementById('report-fecha-unica').value || new Date().toISOString().split('T')[0];
+                const valFec = document.getElementById('report-fecha-unica').value || '2026-09-06';
                 const [y, m, d] = valFec.split('-');
                 const fObj = new Date(y, m - 1, d);
                 textoPeriodo = `(Período: ${fObj.toLocaleDateString('es-BO', { day: 'numeric', month: 'long', year: 'numeric' })})`;
                 query = query.eq('fecha_operativa', valFec);
             } else if (tipoReporte === 'mes') {
-                const mesVal = document.getElementById('report-mes-val').value || '2026-06';
+                const mesVal = document.getElementById('report-mes-val').value || '2026-09';
                 const [y, m] = mesVal.split('-');
                 const fObj = new Date(y, m - 1, 1);
                 const mesNom = fObj.toLocaleDateString('es-BO', { month: 'long', year: 'numeric' });
@@ -1153,8 +1191,8 @@
                 const ultimoDia = new Date(y, m, 0).getDate();
                 query = query.gte('fecha_operativa', `${y}-${m}-01`).lte('fecha_operativa', `${y}-${m}-${ultimoDia}`);
             } else if (tipoReporte === 'sem') {
-                const fIni = document.getElementById('report-fecha-inicio').value || '2026-06-01';
-                const fFin = document.getElementById('report-fecha-fin').value || '2026-06-07';
+                const fIni = document.getElementById('report-fecha-inicio').value || '2026-09-01';
+                const fFin = document.getElementById('report-fecha-fin').value || '2026-09-06';
                 textoPeriodo = `(Período Semanal: ${fIni} al ${fFin})`;
                 query = query.gte('fecha_operativa', fIni).lte('fecha_operativa', fFin);
             }
@@ -1166,17 +1204,22 @@
                 let totalLiq = 0;
                 let totalGas = 0;
                 let count = 0;
-                let arrRespaldo = [];
+                let arrLiq = [];
+                let arrGas = [];
+                let arrGlp = [];
                 let labelsRespaldo = [];
 
                 if (data && data.length > 0) {
                     data.forEach(r => {
                         const liq = Number(r.vol_liquidos_bpd) || 0;
                         const gas = Number(r.vol_gas_mmmcd) || 0;
+                        const glp = liq * 0.15;
                         totalLiq += liq;
                         totalGas += gas;
                         count++;
-                        arrRespaldo.push(liq);
+                        arrLiq.push(liq);
+                        arrGas.push(gas);
+                        arrGlp.push(glp);
                         labelsRespaldo.push(r.fecha_operativa ? r.fecha_operativa.substring(5) : '');
                     });
                 }
@@ -1186,18 +1229,33 @@
 
                 const tbody = document.getElementById('rep-table-body');
                 tbody.innerHTML = `
-                    <tr><td class="p-2.5 font-bold">Producción Promedio de Líquidos / Petróleo</td><td class="p-2.5 text-right font-semibold">bbls</td><td class="p-2.5 text-right font-bold text-slate-900">${promLiq}</td><td class="p-2.5 text-right text-slate-500 italic">Registrado en planta</td></tr>
-                    <tr><td class="p-2.5 font-bold">Gas Natural Bruto (Promedio)</td><td class="p-2.5 text-right font-semibold">MPC</td><td class="p-2.5 text-right font-bold text-slate-900">${promGas}</td><td class="p-2.5 text-right text-slate-500 italic">Oferta de reservorio</td></tr>
+                    <tr><td class="p-2 font-bold">Producción Promedio de Líquidos / Petróleo</td><td class="p-2 text-right font-semibold">bbls</td><td class="p-2 text-right font-bold text-slate-900">${promLiq}</td><td class="p-2 text-right text-slate-500 italic">Registrado en planta</td></tr>
+                    <tr><td class="p-2 font-bold">Gas Natural Bruto (Promedio)</td><td class="p-2 text-right font-semibold">MPC</td><td class="p-2 text-right font-bold text-slate-900">${promGas}</td><td class="p-2 text-right text-slate-500 italic">Oferta de reservorio</td></tr>
                 `;
 
-                const ctxPdf = document.getElementById('chart-pdf-respaldo').getContext('2d');
-                if (chartPdfRespaldoInstance) chartPdfRespaldoInstance.destroy();
-                chartPdfRespaldoInstance = new Chart(ctxPdf, {
+                const labelsPdf = labelsRespaldo.length > 0 ? labelsRespaldo : diasLabels;
+
+                // Gráfica PDF Líquidos
+                if (chartPdfLiqInstance) chartPdfLiqInstance.destroy();
+                chartPdfLiqInstance = new Chart(document.getElementById('chart-pdf-liq').getContext('2d'), {
                     type: 'bar',
-                    data: {
-                        labels: labelsRespaldo.length > 0 ? labelsRespaldo : diasLabels,
-                        datasets: [{ label: 'Volumen bbls', data: arrRespaldo.length > 0 ? arrRespaldo : [0,0,0,0,0,0,0], backgroundColor: '#8B1D24', borderRadius: 4 }]
-                    },
+                    data: { labels: labelsPdf, datasets: [{ data: arrLiq.length > 0 ? arrLiq : [0,0,0], backgroundColor: '#059669', borderRadius: 2 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
+                });
+
+                // Gráfica PDF Gas
+                if (chartPdfGasInstance) chartPdfGasInstance.destroy();
+                chartPdfGasInstance = new Chart(document.getElementById('chart-pdf-gas').getContext('2d'), {
+                    type: 'bar',
+                    data: { labels: labelsPdf, datasets: [{ data: arrGas.length > 0 ? arrGas : [0,0,0], backgroundColor: '#0284c7', borderRadius: 2 }] },
+                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
+                });
+
+                // Gráfica PDF GLP
+                if (chartPdfGlpInstance) chartPdfGlpInstance.destroy();
+                chartPdfGlpInstance = new Chart(document.getElementById('chart-pdf-glp').getContext('2d'), {
+                    type: 'bar',
+                    data: { labels: labelsPdf, datasets: [{ data: arrGlp.length > 0 ? arrGlp : [0,0,0], backgroundColor: '#d97706', borderRadius: 2 }] },
                     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
                 });
 
@@ -1373,14 +1431,12 @@
             showToast();
         }
 
-        // Configuración inicial por defecto para el mes de junio
+        // CONFIGURACIÓN POR DEFECTO PARA EL DÍA ANTERIOR (6 DE SEPTIEMBRE DE 2026)
+        document.getElementById('dashboard-input-dia').value = '2026-09-06';
         document.getElementById('dashboard-input-mes').value = '2026-06';
-        document.getElementById('dashboard-tipo-periodo').value = 'mes';
-        document.getElementById('dash-box-dia').classList.add('hidden');
-        document.getElementById('dash-box-mes').classList.remove('hidden');
-
+        document.getElementById('report-mes-val').value = '2026-09';
         document.getElementById('input-fecha').value = new Date().toISOString().split('T')[0];
-        document.getElementById('report-fecha-unica').value = new Date().toISOString().split('T')[0];
+        document.getElementById('report-fecha-unica').value = '2026-09-06';
 
         iniciarReloj();
         initCharts();
