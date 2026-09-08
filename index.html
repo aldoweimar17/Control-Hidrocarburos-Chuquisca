@@ -387,7 +387,7 @@
                 <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8">
                     <div class="mb-5 bg-amber-50 border border-amber-200 p-3.5 rounded-2xl text-xs text-amber-800 flex items-center gap-3">
                         <i class="fas fa-info-circle text-amber-600 text-base shrink-0"></i>
-                        <span><strong>Nota Operativa:</strong> Puedes dejar casillas en blanco si no hay datos. El sistema automáticamente colocará <strong>0</strong> antes de enviar a Supabase para evitar errores. Puedes seleccionar cualquier fecha.</span>
+                        <span><strong>Nota Operativa:</strong> Puedes dejar casillas en blanco si no hay datos. El sistema automáticamente colocará <strong>0</strong> antes de enviar a Supabase para evitar errores.</span>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pb-6 border-b border-slate-200 items-end">
@@ -1386,16 +1386,17 @@
 
         let sessionCount = 0;
         document.getElementById('btn-save').addEventListener('click', async function() {
-            if (currentUserRole === 'directivo') { alert("Perfil de consulta."); return; }
+            if (currentUserRole === 'directivo') { alert("Perfil de consulta no puede modificar datos."); return; }
 
             const campoID = document.getElementById('input-campo').value;
             const fecha = document.getElementById('input-fecha').value;
             
-            if (!campoID || !fecha) { alert("Seleccione campo y fecha obligatoriamente."); return; }
+            if (!campoID || !fecha) { alert("Seleccione el campo y la fecha obligatoriamente."); return; }
             
             const idCampoNum = mapaCampos[campoID];
-            if (!idCampoNum) { alert("Campo seleccionado no válido."); return; }
+            if (!idCampoNum) { alert("Campo seleccionado no es válido."); return; }
             
+            // Función auxiliar para forzar un número válido. Si está vacío, se vuelve 0.
             const getVal = (id) => {
                 const node = document.getElementById(id);
                 if (!node) return 0;
@@ -1408,25 +1409,57 @@
             const petroleo = getVal('liq-petroleo');
             const gasProd = getVal('gas-prod');
 
+            // Determinar el valor del líquido final, usando petróleo si se definió, o la producción general.
+            const finalLiquido = petroleo > 0 ? petroleo : liqProd;
+
             const btn = document.getElementById('btn-save');
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
             btn.disabled = true;
 
             try {
-                const { error } = await clienteSupabase
+                // MÉTODO A PRUEBA DE FALLOS: Se elimina el upsert.
+                // 1. Consultar si ya existe un registro para ese campo en esa fecha.
+                const { data: existe, error: errVerif } = await clienteSupabase
                     .from('produccion_diaria')
-                    .upsert({
-                        id_campo: idCampoNum, 
-                        fecha_operativa: fecha,
-                        vol_gas_mmmcd: gasProd,
-                        vol_liquidos_bpd: petroleo || liqProd,
-                        precio_wti_usd: wti || 0
-                    }, { onConflict: 'id_campo, fecha_operativa' });
+                    .select('id') // Consultamos solo el ID para ahorrar transferencia de datos
+                    .eq('id_campo', idCampoNum)
+                    .eq('fecha_operativa', fecha);
 
-                if (error) throw error;
+                if (errVerif) throw errVerif;
+
+                if (existe && existe.length > 0) {
+                    // 2. Si ya existe, actualizamos.
+                    const { error: errUpd } = await clienteSupabase
+                        .from('produccion_diaria')
+                        .update({
+                            vol_gas_mmmcd: gasProd,
+                            vol_liquidos_bpd: finalLiquido,
+                            precio_wti_usd: wti,
+                            usuario: currentUserEmail
+                        })
+                        .eq('id_campo', idCampoNum)
+                        .eq('fecha_operativa', fecha);
+                    
+                    if (errUpd) throw errUpd;
+                } else {
+                    // 3. Si NO existe, creamos un nuevo registro.
+                    const { error: errIns } = await clienteSupabase
+                        .from('produccion_diaria')
+                        .insert([{
+                            id_campo: idCampoNum, 
+                            fecha_operativa: fecha,
+                            vol_gas_mmmcd: gasProd,
+                            vol_liquidos_bpd: finalLiquido,
+                            precio_wti_usd: wti,
+                            usuario: currentUserEmail
+                        }]);
+                    
+                    if (errIns) throw errIns;
+                }
                 
                 showToastMessage("¡Parte diario guardado o actualizado con éxito!");
 
+                // Limpiar campos numéricos (excepto el WTI)
                 document.querySelectorAll('#view-entry input[type="number"]').forEach(input => {
                     if (input.id !== 'input-wti') input.value = '';
                 });
@@ -1434,8 +1467,8 @@
                 await actualizarHistorialYTablero();
                 await actualizarReportePDFReal();
             } catch (err) {
-                console.error(err);
-                alert("Error al guardar en Supabase. Verifique los datos o si la conexión es estable.");
+                console.error("Error detallado de Supabase:", err);
+                alert("Hubo un error al guardar o verificar los datos. Comprueba tu conexión a internet y asegúrate de que el formato sea correcto.");
             } finally {
                 btn.innerHTML = '<i class="fas fa-database"></i> Validar y Guardar Parte Diario en Supabase';
                 btn.disabled = false;
@@ -1460,7 +1493,7 @@
                         `;
                         tbody.appendChild(tr);
                     });
-                } else { tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-slate-400 italic">Sin pozos.</td></tr>`; }
+                } else { tbody.innerHTML = `<tr><td colspan="4" class="p-6 text-center text-slate-400 italic">Sin pozos registrados.</td></tr>`; }
             } catch (e) { console.error(e); }
         }
 
@@ -1473,7 +1506,7 @@
             const ext = document.getElementById('well-input-ext').value.trim();
             const desc = document.getElementById('well-input-desc').value.trim();
 
-            if (!campoId || !nombre) { alert("Complete datos del pozo."); return; }
+            if (!campoId || !nombre) { alert("Complete los datos básicos del pozo."); return; }
 
             try {
                 const { error } = await clienteSupabase.from('pozos_ficha_tecnica').insert([{
