@@ -17,7 +17,7 @@
                         chqBorder: '#e2e8f0',
                         chqText: '#1e293b',
                         chqMuted: '#64748b',
-                        accentBlue: '#1e3a8a',
+                        accentBlue: '#0284c7',
                         accentGreen: '#059669',
                         accentAmber: '#d97706',
                     }
@@ -221,7 +221,7 @@
                 </div>
                 <div class="flex flex-wrap items-center gap-3">
                     <select id="dashboard-tipo-periodo" onchange="actualizarFiltrosTableroGlobal()" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#8B1D24]">
-                        <option value="dia" selected>Reporte Diario</option>
+                        <option value="dia" selected>Reporte Diario (Día Anterior)</option>
                         <option value="sem">Reporte Semanal</option>
                         <option value="mes">Reporte Mensual</option>
                     </select>
@@ -391,7 +391,7 @@
                 <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8">
                     <div class="mb-5 bg-amber-50 border border-amber-200 p-3.5 rounded-2xl text-xs text-amber-800 flex items-center gap-3">
                         <i class="fas fa-info-circle text-amber-600 text-base shrink-0"></i>
-                        <span><strong>Nota Operativa:</strong> Las casillas vacías se guardarán automáticamente con valor <strong>0</strong>.</span>
+                        <span><strong>Nota Operativa:</strong> El valor <strong>0</strong> es totalmente válido ante ausencia de datos.</span>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pb-6 border-b border-slate-200 items-end">
@@ -534,13 +534,14 @@
                                 <tr class="bg-slate-50 uppercase text-slate-500 border-b border-slate-200">
                                     <th class="p-3">Fecha</th>
                                     <th class="p-3">Campo</th>
+                                    <th class="p-3">Usuario / Pasante</th>
                                     <th class="p-3 text-right">Gas (MPC)</th>
                                     <th class="p-3 text-right">Líquidos (bbl)</th>
                                     <th class="p-3 text-center">Acción</th>
                                 </tr>
                             </thead>
                             <tbody id="log-body" class="divide-y divide-slate-100 text-slate-700 font-mono">
-                                <tr id="empty-state"><td colspan="5" class="p-6 text-center text-slate-400 italic">No hay partes procesados en esta sesión.</td></tr>
+                                <tr id="empty-state"><td colspan="7" class="p-6 text-center text-slate-400 italic">No hay partes procesados en esta sesión.</td></tr>
                             </tbody>
                         </table>
                     </div>
@@ -643,7 +644,7 @@
                         <p class="text-xs text-slate-600 font-semibold" id="rep-print-subtitulo">Bloque Operativo: Monteagudo</p>
                     </div>
 
-                    <!-- GRÁFICAS DINÁMICAS EN PDF -->
+                    <!-- GRÁFICAS DINÁMICAS EN PDF SEGÚN LA SECCIÓN SELECCIONADA -->
                     <div class="space-y-3 pt-2">
                         <h4 class="text-[11px] font-bold text-[#8B1D24] uppercase tracking-wider border-l-4 border-[#8B1D24] pl-2" id="rep-titulo-seccion">Gráficas de Comportamiento Operativo</h4>
                         
@@ -935,11 +936,43 @@
             toggleSidebar();
         }
 
+        // PLUGIN PERSONALIZADO PARA LÍNEA DE TENDENCIA SUPERIOR EN GRÁFICAS DE BARRAS
+        const tendenciaPlugin = {
+            id: 'tendenciaPlugin',
+            afterDatasetsDraw(chart, args, options) {
+                const { ctx, chartArea: { top, left, right }, scales: { y } } = chart;
+                const datasetMeta = chart.getDatasetMeta(0);
+                if (!datasetMeta || datasetMeta.data.length === 0) return;
+
+                ctx.save();
+                ctx.beginPath();
+                ctx.strokeStyle = '#8B1D24';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([4, 4]);
+
+                datasetMeta.data.forEach((bar, index) => {
+                    const dataVal = chart.data.datasets[0].data[index];
+                    if (dataVal !== undefined && dataVal !== null) {
+                        const xPos = bar.x;
+                        const yPos = bar.y; // Parte superior de la barra
+                        if (index === 0) {
+                            ctx.moveTo(xPos, yPos);
+                        } else {
+                            ctx.lineTo(xPos, yPos);
+                        }
+                    }
+                });
+                ctx.stroke();
+                ctx.restore();
+            }
+        };
+
         function initCharts() {
             charts.gasProd = new Chart(document.getElementById('chart-gas-prod').getContext('2d'), {
                 type: 'bar',
-                data: { labels: diasLabels, datasets: [{ label: 'Gas Bruto (MPC)', data: [0,0,0,0,0,0,0], backgroundColor: '#1e3a8a', borderRadius: 6, barPercentage: 0.65 }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
+                data: { labels: diasLabels, datasets: [{ label: 'Gas Bruto (MPC)', data: [0,0,0,0,0,0,0], backgroundColor: '#0284c7', borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } },
+                plugins: [tendenciaPlugin]
             });
 
             charts.liqProd = new Chart(document.getElementById('chart-liq-prod').getContext('2d'), {
@@ -947,17 +980,19 @@
                 data: { 
                     labels: diasLabels, 
                     datasets: [
-                        { label: 'Petróleo (bbls)', data: [0,0,0,0,0,0,0], backgroundColor: '#059669', borderRadius: 6, barPercentage: 0.65 },
-                        { label: 'Condensado (bbls)', data: [0,0,0,0,0,0,0], backgroundColor: '#0d9488', borderRadius: 6, barPercentage: 0.65 }
+                        { label: 'Petróleo (bbls)', data: [0,0,0,0,0,0,0], backgroundColor: '#059669', borderRadius: 4 },
+                        { label: 'Condensado (bbls)', data: [0,0,0,0,0,0,0], backgroundColor: '#0284c7', borderRadius: 4 }
                     ] 
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } },
+                plugins: [tendenciaPlugin]
             });
 
             charts.glpProd = new Chart(document.getElementById('chart-glp-prod').getContext('2d'), {
                 type: 'bar',
-                data: { labels: diasLabels, datasets: [{ label: 'GLP (m³)', data: [0,0,0,0,0,0,0], backgroundColor: '#d97706', borderRadius: 6, barPercentage: 0.65 }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
+                data: { labels: diasLabels, datasets: [{ label: 'GLP (m³)', data: [0,0,0,0,0,0,0], backgroundColor: '#d97706', borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } },
+                plugins: [tendenciaPlugin]
             });
 
             charts.balanceGas = new Chart(document.getElementById('chart-balance-gas').getContext('2d'), {
@@ -965,24 +1000,27 @@
                 data: {
                     labels: diasLabels,
                     datasets: [
-                        { label: 'Gasoducto', data: [0,0,0,0,0,0,0], backgroundColor: '#8B1D24', stack: 'bal', barPercentage: 0.65 },
-                        { label: 'Proceso', data: [0,0,0,0,0,0,0], backgroundColor: '#1e3a8a', stack: 'bal', barPercentage: 0.65 },
-                        { label: 'Quemado', data: [0,0,0,0,0,0,0], backgroundColor: '#dc2626', stack: 'bal', barPercentage: 0.65 }
+                        { label: 'Gasoducto', data: [0,0,0,0,0,0,0], backgroundColor: '#8B1D24', stack: 'bal' },
+                        { label: 'Proceso', data: [0,0,0,0,0,0,0], backgroundColor: '#0284c7', stack: 'bal' },
+                        { label: 'Quemado', data: [0,0,0,0,0,0,0], backgroundColor: '#ef4444', stack: 'bal' }
                     ]
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, grid: { color: '#f1f5f9' }, min: 0 } } }
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, grid: { color: '#f1f5f9' }, min: 0 } } },
+                plugins: [tendenciaPlugin]
             });
 
             charts.entregaLiq = new Chart(document.getElementById('chart-entrega-liq').getContext('2d'), {
                 type: 'bar',
-                data: { labels: diasLabels, datasets: [{ label: 'Petróleo Entregado (bbls)', data: [0,0,0,0,0,0,0], backgroundColor: '#059669', borderRadius: 6, barPercentage: 0.65 }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
+                data: { labels: diasLabels, datasets: [{ label: 'Petróleo Entregado (bbls)', data: [0,0,0,0,0,0,0], backgroundColor: '#059669', borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } },
+                plugins: [tendenciaPlugin]
             });
 
             charts.entregaGlp = new Chart(document.getElementById('chart-entrega-glp').getContext('2d'), {
                 type: 'bar',
-                data: { labels: diasLabels, datasets: [{ label: 'GLP Despachado (m³)', data: [0,0,0,0,0,0,0], backgroundColor: '#d97706', borderRadius: 6, barPercentage: 0.65 }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
+                data: { labels: diasLabels, datasets: [{ label: 'GLP Despachado (m³)', data: [0,0,0,0,0,0,0], backgroundColor: '#d97706', borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } },
+                plugins: [tendenciaPlugin]
             });
         }
 
@@ -995,7 +1033,7 @@
                 let query = clienteSupabase.from('produccion_diaria').select('*').eq('id_campo', campoId).range(0, 4999);
 
                 if (tipoFiltro === 'dia' || tipoFiltro === 'sem') {
-                    const fechaSel = document.getElementById('dashboard-input-dia').value || new Date().toISOString().split('T')[0];
+                    const fechaSel = document.getElementById('dashboard-input-dia').value || '2026-09-06';
                     if (tipoFiltro === 'dia') {
                         query = query.eq('fecha_operativa', fechaSel);
                     } else {
@@ -1004,7 +1042,7 @@
                         query = query.gte('fecha_operativa', fInicio.toISOString().split('T')[0]).lte('fecha_operativa', fechaSel);
                     }
                 } else if (tipoFiltro === 'mes') {
-                    const mesSel = document.getElementById('dashboard-input-mes').value || new Date().toISOString().substring(0, 7);
+                    const mesSel = document.getElementById('dashboard-input-mes').value || '2026-06';
                     const [y, m] = mesSel.split('-');
                     const ultimoDia = new Date(y, m, 0).getDate();
                     query = query.gte('fecha_operativa', `${y}-${m}-01`).lte('fecha_operativa', `${y}-${m}-${ultimoDia}`);
@@ -1106,11 +1144,13 @@
 
                     data.forEach(r => {
                         const campoNombre = Object.keys(mapaCampos).find(key => mapaCampos[key] === r.id_campo) || 'campo';
+                        const usuarioPasante = r.usuario || currentUserEmail || 'Operador / Pasante';
                         const tr = document.createElement('tr');
                         tr.className = "hover:bg-slate-50 border-b border-slate-100";
                         tr.innerHTML = `
                             <td class="p-3">${r.fecha_operativa}</td>
                             <td class="p-3 font-bold text-[#8B1D24] uppercase">${campoNombre}</td>
+                            <td class="p-3 text-slate-600 font-semibold">${usuarioPasante}</td>
                             <td class="p-3 text-right text-sky-700 font-bold">${(r.vol_gas_mmmcd || 0).toFixed(1)}</td>
                             <td class="p-3 text-right text-emerald-700 font-bold">${(r.vol_liquidos_bpd || 0).toFixed(1)}</td>
                             <td class="p-3 text-center">
@@ -1216,13 +1256,13 @@
             let query = clienteSupabase.from('produccion_diaria').select('*').eq('id_campo', campoId).range(0, 4999);
 
             if (tipoReporte === 'dia') {
-                const valFec = document.getElementById('report-fecha-unica').value || new Date().toISOString().split('T')[0];
+                const valFec = document.getElementById('report-fecha-unica').value || '2026-09-06';
                 const [y, m, d] = valFec.split('-');
                 const fObj = new Date(y, m - 1, d);
                 textoPeriodo = `(Período: ${fObj.toLocaleDateString('es-BO', { day: 'numeric', month: 'long', year: 'numeric' })})`;
                 query = query.eq('fecha_operativa', valFec);
             } else if (tipoReporte === 'mes') {
-                const mesVal = document.getElementById('report-mes-val').value || new Date().toISOString().substring(0, 7);
+                const mesVal = document.getElementById('report-mes-val').value || '2026-09';
                 const [y, m] = mesVal.split('-');
                 const fObj = new Date(y, m - 1, 1);
                 const mesNom = fObj.toLocaleDateString('es-BO', { month: 'long', year: 'numeric' });
@@ -1230,8 +1270,8 @@
                 const ultimoDia = new Date(y, m, 0).getDate();
                 query = query.gte('fecha_operativa', `${y}-${m}-01`).lte('fecha_operativa', `${y}-${m}-${ultimoDia}`);
             } else if (tipoReporte === 'sem') {
-                const fIni = document.getElementById('report-fecha-inicio').value || new Date().toISOString().split('T')[0];
-                const fFin = document.getElementById('report-fecha-fin').value || new Date().toISOString().split('T')[0];
+                const fIni = document.getElementById('report-fecha-inicio').value || '2026-09-01';
+                const fFin = document.getElementById('report-fecha-fin').value || '2026-09-06';
                 textoPeriodo = `(Período Semanal: ${fIni} al ${fFin})`;
                 query = query.gte('fecha_operativa', fIni).lte('fecha_operativa', fFin);
             }
@@ -1239,9 +1279,7 @@
             document.getElementById('rep-print-subtitulo').innerText = `Bloque Operativo: ${infoCampo.name} — ${textoPeriodo}`;
 
             try {
-                const { data, error } = await query.order('fecha_operativa', { ascending: true });
-                if (error) throw error;
-
+                const { data } = await query.order('fecha_operativa', { ascending: true });
                 let arrLiq = [], arrGas = [], arrGlp = [], arrFisc1 = [], arrFisc2 = [], arrFisc3 = [];
                 let labelsRespaldo = [];
 
@@ -1257,53 +1295,57 @@
                         arrFisc3.push((liq * 0.15) * 0.90);
                         labelsRespaldo.push(r.fecha_operativa ? r.fecha_operativa.substring(5) : '');
                     });
-                } else {
-                    arrLiq = [0]; arrGas = [0]; arrGlp = [0];
-                    arrFisc1 = [0]; arrFisc2 = [0]; arrFisc3 = [0];
-                    labelsRespaldo = ['Sin registros'];
                 }
+
+                const labelsPdf = labelsRespaldo.length > 0 ? labelsRespaldo : diasLabels;
 
                 if (seccionRepo === 'produccion') {
                     if (chartPdfLiqInstance) chartPdfLiqInstance.destroy();
                     chartPdfLiqInstance = new Chart(document.getElementById('chart-pdf-liq').getContext('2d'), {
                         type: 'bar',
-                        data: { labels: labelsRespaldo, datasets: [{ data: arrLiq, backgroundColor: '#059669', borderRadius: 4, barPercentage: 0.65 }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
+                        data: { labels: labelsPdf, datasets: [{ data: arrLiq.length > 0 ? arrLiq : [0], backgroundColor: '#059669', borderRadius: 2 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } },
+                        plugins: [tendenciaPlugin]
                     });
 
                     if (chartPdfGasInstance) chartPdfGasInstance.destroy();
                     chartPdfGasInstance = new Chart(document.getElementById('chart-pdf-gas').getContext('2d'), {
                         type: 'bar',
-                        data: { labels: labelsRespaldo, datasets: [{ data: arrGas, backgroundColor: '#1e3a8a', borderRadius: 4, barPercentage: 0.65 }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
+                        data: { labels: labelsPdf, datasets: [{ data: arrGas.length > 0 ? arrGas : [0], backgroundColor: '#0284c7', borderRadius: 2 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } },
+                        plugins: [tendenciaPlugin]
                     });
 
                     if (chartPdfGlpInstance) chartPdfGlpInstance.destroy();
                     chartPdfGlpInstance = new Chart(document.getElementById('chart-pdf-glp').getContext('2d'), {
                         type: 'bar',
-                        data: { labels: labelsRespaldo, datasets: [{ data: arrGlp, backgroundColor: '#d97706', borderRadius: 4, barPercentage: 0.65 }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
+                        data: { labels: labelsPdf, datasets: [{ data: arrGlp.length > 0 ? arrGlp : [0], backgroundColor: '#d97706', borderRadius: 2 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } },
+                        plugins: [tendenciaPlugin]
                     });
                 } else {
                     if (chartPdfFisc1Instance) chartPdfFisc1Instance.destroy();
                     chartPdfFisc1Instance = new Chart(document.getElementById('chart-pdf-fisc1').getContext('2d'), {
                         type: 'bar',
-                        data: { labels: labelsRespaldo, datasets: [{ data: arrFisc1, backgroundColor: '#8B1D24', borderRadius: 4, barPercentage: 0.65 }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
+                        data: { labels: labelsPdf, datasets: [{ data: arrFisc1.length > 0 ? arrFisc1 : [0], backgroundColor: '#8B1D24', borderRadius: 2 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } },
+                        plugins: [tendenciaPlugin]
                     });
 
                     if (chartPdfFisc2Instance) chartPdfFisc2Instance.destroy();
                     chartPdfFisc2Instance = new Chart(document.getElementById('chart-pdf-fisc2').getContext('2d'), {
                         type: 'bar',
-                        data: { labels: labelsRespaldo, datasets: [{ data: arrFisc2, backgroundColor: '#059669', borderRadius: 4, barPercentage: 0.65 }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
+                        data: { labels: labelsPdf, datasets: [{ data: arrFisc2.length > 0 ? arrFisc2 : [0], backgroundColor: '#059669', borderRadius: 2 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } },
+                        plugins: [tendenciaPlugin]
                     });
 
                     if (chartPdfFisc3Instance) chartPdfFisc3Instance.destroy();
                     chartPdfFisc3Instance = new Chart(document.getElementById('chart-pdf-fisc3').getContext('2d'), {
                         type: 'bar',
-                        data: { labels: labelsRespaldo, datasets: [{ data: arrFisc3, backgroundColor: '#d97706', borderRadius: 4, barPercentage: 0.65 }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
+                        data: { labels: labelsPdf, datasets: [{ data: arrFisc3.length > 0 ? arrFisc3 : [0], backgroundColor: '#d97706', borderRadius: 2 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } },
+                        plugins: [tendenciaPlugin]
                     });
                 }
 
@@ -1378,38 +1420,48 @@
 
             const campoID = document.getElementById('input-campo').value;
             const fecha = document.getElementById('input-fecha').value;
+            
+            // CORRECCIÓN: Uso estricto de parseFloat para soportar decimales (evita error de sintaxis integer en Supabase)
+            const wti = parseFloat(document.getElementById('input-wti').value) || 82.50;
+            const liqProd = parseFloat(document.getElementById('liq-prod').value) || 0;
+            const petroleo = parseFloat(document.getElementById('liq-petroleo').value) || liqProd;
+            const condensado = parseFloat(document.getElementById('liq-condensado').value) || 0;
+            const densidad = parseFloat(document.getElementById('liq-densidad').value) || 0;
+            const gasolina = parseFloat(document.getElementById('liq-gasolina').value) || 0;
+            const agua = parseFloat(document.getElementById('liq-agua').value) || 0;
+            const petroleoEntregado = parseFloat(document.getElementById('liq-entregado').value) || 0;
 
-            if (!campoID || !fecha) { alert("Seleccione campo y fecha operativa."); return; }
+            const gasProd = parseFloat(document.getElementById('gas-prod').value) || 0;
+            const gasGasoducto = parseFloat(document.getElementById('gas-gasoducto').value) || 0;
+            const gasProceso = parseFloat(document.getElementById('gas-proceso').value) || 0;
+            const gasLicuables = parseFloat(document.getElementById('gas-licuables').value) || 0;
+            const gasCombustible = parseFloat(document.getElementById('gas-combustible').value) || 0;
+            const gasResidual = parseFloat(document.getElementById('gas-residual').value) || 0;
+            const gasQuemado = parseFloat(document.getElementById('gas-quemado').value) || 0;
+            const gasCo2 = parseFloat(document.getElementById('gas-co2').value) || 0;
+
+            const glpProd = parseFloat(document.getElementById('glp-prod').value) || 0;
+            const glpEntrega = parseFloat(document.getElementById('glp-entrega').value) || 0;
+
+            if (!campoID || !fecha) { alert("Seleccione campo y fecha."); return; }
             const idCampoNum = mapaCampos[campoID];
             if (!idCampoNum) { alert("Campo seleccionado no válido."); return; }
-
-            const valNum = (id) => {
-                const el = document.getElementById(id);
-                if (!el || el.value === '') return 0;
-                const num = parseFloat(el.value);
-                return isNaN(num) ? 0 : num;
-            };
-
-            const wti = valNum('input-wti') || 82.50;
-            const petroleo = valNum('liq-petroleo') > 0 ? valNum('liq-petroleo') : valNum('liq-prod');
-            const gasProd = valNum('gas-prod');
 
             const btn = document.getElementById('btn-save');
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
             btn.disabled = true;
 
             try {
-                const payload = {
-                    id_campo: idCampoNum,
-                    fecha_operativa: fecha,
-                    vol_gas_mmmcd: gasProd,
-                    vol_liquidos_bpd: petroleo,
-                    precio_wti_usd: wti
-                };
-
                 const { error } = await clienteSupabase
                     .from('produccion_diaria')
-                    .upsert(payload, { onConflict: 'id_campo, fecha_operativa' });
+                    .upsert({
+                        id_campo: idCampoNum,
+                        fecha_operativa: fecha,
+                        vol_gas_mmmcd: gasProd,
+                        vol_liquidos_bpd: petroleo,
+                        precio_wti_usd: wti,
+                        usuario: currentUserEmail
+                    }, { onConflict: 'id_campo, fecha_operativa' });
 
                 if (error) throw error;
 
@@ -1423,8 +1475,8 @@
                 await actualizarHistorialYTablero();
                 await actualizarReportePDFReal();
             } catch (err) {
-                console.error("Error al guardar en Supabase:", err);
-                alert("Error al guardar en Supabase: " + (err.message || "Verifique su conexión."));
+                console.error(err);
+                alert("Error al guardar en Supabase. Verifique los datos o si la conexión es estable.");
             } finally {
                 btn.innerHTML = '<i class="fas fa-database"></i> Validar y Guardar Parte Diario en Supabase';
                 btn.disabled = false;
@@ -1492,16 +1544,12 @@
             showToast();
         }
 
-        const hoyStr = new Date().toISOString().split('T')[0];
-        const mesStr = hoyStr.substring(0, 7);
-
-        document.getElementById('dashboard-input-dia').value = hoyStr;
-        document.getElementById('dashboard-input-mes').value = mesStr;
-        document.getElementById('report-mes-val').value = mesStr;
-        document.getElementById('input-fecha').value = hoyStr;
-        document.getElementById('report-fecha-unica').value = hoyStr;
-        document.getElementById('report-fecha-inicio').value = hoyStr;
-        document.getElementById('report-fecha-fin').value = hoyStr;
+        // CONFIGURACIÓN POR DEFECTO
+        document.getElementById('dashboard-input-dia').value = '2026-09-06';
+        document.getElementById('dashboard-input-mes').value = '2026-06';
+        document.getElementById('report-mes-val').value = '2026-09';
+        document.getElementById('input-fecha').value = new Date().toISOString().split('T')[0];
+        document.getElementById('report-fecha-unica').value = '2026-09-06';
 
         iniciarReloj();
         initCharts();
