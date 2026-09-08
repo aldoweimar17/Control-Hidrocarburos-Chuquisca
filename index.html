@@ -1396,12 +1396,14 @@
             const idCampoNum = mapaCampos[campoID];
             if (!idCampoNum) { alert("Campo seleccionado no es válido."); return; }
             
-            // Función auxiliar para forzar un número válido. Si está vacío, se vuelve 0.
+            // Función robusta para garantizar que el valor siempre sea numérico
             const getVal = (id) => {
                 const node = document.getElementById(id);
                 if (!node) return 0;
                 const val = node.value.trim();
-                return (val === "" || isNaN(parseFloat(val))) ? 0 : parseFloat(val);
+                if (val === "") return 0;
+                const num = parseFloat(val);
+                return isNaN(num) ? 0 : num;
             };
 
             const wti = getVal('input-wti');
@@ -1409,7 +1411,6 @@
             const petroleo = getVal('liq-petroleo');
             const gasProd = getVal('gas-prod');
 
-            // Determinar el valor del líquido final, usando petróleo si se definió, o la producción general.
             const finalLiquido = petroleo > 0 ? petroleo : liqProd;
 
             const btn = document.getElementById('btn-save');
@@ -1417,49 +1418,50 @@
             btn.disabled = true;
 
             try {
-                // MÉTODO A PRUEBA DE FALLOS: Se elimina el upsert.
-                // 1. Consultar si ya existe un registro para ese campo en esa fecha.
-                const { data: existe, error: errVerif } = await clienteSupabase
+                // Payload seguro: SOLO los campos que originalmente tenía tu base de datos
+                const payloadUpdate = {
+                    vol_gas_mmmcd: gasProd,
+                    vol_liquidos_bpd: finalLiquido,
+                    precio_wti_usd: wti
+                };
+
+                // 1. Verificar existencia usando un campo que sabemos que existe en tu BD (fecha_operativa)
+                const { data: existeData, error: errCheck } = await clienteSupabase
                     .from('produccion_diaria')
-                    .select('id') // Consultamos solo el ID para ahorrar transferencia de datos
+                    .select('fecha_operativa')
                     .eq('id_campo', idCampoNum)
                     .eq('fecha_operativa', fecha);
 
-                if (errVerif) throw errVerif;
+                if (errCheck) {
+                    throw new Error("Verificación fallida: " + errCheck.message);
+                }
 
-                if (existe && existe.length > 0) {
-                    // 2. Si ya existe, actualizamos.
+                if (existeData && existeData.length > 0) {
+                    // ACTUALIZAR (El registro ya existe)
                     const { error: errUpd } = await clienteSupabase
                         .from('produccion_diaria')
-                        .update({
-                            vol_gas_mmmcd: gasProd,
-                            vol_liquidos_bpd: finalLiquido,
-                            precio_wti_usd: wti,
-                            usuario: currentUserEmail
-                        })
+                        .update(payloadUpdate)
                         .eq('id_campo', idCampoNum)
                         .eq('fecha_operativa', fecha);
                     
-                    if (errUpd) throw errUpd;
+                    if (errUpd) throw new Error("Fallo al actualizar: " + errUpd.message);
                 } else {
-                    // 3. Si NO existe, creamos un nuevo registro.
+                    // INSERTAR (El registro no existe, agregamos los identificadores al payload)
+                    const payloadInsert = {
+                        ...payloadUpdate,
+                        id_campo: idCampoNum,
+                        fecha_operativa: fecha
+                    };
+
                     const { error: errIns } = await clienteSupabase
                         .from('produccion_diaria')
-                        .insert([{
-                            id_campo: idCampoNum, 
-                            fecha_operativa: fecha,
-                            vol_gas_mmmcd: gasProd,
-                            vol_liquidos_bpd: finalLiquido,
-                            precio_wti_usd: wti,
-                            usuario: currentUserEmail
-                        }]);
+                        .insert([payloadInsert]);
                     
-                    if (errIns) throw errIns;
+                    if (errIns) throw new Error("Fallo al insertar nuevo registro: " + errIns.message);
                 }
                 
                 showToastMessage("¡Parte diario guardado o actualizado con éxito!");
 
-                // Limpiar campos numéricos (excepto el WTI)
                 document.querySelectorAll('#view-entry input[type="number"]').forEach(input => {
                     if (input.id !== 'input-wti') input.value = '';
                 });
@@ -1467,8 +1469,13 @@
                 await actualizarHistorialYTablero();
                 await actualizarReportePDFReal();
             } catch (err) {
-                console.error("Error detallado de Supabase:", err);
-                alert("Hubo un error al guardar o verificar los datos. Comprueba tu conexión a internet y asegúrate de que el formato sea correcto.");
+                console.error("Error detallado devuelto por Supabase:", err);
+                
+                // Extraer el mensaje técnico para mostrarlo en pantalla. Si dice "numeric field overflow", 
+                // significa que el número es muy largo para la base de datos (ej: el 9934).
+                const exactError = err.message || JSON.stringify(err) || "Error de red desconocido";
+                alert(`Error en la base de datos:\n\n${exactError}\n\nNota: Verifica si los números ingresados no son demasiado grandes para los límites de tu tabla (ej: 9934 en lugar de 9.934).`);
+                
             } finally {
                 btn.innerHTML = '<i class="fas fa-database"></i> Validar y Guardar Parte Diario en Supabase';
                 btn.disabled = false;
