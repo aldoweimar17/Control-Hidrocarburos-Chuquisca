@@ -534,9 +534,9 @@
                                 <tr class="bg-slate-50 uppercase text-slate-500 border-b border-slate-200">
                                     <th class="p-3">Fecha</th>
                                     <th class="p-3">Campo</th>
+                                    <th class="p-3">Usuario / Pasante</th>
                                     <th class="p-3 text-right">Gas (MPC)</th>
                                     <th class="p-3 text-right">Líquidos (bbl)</th>
-                                    <th class="p-3 text-right">Petróleo (bbl)</th>
                                     <th class="p-3 text-center">Acción</th>
                                 </tr>
                             </thead>
@@ -569,13 +569,20 @@
 
             <div class="p-6 max-w-4xl w-full mx-auto flex-1 overflow-y-auto space-y-6">
                 <div class="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-4 no-print">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">Campo Operativo</label>
                             <select id="report-campo" onchange="actualizarReportePDFReal()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900">
                                 <option value="monteagudo">Monteagudo</option>
                                 <option value="vuelta-grande">Vuelta Grande</option>
                                 <option value="margarita">Margarita - Huacaya</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Sección de Reporte</label>
+                            <select id="report-seccion" onchange="actualizarReportePDFReal()" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900">
+                                <option value="produccion">1. Producción Bruta (Oferta Física)</option>
+                                <option value="fiscalizacion">2. Fiscalización & Balance</option>
                             </select>
                         </div>
                         <div>
@@ -607,6 +614,12 @@
                         </div>
                     </div>
 
+                    <!-- CASILLA DE ANÁLISIS TÉCNICO DEL OPERADOR -->
+                    <div class="pt-2 border-t border-slate-100">
+                        <label class="block text-xs font-bold text-slate-700 mb-1"><i class="fas fa-comment-dots text-[#8B1D24] mr-1"></i> Análisis Técnico / Comentarios del Operador (Para incluir en Reporte)</label>
+                        <textarea id="report-comentario-operador" rows="2" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900" placeholder="Ingrese el análisis del comportamiento de producción para respaldar el reporte..."></textarea>
+                    </div>
+
                     <div class="flex justify-end pt-2">
                         <button onclick="generarReportePDF()" class="bg-[#8B1D24] hover:bg-[#6b141a] text-white font-bold px-6 py-2.5 rounded-xl text-xs transition-all flex items-center gap-2 shadow-md">
                             <i class="fas fa-file-pdf"></i> Imprimir / Guardar PDF Oficial
@@ -631,32 +644,17 @@
                         <p class="text-xs text-slate-600 font-semibold" id="rep-print-subtitulo">Bloque Operativo: Monteagudo</p>
                     </div>
 
-                    <div class="space-y-2">
-                        <h4 class="text-[11px] font-bold text-[#8B1D24] uppercase tracking-wider border-l-4 border-[#8B1D24] pl-2">1. Resumen de Volúmenes Extraídos y Fiscalizados</h4>
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead>
-                                <tr class="bg-slate-100 text-slate-700 uppercase text-[10px] border-b border-slate-300">
-                                    <th class="p-2">Variable Operativa / Concepto</th>
-                                    <th class="p-2 text-right">Unidad</th>
-                                    <th class="p-2 text-right">Volumen Registrado</th>
-                                    <th class="p-2 text-right">Observación Técnica</th>
-                                </tr>
-                            </thead>
-                            <tbody id="rep-table-body" class="divide-y divide-slate-200 font-mono text-slate-800">
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <!-- GRÁFICAS MÚLTIPLES EN PDF (LÍQUIDOS, GAS Y GLP) -->
+                    <!-- GRÁFICAS DINÁMICAS EN PDF SEGÚN LA SECCIÓN SELECCIONADA -->
                     <div class="space-y-3 pt-2">
-                        <h4 class="text-[11px] font-bold text-[#8B1D24] uppercase tracking-wider border-l-4 border-[#8B1D24] pl-2">2. Gráficas de Comportamiento Operativo de Respaldo</h4>
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                        <h4 class="text-[11px] font-bold text-[#8B1D24] uppercase tracking-wider border-l-4 border-[#8B1D24] pl-2" id="rep-titulo-seccion">Gráficas de Comportamiento Operativo</h4>
+                        
+                        <div id="container-graficas-produccion" class="grid grid-cols-1 md:grid-cols-3 gap-3">
                             <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
                                 <span class="text-[10px] font-bold text-emerald-700 block mb-1">Líquidos (bbls)</span>
                                 <div class="pdf-chart-box"><canvas id="chart-pdf-liq"></canvas></div>
                             </div>
                             <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
-                                <span class="text-[10px] font-bold text-sky-700 block mb-1">Gas (MPC)</span>
+                                <span class="text-[10px] font-bold text-sky-700 block mb-1">Gas Bruto (MPC)</span>
                                 <div class="pdf-chart-box"><canvas id="chart-pdf-gas"></canvas></div>
                             </div>
                             <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
@@ -664,6 +662,27 @@
                                 <div class="pdf-chart-box"><canvas id="chart-pdf-glp"></canvas></div>
                             </div>
                         </div>
+
+                        <div id="container-graficas-fiscalizacion" class="grid grid-cols-1 md:grid-cols-3 gap-3 hidden">
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                                <span class="text-[10px] font-bold text-[#8B1D24] block mb-1">Balance Gasoducto (MPC)</span>
+                                <div class="pdf-chart-box"><canvas id="chart-pdf-fisc1"></canvas></div>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                                <span class="text-[10px] font-bold text-emerald-700 block mb-1">Petróleo Entregado (bbls)</span>
+                                <div class="pdf-chart-box"><canvas id="chart-pdf-fisc2"></canvas></div>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                                <span class="text-[10px] font-bold text-amber-700 block mb-1">Despacho GLP (m³)</span>
+                                <div class="pdf-chart-box"><canvas id="chart-pdf-fisc3"></canvas></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CAJA DE ANÁLISIS TÉCNICO INCLUIDA EN EL REPORTE -->
+                    <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-2xl space-y-1">
+                        <h5 class="text-[11px] font-bold text-slate-700 uppercase"><i class="fas fa-clipboard-list text-[#8B1D24] mr-1"></i> Análisis Técnico y Comentarios del Operador:</h5>
+                        <p id="rep-print-comentario" class="text-xs text-slate-600 italic">Sin observaciones técnicas registradas para este reporte.</p>
                     </div>
 
                     <div class="pt-6 grid grid-cols-2 gap-8 text-center text-xs">
@@ -802,9 +821,14 @@
         const diasLabels = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
         let currentField = 'monteagudo';
         let currentUserRole = 'operador';
+        let currentUserEmail = 'usuario@chuquisaca.gob.bo';
+        
         let chartPdfLiqInstance = null;
         let chartPdfGasInstance = null;
         let chartPdfGlpInstance = null;
+        let chartPdfFisc1Instance = null;
+        let chartPdfFisc2Instance = null;
+        let chartPdfFisc3Instance = null;
         const charts = {};
 
         function iniciarReloj() {
@@ -912,12 +936,44 @@
             toggleSidebar();
         }
 
+        // PLUGIN PERSONALIZADO PARA LÍNEA DE TENDENCIA SUPERIOR EN GRÁFICAS DE BARRAS
+        const tendenciaPlugin = {
+            id: 'tendenciaPlugin',
+            afterDatasetsDraw(chart, args, options) {
+                const { ctx, chartArea: { top, left, right }, scales: { y } } = chart;
+                const datasetMeta = chart.getDatasetMeta(0);
+                if (!datasetMeta || datasetMeta.data.length === 0) return;
+
+                ctx.save();
+                ctx.beginPath();
+                ctx.strokeStyle = '#8B1D24';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([4, 4]);
+
+                datasetMeta.data.forEach((bar, index) => {
+                    const dataVal = chart.data.datasets[0].data[index];
+                    if (dataVal !== undefined && dataVal !== null) {
+                        const xPos = bar.x;
+                        const yPos = bar.y; // Parte superior de la barra
+                        if (index === 0) {
+                            ctx.moveTo(xPos, yPos);
+                        } else {
+                            ctx.lineTo(xPos, yPos);
+                        }
+                    }
+                });
+                ctx.stroke();
+                ctx.restore();
+            }
+        };
+
         function initCharts() {
-            // GRÁFICA DE BARRAS PARA GAS (CONSTRUCCIÓN PROGRESIVA)
+            // GRÁFICA DE BARRAS PARA GAS + LÍNEA DE TENDENCIA
             charts.gasProd = new Chart(document.getElementById('chart-gas-prod').getContext('2d'), {
                 type: 'bar',
-                data: { labels: diasLabels, datasets: [{ label: 'Gas Bruto (MPC)', data: [0,0,0,0,0,0,0], backgroundColor: '#0284c7', borderRadius: 6 }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
+                data: { labels: diasLabels, datasets: [{ label: 'Gas Bruto (MPC)', data: [0,0,0,0,0,0,0], backgroundColor: '#0284c7', borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } },
+                plugins: [tendenciaPlugin]
             });
 
             charts.liqProd = new Chart(document.getElementById('chart-liq-prod').getContext('2d'), {
@@ -929,13 +985,15 @@
                         { label: 'Condensado (bbls)', data: [0,0,0,0,0,0,0], backgroundColor: '#0284c7', borderRadius: 4 }
                     ] 
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } },
+                plugins: [tendenciaPlugin]
             });
 
             charts.glpProd = new Chart(document.getElementById('chart-glp-prod').getContext('2d'), {
                 type: 'bar',
-                data: { labels: diasLabels, datasets: [{ label: 'GLP (m³)', data: [0,0,0,0,0,0,0], backgroundColor: '#d97706', borderRadius: 6 }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' } } } }
+                data: { labels: diasLabels, datasets: [{ label: 'GLP (m³)', data: [0,0,0,0,0,0,0], backgroundColor: '#d97706', borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } },
+                plugins: [tendenciaPlugin]
             });
 
             charts.balanceGas = new Chart(document.getElementById('chart-balance-gas').getContext('2d'), {
@@ -948,23 +1006,25 @@
                         { label: 'Quemado', data: [0,0,0,0,0,0,0], backgroundColor: '#ef4444', stack: 'bal' }
                     ]
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, grid: { color: '#f1f5f9' }, min: 0 } } }
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, grid: { color: '#f1f5f9' }, min: 0 } } },
+                plugins: [tendenciaPlugin]
             });
 
             charts.entregaLiq = new Chart(document.getElementById('chart-entrega-liq').getContext('2d'), {
                 type: 'bar',
-                data: { labels: diasLabels, datasets: [{ label: 'Petróleo Entregado (bbls)', data: [0,0,0,0,0,0,0], backgroundColor: '#059669', borderRadius: 6 }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
+                data: { labels: diasLabels, datasets: [{ label: 'Petróleo Entregado (bbls)', data: [0,0,0,0,0,0,0], backgroundColor: '#059669', borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } },
+                plugins: [tendenciaPlugin]
             });
 
             charts.entregaGlp = new Chart(document.getElementById('chart-entrega-glp').getContext('2d'), {
                 type: 'bar',
-                data: { labels: diasLabels, datasets: [{ label: 'GLP Despachado (m³)', data: [0,0,0,0,0,0,0], backgroundColor: '#d97706', borderRadius: 6 }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
+                data: { labels: diasLabels, datasets: [{ label: 'GLP Despachado (m³)', data: [0,0,0,0,0,0,0], backgroundColor: '#d97706', borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } },
+                plugins: [tendenciaPlugin]
             });
         }
 
-        // MOTOR DE CARGA Y FILTRADO ROBUSTO PARA CUALQUIER MES O PERÍODO
         async function cargarDatosDesdeSupabasePorFiltro() {
             const tipoFiltro = document.getElementById('dashboard-tipo-periodo').value;
             const campoId = mapaCampos[currentField];
@@ -978,7 +1038,6 @@
                     if (tipoFiltro === 'dia') {
                         query = query.eq('fecha_operativa', fechaSel);
                     } else {
-                        // Semana anterior a la fecha seleccionada
                         const f = new Date(fechaSel);
                         const fInicio = new Date(f); fInicio.setDate(f.getDate() - 6);
                         query = query.gte('fecha_operativa', fInicio.toISOString().split('T')[0]).lte('fecha_operativa', fechaSel);
@@ -1012,7 +1071,6 @@
                     labelsDinamicos = ['Sin registros'];
                 }
 
-                // Generar alarmas de incremento o reducción comparando último día vs promedio o día anterior
                 evaluarAlarmasOperativas(arrGas, arrPet);
 
                 charts.gasProd.data.labels = labelsDinamicos;
@@ -1039,7 +1097,6 @@
             }
         }
 
-        // SISTEMA DE ALERTAS OPERATIVAS (INCREMENTO / REDUCCIÓN)
         function evaluarAlarmasOperativas(arrGas, arrPet) {
             const alertGas = document.getElementById('alert-gas-prod');
             const alertGlp = document.getElementById('alert-glp-prod');
@@ -1088,14 +1145,15 @@
 
                     data.forEach(r => {
                         const campoNombre = Object.keys(mapaCampos).find(key => mapaCampos[key] === r.id_campo) || 'campo';
+                        const usuarioPasante = r.usuario || currentUserEmail || 'Operador / Pasante';
                         const tr = document.createElement('tr');
                         tr.className = "hover:bg-slate-50 border-b border-slate-100";
                         tr.innerHTML = `
                             <td class="p-3">${r.fecha_operativa}</td>
                             <td class="p-3 font-bold text-[#8B1D24] uppercase">${campoNombre}</td>
+                            <td class="p-3 text-slate-600 font-semibold">${usuarioPasante}</td>
                             <td class="p-3 text-right text-sky-700 font-bold">${(r.vol_gas_mmmcd || 0).toFixed(1)}</td>
                             <td class="p-3 text-right text-emerald-700 font-bold">${(r.vol_liquidos_bpd || 0).toFixed(1)}</td>
-                            <td class="p-3 text-right text-slate-800">${(r.vol_liquidos_bpd || 0).toFixed(1)}</td>
                             <td class="p-3 text-center">
                                 <button onclick="cargarRegistroParaEditar('${r.fecha_operativa}', ${r.id_campo}, ${r.vol_gas_mmmcd || 0}, ${r.vol_liquidos_bpd || 0})" class="px-3 py-1 bg-amber-100 text-amber-800 hover:bg-amber-200 rounded-lg text-[10px] font-bold shadow-sm">
                                     <i class="fas fa-edit"></i> Editar
@@ -1164,14 +1222,39 @@
             actualizarReportePDFReal();
         }
 
-        // GENERADOR DE REPORTE PDF CON TRES GRÁFICAS DE RESPALDO (LÍQUIDOS, GAS Y GLP)
+        // GENERADOR DE REPORTE PDF DINÁMICO (PRODUCCIÓN BRUTA O FISCALIZACIÓN) + COMENTARIO TÉCNICO
         async function actualizarReportePDFReal() {
             const campoKey = document.getElementById('report-campo').value;
+            const seccionRepo = document.getElementById('report-seccion').value;
             const tipoReporte = document.getElementById('report-tipo').value;
             const campoId = mapaCampos[campoKey];
             const infoCampo = db[campoKey];
 
             document.getElementById('rep-print-fecha').innerText = `Fecha Emisión: ${new Date().toLocaleDateString('es-BO', { day: '2-digit', month: 'long', year: 'numeric' })}`;
+
+            // Manejo de la caja de comentarios del operador
+            const comentarioTxt = document.getElementById('report-comentario-operador').value.trim();
+            const comContainer = document.getElementById('rep-print-comentario');
+            if (comentarioTxt) {
+                comContainer.innerText = comentarioTxt;
+            } else {
+                comContainer.innerText = "Sin observaciones técnicas registradas para este reporte.";
+            }
+
+            // Mostrar u ocultar contenedores de gráficas según la sección seleccionada
+            const contProd = document.getElementById('container-graficas-produccion');
+            const contFisc = document.getElementById('container-graficas-fiscalizacion');
+            const tituloSeccion = document.getElementById('rep-titulo-seccion');
+
+            if (seccionRepo === 'produccion') {
+                contProd.classList.remove('hidden');
+                contFisc.classList.add('hidden');
+                tituloSeccion.innerText = "1. Gráficas de Producción Bruta (Oferta Física)";
+            } else {
+                contProd.classList.add('hidden');
+                contFisc.classList.remove('hidden');
+                tituloSeccion.innerText = "2. Gráficas de Fiscalización & Balance";
+            }
 
             let textoPeriodo = "(Período Oficial)";
             let query = clienteSupabase.from('produccion_diaria').select('*').eq('id_campo', campoId).range(0, 4999);
@@ -1201,63 +1284,74 @@
 
             try {
                 const { data } = await query.order('fecha_operativa', { ascending: true });
-                let totalLiq = 0;
-                let totalGas = 0;
-                let count = 0;
-                let arrLiq = [];
-                let arrGas = [];
-                let arrGlp = [];
+                let arrLiq = [], arrGas = [], arrGlp = [], arrFisc1 = [], arrFisc2 = [], arrFisc3 = [];
                 let labelsRespaldo = [];
 
                 if (data && data.length > 0) {
                     data.forEach(r => {
                         const liq = Number(r.vol_liquidos_bpd) || 0;
                         const gas = Number(r.vol_gas_mmmcd) || 0;
-                        const glp = liq * 0.15;
-                        totalLiq += liq;
-                        totalGas += gas;
-                        count++;
                         arrLiq.push(liq);
                         arrGas.push(gas);
-                        arrGlp.push(glp);
+                        arrGlp.push(liq * 0.15);
+                        arrFisc1.push(gas * 0.85);
+                        arrFisc2.push(liq * 0.95);
+                        arrFisc3.push((liq * 0.15) * 0.90);
                         labelsRespaldo.push(r.fecha_operativa ? r.fecha_operativa.substring(5) : '');
                     });
                 }
 
-                const promLiq = count > 0 ? (totalLiq / count).toFixed(1) : '0.0';
-                const promGas = count > 0 ? (totalGas / count).toFixed(1) : '0.0';
-
-                const tbody = document.getElementById('rep-table-body');
-                tbody.innerHTML = `
-                    <tr><td class="p-2 font-bold">Producción Promedio de Líquidos / Petróleo</td><td class="p-2 text-right font-semibold">bbls</td><td class="p-2 text-right font-bold text-slate-900">${promLiq}</td><td class="p-2 text-right text-slate-500 italic">Registrado en planta</td></tr>
-                    <tr><td class="p-2 font-bold">Gas Natural Bruto (Promedio)</td><td class="p-2 text-right font-semibold">MPC</td><td class="p-2 text-right font-bold text-slate-900">${promGas}</td><td class="p-2 text-right text-slate-500 italic">Oferta de reservorio</td></tr>
-                `;
-
                 const labelsPdf = labelsRespaldo.length > 0 ? labelsRespaldo : diasLabels;
 
-                // Gráfica PDF Líquidos
-                if (chartPdfLiqInstance) chartPdfLiqInstance.destroy();
-                chartPdfLiqInstance = new Chart(document.getElementById('chart-pdf-liq').getContext('2d'), {
-                    type: 'bar',
-                    data: { labels: labelsPdf, datasets: [{ data: arrLiq.length > 0 ? arrLiq : [0,0,0], backgroundColor: '#059669', borderRadius: 2 }] },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
-                });
+                if (seccionRepo === 'produccion') {
+                    if (chartPdfLiqInstance) chartPdfLiqInstance.destroy();
+                    chartPdfLiqInstance = new Chart(document.getElementById('chart-pdf-liq').getContext('2d'), {
+                        type: 'bar',
+                        data: { labels: labelsPdf, datasets: [{ data: arrLiq.length > 0 ? arrLiq : [0], backgroundColor: '#059669', borderRadius: 2 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } },
+                        plugins: [tendenciaPlugin]
+                    });
 
-                // Gráfica PDF Gas
-                if (chartPdfGasInstance) chartPdfGasInstance.destroy();
-                chartPdfGasInstance = new Chart(document.getElementById('chart-pdf-gas').getContext('2d'), {
-                    type: 'bar',
-                    data: { labels: labelsPdf, datasets: [{ data: arrGas.length > 0 ? arrGas : [0,0,0], backgroundColor: '#0284c7', borderRadius: 2 }] },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
-                });
+                    if (chartPdfGasInstance) chartPdfGasInstance.destroy();
+                    chartPdfGasInstance = new Chart(document.getElementById('chart-pdf-gas').getContext('2d'), {
+                        type: 'bar',
+                        data: { labels: labelsPdf, datasets: [{ data: arrGas.length > 0 ? arrGas : [0], backgroundColor: '#0284c7', borderRadius: 2 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } },
+                        plugins: [tendenciaPlugin]
+                    });
 
-                // Gráfica PDF GLP
-                if (chartPdfGlpInstance) chartPdfGlpInstance.destroy();
-                chartPdfGlpInstance = new Chart(document.getElementById('chart-pdf-glp').getContext('2d'), {
-                    type: 'bar',
-                    data: { labels: labelsPdf, datasets: [{ data: arrGlp.length > 0 ? arrGlp : [0,0,0], backgroundColor: '#d97706', borderRadius: 2 }] },
-                    options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
-                });
+                    if (chartPdfGlpInstance) chartPdfGlpInstance.destroy();
+                    chartPdfGlpInstance = new Chart(document.getElementById('chart-pdf-glp').getContext('2d'), {
+                        type: 'bar',
+                        data: { labels: labelsPdf, datasets: [{ data: arrGlp.length > 0 ? arrGlp : [0], backgroundColor: '#d97706', borderRadius: 2 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } },
+                        plugins: [tendenciaPlugin]
+                    });
+                } else {
+                    if (chartPdfFisc1Instance) chartPdfFisc1Instance.destroy();
+                    chartPdfFisc1Instance = new Chart(document.getElementById('chart-pdf-fisc1').getContext('2d'), {
+                        type: 'bar',
+                        data: { labels: labelsPdf, datasets: [{ data: arrFisc1.length > 0 ? arrFisc1 : [0], backgroundColor: '#8B1D24', borderRadius: 2 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } },
+                        plugins: [tendenciaPlugin]
+                    });
+
+                    if (chartPdfFisc2Instance) chartPdfFisc2Instance.destroy();
+                    chartPdfFisc2Instance = new Chart(document.getElementById('chart-pdf-fisc2').getContext('2d'), {
+                        type: 'bar',
+                        data: { labels: labelsPdf, datasets: [{ data: arrFisc2.length > 0 ? arrFisc2 : [0], backgroundColor: '#059669', borderRadius: 2 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } },
+                        plugins: [tendenciaPlugin]
+                    });
+
+                    if (chartPdfFisc3Instance) chartPdfFisc3Instance.destroy();
+                    chartPdfFisc3Instance = new Chart(document.getElementById('chart-pdf-fisc3').getContext('2d'), {
+                        type: 'bar',
+                        data: { labels: labelsPdf, datasets: [{ data: arrFisc3.length > 0 ? arrFisc3 : [0], backgroundColor: '#d97706', borderRadius: 2 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } },
+                        plugins: [tendenciaPlugin]
+                    });
+                }
 
             } catch (err) {
                 console.error("Error al generar PDF de Supabase:", err);
@@ -1267,16 +1361,19 @@
         function generarReportePDF() { actualizarReportePDFReal(); window.print(); }
 
         document.getElementById('report-campo').addEventListener('change', actualizarReportePDFReal);
+        document.getElementById('report-seccion').addEventListener('change', actualizarReportePDFReal);
         document.getElementById('report-tipo').addEventListener('change', actualizarControlesCalendario);
         document.getElementById('report-fecha-unica').addEventListener('change', actualizarReportePDFReal);
         document.getElementById('report-fecha-inicio').addEventListener('change', actualizarReportePDFReal);
         document.getElementById('report-fecha-fin').addEventListener('change', actualizarReportePDFReal);
         document.getElementById('report-mes-val').addEventListener('change', actualizarReportePDFReal);
+        document.getElementById('report-comentario-operador').addEventListener('input', actualizarReportePDFReal);
 
         async function aplicarPermisosRol(user) {
             const roleEl = document.getElementById('user-role-display');
             let rol = 'operador';
             let cargo = 'Operador / Pasante';
+            currentUserEmail = user.email;
 
             try {
                 const { data } = await clienteSupabase.from('perfiles_usuarios').select('rol, cargo').eq('id', user.id).single();
@@ -1347,7 +1444,8 @@
                         fecha_operativa: fecha,
                         vol_gas_mmmcd: gasProd,
                         vol_liquidos_bpd: petroleo,
-                        precio_wti_usd: wti
+                        precio_wti_usd: wti,
+                        usuario: currentUserEmail
                     }, { onConflict: 'id_campo, fecha_operativa' });
 
                 if (error) throw error;
