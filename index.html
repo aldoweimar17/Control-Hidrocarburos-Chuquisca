@@ -391,7 +391,7 @@
                 <div class="bg-white rounded-3xl border border-slate-200 shadow-sm p-6 md:p-8">
                     <div class="mb-5 bg-amber-50 border border-amber-200 p-3.5 rounded-2xl text-xs text-amber-800 flex items-center gap-3">
                         <i class="fas fa-info-circle text-amber-600 text-base shrink-0"></i>
-                        <span><strong>Nota Operativa:</strong> El valor <strong>0</strong> es totalmente válido ante ausencia de datos.</span>
+                        <span><strong>Nota Operativa:</strong> El valor <strong>0</strong> estricto es totalmente válido ante ausencia de datos.</span>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-5 pb-6 border-b border-slate-200 items-end">
@@ -936,63 +936,29 @@
             toggleSidebar();
         }
 
-        // PLUGIN PERSONALIZADO PARA LÍNEA DE TENDENCIA SUPERIOR EN GRÁFICAS DE BARRAS
-        const tendenciaPlugin = {
-            id: 'tendenciaPlugin',
-            afterDatasetsDraw(chart, args, options) {
-                const { ctx, chartArea: { top, left, right }, scales: { y } } = chart;
-                const datasetMeta = chart.getDatasetMeta(0);
-                if (!datasetMeta || datasetMeta.data.length === 0) return;
-
-                ctx.save();
-                ctx.beginPath();
-                ctx.strokeStyle = '#8B1D24';
-                ctx.lineWidth = 2;
-                ctx.setLineDash([4, 4]);
-
-                datasetMeta.data.forEach((bar, index) => {
-                    const dataVal = chart.data.datasets[0].data[index];
-                    if (dataVal !== undefined && dataVal !== null) {
-                        const xPos = bar.x;
-                        const yPos = bar.y; // Parte superior de la barra
-                        if (index === 0) {
-                            ctx.moveTo(xPos, yPos);
-                        } else {
-                            ctx.lineTo(xPos, yPos);
-                        }
-                    }
-                });
-                ctx.stroke();
-                ctx.restore();
-            }
-        };
-
         function initCharts() {
             charts.gasProd = new Chart(document.getElementById('chart-gas-prod').getContext('2d'), {
-                type: 'bar',
-                data: { labels: diasLabels, datasets: [{ label: 'Gas Bruto (MPC)', data: [0,0,0,0,0,0,0], backgroundColor: '#0284c7', borderRadius: 4 }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } },
-                plugins: [tendenciaPlugin]
+                type: 'line',
+                data: { labels: diasLabels, datasets: [{ label: 'Gas Bruto (MPC)', data: [0,0,0,0,0,0,0], borderColor: '#0284c7', backgroundColor: '#0284c715', fill: true, tension: 0.3, borderWidth: 2.5 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
 
             charts.liqProd = new Chart(document.getElementById('chart-liq-prod').getContext('2d'), {
-                type: 'bar',
+                type: 'line',
                 data: { 
                     labels: diasLabels, 
                     datasets: [
-                        { label: 'Petróleo (bbls)', data: [0,0,0,0,0,0,0], backgroundColor: '#059669', borderRadius: 4 },
-                        { label: 'Condensado (bbls)', data: [0,0,0,0,0,0,0], backgroundColor: '#0284c7', borderRadius: 4 }
+                        { label: 'Petróleo (bbls)', data: [0,0,0,0,0,0,0], borderColor: '#059669', backgroundColor: '#05966915', fill: true, tension: 0.3, borderWidth: 2 },
+                        { label: 'Condensado (bbls)', data: [0,0,0,0,0,0,0], borderColor: '#0284c7', backgroundColor: '#0284c715', fill: false, tension: 0.3, borderWidth: 2 }
                     ] 
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } },
-                plugins: [tendenciaPlugin]
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
 
             charts.glpProd = new Chart(document.getElementById('chart-glp-prod').getContext('2d'), {
                 type: 'bar',
-                data: { labels: diasLabels, datasets: [{ label: 'GLP (m³)', data: [0,0,0,0,0,0,0], backgroundColor: '#d97706', borderRadius: 4 }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } },
-                plugins: [tendenciaPlugin]
+                data: { labels: diasLabels, datasets: [{ label: 'GLP (m³)', data: [0,0,0,0,0,0,0], backgroundColor: '#d97706', borderRadius: 6 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' } } } }
             });
 
             charts.balanceGas = new Chart(document.getElementById('chart-balance-gas').getContext('2d'), {
@@ -1005,22 +971,19 @@
                         { label: 'Quemado', data: [0,0,0,0,0,0,0], backgroundColor: '#ef4444', stack: 'bal' }
                     ]
                 },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, grid: { color: '#f1f5f9' }, min: 0 } } },
-                plugins: [tendenciaPlugin]
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { stacked: true, grid: { display: false } }, y: { stacked: true, grid: { color: '#f1f5f9' }, min: 0 } } }
             });
 
             charts.entregaLiq = new Chart(document.getElementById('chart-entrega-liq').getContext('2d'), {
                 type: 'bar',
-                data: { labels: diasLabels, datasets: [{ label: 'Petróleo Entregado (bbls)', data: [0,0,0,0,0,0,0], backgroundColor: '#059669', borderRadius: 4 }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } },
-                plugins: [tendenciaPlugin]
+                data: { labels: diasLabels, datasets: [{ label: 'Petróleo Entregado (bbls)', data: [0,0,0,0,0,0,0], backgroundColor: '#059669', borderRadius: 6 }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
 
             charts.entregaGlp = new Chart(document.getElementById('chart-entrega-glp').getContext('2d'), {
-                type: 'bar',
-                data: { labels: diasLabels, datasets: [{ label: 'GLP Despachado (m³)', data: [0,0,0,0,0,0,0], backgroundColor: '#d97706', borderRadius: 4 }] },
-                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } },
-                plugins: [tendenciaPlugin]
+                type: 'line',
+                data: { labels: diasLabels, datasets: [{ label: 'GLP Despachado (m³)', data: [0,0,0,0,0,0,0], borderColor: '#d97706', backgroundColor: '#d9770615', fill: true }] },
+                options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
         }
 
@@ -1302,50 +1265,44 @@
                 if (seccionRepo === 'produccion') {
                     if (chartPdfLiqInstance) chartPdfLiqInstance.destroy();
                     chartPdfLiqInstance = new Chart(document.getElementById('chart-pdf-liq').getContext('2d'), {
-                        type: 'bar',
-                        data: { labels: labelsPdf, datasets: [{ data: arrLiq.length > 0 ? arrLiq : [0], backgroundColor: '#059669', borderRadius: 2 }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } },
-                        plugins: [tendenciaPlugin]
+                        type: 'line',
+                        data: { labels: labelsPdf, datasets: [{ data: arrLiq.length > 0 ? arrLiq : [0], borderColor: '#059669', backgroundColor: '#05966915', fill: true, tension: 0.3 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
                     });
 
                     if (chartPdfGasInstance) chartPdfGasInstance.destroy();
                     chartPdfGasInstance = new Chart(document.getElementById('chart-pdf-gas').getContext('2d'), {
-                        type: 'bar',
-                        data: { labels: labelsPdf, datasets: [{ data: arrGas.length > 0 ? arrGas : [0], backgroundColor: '#0284c7', borderRadius: 2 }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } },
-                        plugins: [tendenciaPlugin]
+                        type: 'line',
+                        data: { labels: labelsPdf, datasets: [{ data: arrGas.length > 0 ? arrGas : [0], borderColor: '#0284c7', backgroundColor: '#0284c715', fill: true, tension: 0.3 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
                     });
 
                     if (chartPdfGlpInstance) chartPdfGlpInstance.destroy();
                     chartPdfGlpInstance = new Chart(document.getElementById('chart-pdf-glp').getContext('2d'), {
                         type: 'bar',
-                        data: { labels: labelsPdf, datasets: [{ data: arrGlp.length > 0 ? arrGlp : [0], backgroundColor: '#d97706', borderRadius: 2 }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } },
-                        plugins: [tendenciaPlugin]
+                        data: { labels: labelsPdf, datasets: [{ data: arrGlp.length > 0 ? arrGlp : [0], backgroundColor: '#d97706', borderRadius: 4 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
                     });
                 } else {
                     if (chartPdfFisc1Instance) chartPdfFisc1Instance.destroy();
                     chartPdfFisc1Instance = new Chart(document.getElementById('chart-pdf-fisc1').getContext('2d'), {
                         type: 'bar',
-                        data: { labels: labelsPdf, datasets: [{ data: arrFisc1.length > 0 ? arrFisc1 : [0], backgroundColor: '#8B1D24', borderRadius: 2 }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } },
-                        plugins: [tendenciaPlugin]
+                        data: { labels: labelsPdf, datasets: [{ data: arrFisc1.length > 0 ? arrFisc1 : [0], backgroundColor: '#8B1D24', borderRadius: 4 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
                     });
 
                     if (chartPdfFisc2Instance) chartPdfFisc2Instance.destroy();
                     chartPdfFisc2Instance = new Chart(document.getElementById('chart-pdf-fisc2').getContext('2d'), {
                         type: 'bar',
-                        data: { labels: labelsPdf, datasets: [{ data: arrFisc2.length > 0 ? arrFisc2 : [0], backgroundColor: '#059669', borderRadius: 2 }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } },
-                        plugins: [tendenciaPlugin]
+                        data: { labels: labelsPdf, datasets: [{ data: arrFisc2.length > 0 ? arrFisc2 : [0], backgroundColor: '#059669', borderRadius: 4 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
                     });
 
                     if (chartPdfFisc3Instance) chartPdfFisc3Instance.destroy();
                     chartPdfFisc3Instance = new Chart(document.getElementById('chart-pdf-fisc3').getContext('2d'), {
-                        type: 'bar',
-                        data: { labels: labelsPdf, datasets: [{ data: arrFisc3.length > 0 ? arrFisc3 : [0], backgroundColor: '#d97706', borderRadius: 2 }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } },
-                        plugins: [tendenciaPlugin]
+                        type: 'line',
+                        data: { labels: labelsPdf, datasets: [{ data: arrFisc3.length > 0 ? arrFisc3 : [0], borderColor: '#d97706', backgroundColor: '#d9770615', fill: true, tension: 0.3 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
                     });
                 }
 
@@ -1421,27 +1378,10 @@
             const campoID = document.getElementById('input-campo').value;
             const fecha = document.getElementById('input-fecha').value;
             
-            // CORRECCIÓN: Uso estricto de parseFloat para soportar decimales (evita error de sintaxis integer en Supabase)
             const wti = parseFloat(document.getElementById('input-wti').value) || 82.50;
             const liqProd = parseFloat(document.getElementById('liq-prod').value) || 0;
             const petroleo = parseFloat(document.getElementById('liq-petroleo').value) || liqProd;
-            const condensado = parseFloat(document.getElementById('liq-condensado').value) || 0;
-            const densidad = parseFloat(document.getElementById('liq-densidad').value) || 0;
-            const gasolina = parseFloat(document.getElementById('liq-gasolina').value) || 0;
-            const agua = parseFloat(document.getElementById('liq-agua').value) || 0;
-            const petroleoEntregado = parseFloat(document.getElementById('liq-entregado').value) || 0;
-
             const gasProd = parseFloat(document.getElementById('gas-prod').value) || 0;
-            const gasGasoducto = parseFloat(document.getElementById('gas-gasoducto').value) || 0;
-            const gasProceso = parseFloat(document.getElementById('gas-proceso').value) || 0;
-            const gasLicuables = parseFloat(document.getElementById('gas-licuables').value) || 0;
-            const gasCombustible = parseFloat(document.getElementById('gas-combustible').value) || 0;
-            const gasResidual = parseFloat(document.getElementById('gas-residual').value) || 0;
-            const gasQuemado = parseFloat(document.getElementById('gas-quemado').value) || 0;
-            const gasCo2 = parseFloat(document.getElementById('gas-co2').value) || 0;
-
-            const glpProd = parseFloat(document.getElementById('glp-prod').value) || 0;
-            const glpEntrega = parseFloat(document.getElementById('glp-entrega').value) || 0;
 
             if (!campoID || !fecha) { alert("Seleccione campo y fecha."); return; }
             const idCampoNum = mapaCampos[campoID];
@@ -1452,6 +1392,7 @@
             btn.disabled = true;
 
             try {
+                // CORRECCIÓN: Estructura limpia y compatible sin requerir columnas adicionales en esquema
                 const { error } = await clienteSupabase
                     .from('produccion_diaria')
                     .upsert({
@@ -1459,8 +1400,7 @@
                         fecha_operativa: fecha,
                         vol_gas_mmmcd: gasProd,
                         vol_liquidos_bpd: petroleo,
-                        precio_wti_usd: wti,
-                        usuario: currentUserEmail
+                        precio_wti_usd: wti
                     }, { onConflict: 'id_campo, fecha_operativa' });
 
                 if (error) throw error;
