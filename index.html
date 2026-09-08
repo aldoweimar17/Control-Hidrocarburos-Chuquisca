@@ -221,15 +221,15 @@
                 </div>
                 <div class="flex flex-wrap items-center gap-3">
                     <select id="dashboard-tipo-periodo" onchange="actualizarFiltrosTableroGlobal()" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-2 text-xs font-bold text-slate-800 focus:outline-none focus:ring-2 focus:ring-[#8B1D24]">
-                        <option value="dia" selected>Reporte Diario (Día Anterior)</option>
+                        <option value="dia">Reporte Diario (Día Anterior)</option>
                         <option value="sem">Reporte Semanal</option>
-                        <option value="mes">Reporte Mensual</option>
+                        <option value="mes" selected>Reporte Mensual</option>
                     </select>
 
-                    <div id="dash-box-dia">
+                    <div id="dash-box-dia" class="hidden">
                         <input type="date" id="dashboard-input-dia" onchange="cargarDatosDesdeSupabasePorFiltro()" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-800">
                     </div>
-                    <div id="dash-box-mes" class="hidden">
+                    <div id="dash-box-mes">
                         <input type="month" id="dashboard-input-mes" onchange="cargarDatosDesdeSupabasePorFiltro()" class="bg-slate-50 border border-slate-300 rounded-xl px-3 py-1.5 text-xs text-slate-800" value="2026-06">
                     </div>
                 </div>
@@ -967,7 +967,7 @@
                     const fechaSel = document.getElementById('dashboard-input-dia').value || new Date().toISOString().split('T')[0];
                     query = query.eq('fecha_operativa', fechaSel);
                 } else if (tipoFiltro === 'mes' || tipoFiltro === 'sem') {
-                    const mesSel = document.getElementById('dashboard-input-mes').value || '2026-09';
+                    const mesSel = document.getElementById('dashboard-input-mes').value || '2026-06';
                     const [y, m] = mesSel.split('-');
                     
                     if (tipoFiltro === 'sem') {
@@ -1044,10 +1044,6 @@
                     tbody.innerHTML = '';
                     sessionCount = data.length;
                     document.getElementById('counter').innerText = `${sessionCount} Registros`;
-
-                    const hoy = new Date();
-                    hoy.setDate(hoy.getDate() - 1);
-                    document.getElementById('dashboard-input-dia').value = hoy.toISOString().split('T')[0];
 
                     data.forEach(r => {
                         const campoNombre = Object.keys(mapaCampos).find(key => mapaCampos[key] === r.id_campo) || 'campo';
@@ -1145,15 +1141,15 @@
                 textoPeriodo = `(Período: ${fObj.toLocaleDateString('es-BO', { day: 'numeric', month: 'long', year: 'numeric' })})`;
                 query = query.eq('fecha_operativa', valFec);
             } else if (tipoReporte === 'mes') {
-                const mesVal = document.getElementById('report-mes-val').value || '2026-09';
+                const mesVal = document.getElementById('report-mes-val').value || '2026-06';
                 const [y, m] = mesVal.split('-');
                 const fObj = new Date(y, m - 1, 1);
                 const mesNom = fObj.toLocaleDateString('es-BO', { month: 'long', year: 'numeric' });
                 textoPeriodo = `(Período Mensual: ${mesNom.charAt(0).toUpperCase() + mesNom.slice(1)})`;
                 query = query.gte('fecha_operativa', `${y}-${m}-01`).lte('fecha_operativa', `${y}-${m}-31`);
             } else if (tipoReporte === 'sem') {
-                const fIni = document.getElementById('report-fecha-inicio').value || '2026-09-01';
-                const fFin = document.getElementById('report-fecha-fin').value || '2026-09-07';
+                const fIni = document.getElementById('report-fecha-inicio').value || '2026-06-01';
+                const fFin = document.getElementById('report-fecha-fin').value || '2026-06-07';
                 textoPeriodo = `(Período Semanal: ${fIni} al ${fFin})`;
                 query = query.gte('fecha_operativa', fIni).lte('fecha_operativa', fFin);
             }
@@ -1372,9 +1368,14 @@
             showToast();
         }
 
+        // Configuración inicial por defecto para el mes de junio
+        document.getElementById('dashboard-input-mes').value = '2026-06';
+        document.getElementById('dashboard-tipo-periodo').value = 'mes';
+        document.getElementById('dash-box-dia').classList.add('hidden');
+        document.getElementById('dash-box-mes').classList.remove('hidden');
+
         document.getElementById('input-fecha').value = new Date().toISOString().split('T')[0];
         document.getElementById('report-fecha-unica').value = new Date().toISOString().split('T')[0];
-        document.getElementById('well-selector').addEventListener('change', (e) => updateWellData(e.target.value));
 
         iniciarReloj();
         initCharts();
