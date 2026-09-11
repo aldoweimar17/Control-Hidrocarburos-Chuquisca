@@ -323,7 +323,7 @@
                     </div>
                 </div>
 
-                <!-- NUEVO: HISTORIAL ANUAL PRODUCCIÓN -->
+                <!-- HISTORIAL ANUAL PRODUCCIÓN (Separado Gas, Liq, GLP) -->
                 <div id="wrapper-hist-prod" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm mt-6">
                     <div class="border-b border-slate-100 pb-3 mb-4">
                         <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
@@ -331,7 +331,20 @@
                         </h3>
                         <p class="text-[11px] text-slate-500 mt-0.5">Volumen total consolidado por mes en el año en curso.</p>
                     </div>
-                    <div class="chart-container"><canvas id="chart-hist-prod"></canvas></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                            <span class="text-[10px] font-bold text-sky-700 block mb-1">Gas Bruto (MPC)</span>
+                            <div class="chart-container"><canvas id="chart-hist-prod-gas"></canvas></div>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                            <span class="text-[10px] font-bold text-emerald-700 block mb-1">Líquidos (bbls)</span>
+                            <div class="chart-container"><canvas id="chart-hist-prod-liq"></canvas></div>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                            <span class="text-[10px] font-bold text-amber-700 block mb-1">GLP (m³)</span>
+                            <div class="chart-container"><canvas id="chart-hist-prod-glp"></canvas></div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -374,7 +387,7 @@
                     </div>
                 </div>
 
-                <!-- NUEVO: HISTORIAL ANUAL FISCALIZACIÓN -->
+                <!-- HISTORIAL ANUAL FISCALIZACIÓN (Separado Gas, Liq, GLP) -->
                 <div id="wrapper-hist-fisc" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm mt-6">
                     <div class="border-b border-slate-100 pb-3 mb-4">
                         <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
@@ -382,7 +395,20 @@
                         </h3>
                         <p class="text-[11px] text-slate-500 mt-0.5">Entregas oficiales consolidadas por mes en el año en curso.</p>
                     </div>
-                    <div class="chart-container"><canvas id="chart-hist-fisc"></canvas></div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                            <span class="text-[10px] font-bold text-[#8B1D24] block mb-1">Balance Gasoducto (MPC)</span>
+                            <div class="chart-container"><canvas id="chart-hist-fisc-gas"></canvas></div>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                            <span class="text-[10px] font-bold text-emerald-700 block mb-1">Petróleo Entregado (bbls)</span>
+                            <div class="chart-container"><canvas id="chart-hist-fisc-liq"></canvas></div>
+                        </div>
+                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                            <span class="text-[10px] font-bold text-amber-700 block mb-1">Despacho GLP (m³)</span>
+                            <div class="chart-container"><canvas id="chart-hist-fisc-glp"></canvas></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -605,7 +631,6 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">Tipo de Período</label>
-                            <!-- NUEVA OPCION: Comportamiento Total / Anual -->
                             <select id="report-tipo" onchange="actualizarControlesCalendario(); actualizarReportePDFReal();" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900">
                                 <option value="dia">Día Específico</option>
                                 <option value="sem">Rango Semanal</option>
@@ -670,12 +695,12 @@
                         
                         <div id="container-graficas-produccion" class="grid grid-cols-1 md:grid-cols-3 gap-3">
                             <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
-                                <span class="text-[10px] font-bold text-emerald-700 block mb-1">Líquidos (bbls)</span>
-                                <div class="pdf-chart-box"><canvas id="chart-pdf-liq"></canvas></div>
-                            </div>
-                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
                                 <span class="text-[10px] font-bold text-sky-700 block mb-1">Gas Bruto (MPC)</span>
                                 <div class="pdf-chart-box"><canvas id="chart-pdf-gas"></canvas></div>
+                            </div>
+                            <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                                <span class="text-[10px] font-bold text-emerald-700 block mb-1">Líquidos (bbls)</span>
+                                <div class="pdf-chart-box"><canvas id="chart-pdf-liq"></canvas></div>
                             </div>
                             <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
                                 <span class="text-[10px] font-bold text-amber-700 block mb-1">GLP (m³)</span>
@@ -698,11 +723,24 @@
                             </div>
                         </div>
 
-                        <!-- NUEVO: GRÁFICA ÚNICA ANUAL PARA EL REPORTE -->
+                        <!-- GRÁFICAS SEPARADAS ANUALES PARA EL REPORTE -->
                         <div id="container-grafica-anual" class="hidden">
-                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center">
-                                <span class="text-xs font-bold text-slate-800 block mb-2" id="rep-titulo-anual">Comportamiento Histórico Acumulado Anual</span>
-                                <div style="position: relative; height: 260px; width: 100%;"><canvas id="chart-pdf-anual"></canvas></div>
+                            <div class="text-center mb-3">
+                                <span class="text-xs font-bold text-slate-800 block" id="rep-titulo-anual">Comportamiento Histórico Acumulado Anual</span>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                                    <span class="text-[10px] font-bold text-sky-700 block mb-1" id="rep-anual-label-gas">Gas (MPC)</span>
+                                    <div class="pdf-chart-box"><canvas id="chart-pdf-anual-gas"></canvas></div>
+                                </div>
+                                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                                    <span class="text-[10px] font-bold text-emerald-700 block mb-1" id="rep-anual-label-liq">Líquidos (bbls)</span>
+                                    <div class="pdf-chart-box"><canvas id="chart-pdf-anual-liq"></canvas></div>
+                                </div>
+                                <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-center">
+                                    <span class="text-[10px] font-bold text-amber-700 block mb-1" id="rep-anual-label-glp">GLP (m³)</span>
+                                    <div class="pdf-chart-box"><canvas id="chart-pdf-anual-glp"></canvas></div>
+                                </div>
                             </div>
                         </div>
 
@@ -860,7 +898,10 @@
         let chartPdfFisc1Instance = null;
         let chartPdfFisc2Instance = null;
         let chartPdfFisc3Instance = null;
-        let chartPdfAnualInstance = null;
+        
+        let chartPdfAnualGasInstance = null;
+        let chartPdfAnualLiqInstance = null;
+        let chartPdfAnualGlpInstance = null;
         
         const charts = {};
 
@@ -1019,23 +1060,31 @@
                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
 
-            // NUEVAS GRÁFICAS DEL HISTORIAL ANUAL ACUMULADO
-            charts.histProd = new Chart(document.getElementById('chart-hist-prod').getContext('2d'), {
-                type: 'bar',
-                data: { labels: mesesLabels, datasets: [
-                    { label: 'Gas Bruto (MPC)', data: [], backgroundColor: '#1e3a8a', borderRadius: 4 },
-                    { label: 'Líquidos Totales (bbls)', data: [], backgroundColor: '#0f766e', borderRadius: 4 }
-                ]},
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
+            // NUEVAS GRÁFICAS DEL HISTORIAL ANUAL ACUMULADO (SEPARADAS)
+            charts.histProdGas = new Chart(document.getElementById('chart-hist-prod-gas').getContext('2d'), {
+                type: 'bar', data: { labels: mesesLabels, datasets: [{ label: 'Gas Bruto (MPC)', data: [], backgroundColor: '#1e3a8a', borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
+            });
+            charts.histProdLiq = new Chart(document.getElementById('chart-hist-prod-liq').getContext('2d'), {
+                type: 'bar', data: { labels: mesesLabels, datasets: [{ label: 'Líquidos (bbls)', data: [], backgroundColor: '#0f766e', borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
+            });
+            charts.histProdGlp = new Chart(document.getElementById('chart-hist-prod-glp').getContext('2d'), {
+                type: 'bar', data: { labels: mesesLabels, datasets: [{ label: 'GLP (m³)', data: [], backgroundColor: '#b45309', borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
 
-            charts.histFisc = new Chart(document.getElementById('chart-hist-fisc').getContext('2d'), {
-                type: 'bar',
-                data: { labels: mesesLabels, datasets: [
-                    { label: 'Gasoducto (MPC)', data: [], backgroundColor: '#1e3a8a', borderRadius: 4 },
-                    { label: 'Petróleo Entregado (bbls)', data: [], backgroundColor: '#0f766e', borderRadius: 4 }
-                ]},
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
+            charts.histFiscGas = new Chart(document.getElementById('chart-hist-fisc-gas').getContext('2d'), {
+                type: 'bar', data: { labels: mesesLabels, datasets: [{ label: 'Gasoducto (MPC)', data: [], backgroundColor: '#1e3a8a', borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
+            });
+            charts.histFiscLiq = new Chart(document.getElementById('chart-hist-fisc-liq').getContext('2d'), {
+                type: 'bar', data: { labels: mesesLabels, datasets: [{ label: 'Petróleo Entregado (bbls)', data: [], backgroundColor: '#0f766e', borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
+            });
+            charts.histFiscGlp = new Chart(document.getElementById('chart-hist-fisc-glp').getContext('2d'), {
+                type: 'bar', data: { labels: mesesLabels, datasets: [{ label: 'Despacho GLP (m³)', data: [], backgroundColor: '#b45309', borderRadius: 4 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
         }
 
@@ -1063,13 +1112,21 @@
                     });
                 }
 
-                charts.histProd.data.datasets[0].data = sumGas;
-                charts.histProd.data.datasets[1].data = sumLiq;
-                charts.histProd.update();
+                let sumGlp = sumLiq.map(v => v * 0.15);
 
-                charts.histFisc.data.datasets[0].data = sumGas.map(v => v * 0.85);
-                charts.histFisc.data.datasets[1].data = sumLiq.map(v => v * 0.95);
-                charts.histFisc.update();
+                charts.histProdGas.data.datasets[0].data = sumGas;
+                charts.histProdGas.update();
+                charts.histProdLiq.data.datasets[0].data = sumLiq;
+                charts.histProdLiq.update();
+                charts.histProdGlp.data.datasets[0].data = sumGlp;
+                charts.histProdGlp.update();
+
+                charts.histFiscGas.data.datasets[0].data = sumGas.map(v => v * 0.85);
+                charts.histFiscGas.update();
+                charts.histFiscLiq.data.datasets[0].data = sumLiq.map(v => v * 0.95);
+                charts.histFiscLiq.update();
+                charts.histFiscGlp.data.datasets[0].data = sumGlp.map(v => v * 0.90);
+                charts.histFiscGlp.update();
 
             } catch (err) {
                 console.error("Error cargando historial anual:", err);
@@ -1355,41 +1412,49 @@
                     // Ocultar las 3 graficas pequeñas
                     contProd.classList.add('hidden');
                     contFisc.classList.add('hidden');
-                    // Mostrar la grafica anual panorámica
+                    // Mostrar las graficas anuales
                     contAnual.classList.remove('hidden');
-                    tituloSeccion.innerText = seccionRepo === 'produccion' ? "1. Gráfica Histórica de Producción Bruta" : "2. Gráfica Histórica de Fiscalización";
+                    tituloSeccion.innerText = seccionRepo === 'produccion' ? "1. Gráficas Históricas de Producción Bruta" : "2. Gráficas Históricas de Fiscalización";
 
                     let agGas = new Array(12).fill(0);
                     let agLiq = new Array(12).fill(0);
-                    let agFiscGas = new Array(12).fill(0);
-                    let agFiscLiq = new Array(12).fill(0);
 
                     if (data && data.length > 0) {
                         data.forEach(r => {
                             const m = parseInt(r.fecha_operativa.split('-')[1]) - 1;
-                            const gas = Number(r.vol_gas_mmmcd) || 0;
-                            const liq = Number(r.vol_liquidos_bpd) || 0;
-                            agGas[m] += gas;
-                            agLiq[m] += liq;
-                            agFiscGas[m] += (gas * 0.85);
-                            agFiscLiq[m] += (liq * 0.95);
+                            agGas[m] += (Number(r.vol_gas_mmmcd) || 0);
+                            agLiq[m] += (Number(r.vol_liquidos_bpd) || 0);
                         });
                     }
 
-                    if (chartPdfAnualInstance) chartPdfAnualInstance.destroy();
-                    chartPdfAnualInstance = new Chart(document.getElementById('chart-pdf-anual').getContext('2d'), {
-                        type: 'bar',
-                        data: {
-                            labels: mesesLabels,
-                            datasets: seccionRepo === 'produccion' ? [
-                                { label: 'Gas Bruto Acumulado (MPC)', data: agGas, backgroundColor: '#1e3a8a', borderRadius: 4 },
-                                { label: 'Líquidos Acumulados (bbls)', data: agLiq, backgroundColor: '#0f766e', borderRadius: 4 }
-                            ] : [
-                                { label: 'Gasoducto Entregado (MPC)', data: agFiscGas, backgroundColor: '#1e3a8a', borderRadius: 4 },
-                                { label: 'Petróleo Entregado (bbls)', data: agFiscLiq, backgroundColor: '#0f766e', borderRadius: 4 }
-                            ]
-                        },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
+                    let agGlp = agLiq.map(v => v * 0.15);
+                    
+                    let dataGas = seccionRepo === 'produccion' ? agGas : agGas.map(v => v * 0.85);
+                    let dataLiq = seccionRepo === 'produccion' ? agLiq : agLiq.map(v => v * 0.95);
+                    let dataGlp = seccionRepo === 'produccion' ? agGlp : agGlp.map(v => v * 0.90);
+
+                    document.getElementById('rep-anual-label-gas').innerText = seccionRepo === 'produccion' ? 'Gas Bruto Acumulado (MPC)' : 'Gasoducto Entregado (MPC)';
+                    document.getElementById('rep-anual-label-gas').className = seccionRepo === 'produccion' ? 'text-[10px] font-bold text-sky-700 block mb-1' : 'text-[10px] font-bold text-[#8B1D24] block mb-1';
+                    
+                    document.getElementById('rep-anual-label-liq').innerText = seccionRepo === 'produccion' ? 'Líquidos Acumulados (bbls)' : 'Petróleo Entregado (bbls)';
+                    document.getElementById('rep-anual-label-glp').innerText = seccionRepo === 'produccion' ? 'GLP (m³)' : 'Despacho GLP (m³)';
+
+                    if (chartPdfAnualGasInstance) chartPdfAnualGasInstance.destroy();
+                    chartPdfAnualGasInstance = new Chart(document.getElementById('chart-pdf-anual-gas').getContext('2d'), {
+                        type: 'bar', data: { labels: mesesLabels, datasets: [{ data: dataGas, backgroundColor: seccionRepo === 'produccion' ? '#1e3a8a' : '#1e3a8a', borderRadius: 4 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
+                    });
+
+                    if (chartPdfAnualLiqInstance) chartPdfAnualLiqInstance.destroy();
+                    chartPdfAnualLiqInstance = new Chart(document.getElementById('chart-pdf-anual-liq').getContext('2d'), {
+                        type: 'bar', data: { labels: mesesLabels, datasets: [{ data: dataLiq, backgroundColor: '#0f766e', borderRadius: 4 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
+                    });
+
+                    if (chartPdfAnualGlpInstance) chartPdfAnualGlpInstance.destroy();
+                    chartPdfAnualGlpInstance = new Chart(document.getElementById('chart-pdf-anual-glp').getContext('2d'), {
+                        type: 'bar', data: { labels: mesesLabels, datasets: [{ data: dataGlp, backgroundColor: '#b45309', borderRadius: 4 }] },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
                     });
 
                 } else {
