@@ -322,6 +322,17 @@
                         <div class="chart-container"><canvas id="chart-glp-prod"></canvas></div>
                     </div>
                 </div>
+
+                <!-- NUEVO: HISTORIAL ANUAL PRODUCCIÓN -->
+                <div id="wrapper-hist-prod" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm mt-6">
+                    <div class="border-b border-slate-100 pb-3 mb-4">
+                        <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fas fa-calendar-alt text-slate-400"></i> Historial Acumulado (Enero - Actual)
+                        </h3>
+                        <p class="text-[11px] text-slate-500 mt-0.5">Volumen total consolidado por mes en el año en curso.</p>
+                    </div>
+                    <div class="chart-container"><canvas id="chart-hist-prod"></canvas></div>
+                </div>
             </div>
 
             <!-- SUB-PANEL 2: FISCALIZACIÓN & BALANCE -->
@@ -361,6 +372,17 @@
                         </div>
                         <div class="chart-container"><canvas id="chart-entrega-glp"></canvas></div>
                     </div>
+                </div>
+
+                <!-- NUEVO: HISTORIAL ANUAL FISCALIZACIÓN -->
+                <div id="wrapper-hist-fisc" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm mt-6">
+                    <div class="border-b border-slate-100 pb-3 mb-4">
+                        <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
+                            <i class="fas fa-calendar-alt text-slate-400"></i> Historial Acumulado (Enero - Actual)
+                        </h3>
+                        <p class="text-[11px] text-slate-500 mt-0.5">Entregas oficiales consolidadas por mes en el año en curso.</p>
+                    </div>
+                    <div class="chart-container"><canvas id="chart-hist-fisc"></canvas></div>
                 </div>
             </div>
         </div>
@@ -583,10 +605,12 @@
                         </div>
                         <div>
                             <label class="block text-xs font-bold text-slate-700 mb-1">Tipo de Período</label>
+                            <!-- NUEVA OPCION: Comportamiento Total / Anual -->
                             <select id="report-tipo" onchange="actualizarControlesCalendario(); actualizarReportePDFReal();" class="w-full bg-slate-50 border border-slate-300 rounded-xl p-2.5 text-xs text-slate-900">
                                 <option value="dia">Día Específico</option>
                                 <option value="sem">Rango Semanal</option>
                                 <option value="mes">Mes Específico</option>
+                                <option value="anual">Comportamiento Total (Enero - Actual)</option>
                             </select>
                         </div>
                     </div>
@@ -673,6 +697,15 @@
                                 <div class="pdf-chart-box"><canvas id="chart-pdf-fisc3"></canvas></div>
                             </div>
                         </div>
+
+                        <!-- NUEVO: GRÁFICA ÚNICA ANUAL PARA EL REPORTE -->
+                        <div id="container-grafica-anual" class="hidden">
+                            <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 text-center">
+                                <span class="text-xs font-bold text-slate-800 block mb-2" id="rep-titulo-anual">Comportamiento Histórico Acumulado Anual</span>
+                                <div style="position: relative; height: 260px; width: 100%;"><canvas id="chart-pdf-anual"></canvas></div>
+                            </div>
+                        </div>
+
                     </div>
 
                     <!-- CAJA DE ANÁLISIS TÉCNICO INCLUIDA EN EL REPORTE -->
@@ -815,6 +848,8 @@
         };
 
         const diasLabels = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
+        const mesesLabels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+        
         let currentField = 'monteagudo';
         let currentUserRole = 'operador';
         let currentUserEmail = 'usuario@chuquisaca.gob.bo';
@@ -825,6 +860,8 @@
         let chartPdfFisc1Instance = null;
         let chartPdfFisc2Instance = null;
         let chartPdfFisc3Instance = null;
+        let chartPdfAnualInstance = null;
+        
         const charts = {};
 
         function iniciarReloj() {
@@ -981,6 +1018,62 @@
                 data: { labels: diasLabels, datasets: [{ label: 'GLP Despachado (m³)', data: [0,0,0,0,0,0,0], backgroundColor: '#b45309', borderRadius: 4 }] },
                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
+
+            // NUEVAS GRÁFICAS DEL HISTORIAL ANUAL ACUMULADO
+            charts.histProd = new Chart(document.getElementById('chart-hist-prod').getContext('2d'), {
+                type: 'bar',
+                data: { labels: mesesLabels, datasets: [
+                    { label: 'Gas Bruto (MPC)', data: [], backgroundColor: '#1e3a8a', borderRadius: 4 },
+                    { label: 'Líquidos Totales (bbls)', data: [], backgroundColor: '#0f766e', borderRadius: 4 }
+                ]},
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
+            });
+
+            charts.histFisc = new Chart(document.getElementById('chart-hist-fisc').getContext('2d'), {
+                type: 'bar',
+                data: { labels: mesesLabels, datasets: [
+                    { label: 'Gasoducto (MPC)', data: [], backgroundColor: '#1e3a8a', borderRadius: 4 },
+                    { label: 'Petróleo Entregado (bbls)', data: [], backgroundColor: '#0f766e', borderRadius: 4 }
+                ]},
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
+            });
+        }
+
+        // FUNCIÓN NUEVA: Consulta e inyecta el historial sumado mes a mes
+        async function cargarHistorialAnual(campoId) {
+            try {
+                const year = new Date().getFullYear();
+                const { data, error } = await clienteSupabase
+                    .from('produccion_diaria')
+                    .select('*')
+                    .eq('id_campo', campoId)
+                    .gte('fecha_operativa', `${year}-01-01`)
+                    .lte('fecha_operativa', `${year}-12-31`);
+
+                if (error) throw error;
+
+                let sumGas = new Array(12).fill(0);
+                let sumLiq = new Array(12).fill(0);
+
+                if (data && data.length > 0) {
+                    data.forEach(r => {
+                        const m = parseInt(r.fecha_operativa.split('-')[1]) - 1;
+                        sumGas[m] += (Number(r.vol_gas_mmmcd) || 0);
+                        sumLiq[m] += (Number(r.vol_liquidos_bpd) || 0);
+                    });
+                }
+
+                charts.histProd.data.datasets[0].data = sumGas;
+                charts.histProd.data.datasets[1].data = sumLiq;
+                charts.histProd.update();
+
+                charts.histFisc.data.datasets[0].data = sumGas.map(v => v * 0.85);
+                charts.histFisc.data.datasets[1].data = sumLiq.map(v => v * 0.95);
+                charts.histFisc.update();
+
+            } catch (err) {
+                console.error("Error cargando historial anual:", err);
+            }
         }
 
         async function cargarDatosDesdeSupabasePorFiltro() {
@@ -1062,6 +1155,9 @@
                 charts.entregaGlp.data.labels = labelsDinamicos;
                 charts.entregaGlp.data.datasets[0].data = arrEntGlp;
                 charts.entregaGlp.update();
+
+                // Llama al historial anual siempre para actualizar las nuevas gráficas inferiores
+                await cargarHistorialAnual(campoId);
 
             } catch (err) {
                 console.error("Error al filtrar tablero:", err);
@@ -1194,6 +1290,8 @@
             if (tipo === 'dia') boxUnica.classList.remove('hidden');
             else if (tipo === 'sem') { boxInicio.classList.remove('hidden'); boxFin.classList.remove('hidden'); }
             else if (tipo === 'mes') boxMes.classList.remove('hidden');
+            
+            // Si es 'anual', dejamos todos los selectores de fecha ocultos porque el rango se calcula automático.
             actualizarReportePDFReal();
         }
 
@@ -1216,17 +1314,8 @@
 
             const contProd = document.getElementById('container-graficas-produccion');
             const contFisc = document.getElementById('container-graficas-fiscalizacion');
+            const contAnual = document.getElementById('container-grafica-anual');
             const tituloSeccion = document.getElementById('rep-titulo-seccion');
-
-            if (seccionRepo === 'produccion') {
-                contProd.classList.remove('hidden');
-                contFisc.classList.add('hidden');
-                tituloSeccion.innerText = "1. Gráficas de Producción Bruta (Oferta Física)";
-            } else {
-                contProd.classList.add('hidden');
-                contFisc.classList.remove('hidden');
-                tituloSeccion.innerText = "2. Gráficas de Fiscalización & Balance";
-            }
 
             let textoPeriodo = "(Período Oficial)";
             let query = clienteSupabase.from('produccion_diaria').select('*').eq('id_campo', campoId).range(0, 4999);
@@ -1250,73 +1339,135 @@
                 const fFin = document.getElementById('report-fecha-fin').value || '2026-09-06';
                 textoPeriodo = `(Período Semanal: ${fIni} al ${fFin})`;
                 query = query.gte('fecha_operativa', fIni).lte('fecha_operativa', fFin);
+            } else if (tipoReporte === 'anual') {
+                const y = new Date().getFullYear();
+                textoPeriodo = `(Período Acumulado: Enero - Actual ${y})`;
+                query = query.gte('fecha_operativa', `${y}-01-01`).lte('fecha_operativa', `${y}-12-31`);
             }
 
             document.getElementById('rep-print-subtitulo').innerText = `Bloque Operativo: ${infoCampo.name} — ${textoPeriodo}`;
 
             try {
                 const { data } = await query.order('fecha_operativa', { ascending: true });
-                let arrLiq = [], arrGas = [], arrGlp = [], arrFisc1 = [], arrFisc2 = [], arrFisc3 = [];
-                let labelsRespaldo = [];
+                
+                // LÓGICA DE DIBUJADO DE GRÁFICOS SEGÚN EL TIPO ELEGIDO
+                if (tipoReporte === 'anual') {
+                    // Ocultar las 3 graficas pequeñas
+                    contProd.classList.add('hidden');
+                    contFisc.classList.add('hidden');
+                    // Mostrar la grafica anual panorámica
+                    contAnual.classList.remove('hidden');
+                    tituloSeccion.innerText = seccionRepo === 'produccion' ? "1. Gráfica Histórica de Producción Bruta" : "2. Gráfica Histórica de Fiscalización";
 
-                if (data && data.length > 0) {
-                    data.forEach(r => {
-                        const liq = Number(r.vol_liquidos_bpd) || 0;
-                        const gas = Number(r.vol_gas_mmmcd) || 0;
-                        arrLiq.push(liq);
-                        arrGas.push(gas);
-                        arrGlp.push(liq * 0.15);
-                        arrFisc1.push(gas * 0.85);
-                        arrFisc2.push(liq * 0.95);
-                        arrFisc3.push((liq * 0.15) * 0.90);
-                        labelsRespaldo.push(r.fecha_operativa ? r.fecha_operativa.substring(5) : '');
-                    });
-                }
+                    let agGas = new Array(12).fill(0);
+                    let agLiq = new Array(12).fill(0);
+                    let agFiscGas = new Array(12).fill(0);
+                    let agFiscLiq = new Array(12).fill(0);
 
-                const labelsPdf = labelsRespaldo.length > 0 ? labelsRespaldo : diasLabels;
+                    if (data && data.length > 0) {
+                        data.forEach(r => {
+                            const m = parseInt(r.fecha_operativa.split('-')[1]) - 1;
+                            const gas = Number(r.vol_gas_mmmcd) || 0;
+                            const liq = Number(r.vol_liquidos_bpd) || 0;
+                            agGas[m] += gas;
+                            agLiq[m] += liq;
+                            agFiscGas[m] += (gas * 0.85);
+                            agFiscLiq[m] += (liq * 0.95);
+                        });
+                    }
 
-                if (seccionRepo === 'produccion') {
-                    if (chartPdfLiqInstance) chartPdfLiqInstance.destroy();
-                    chartPdfLiqInstance = new Chart(document.getElementById('chart-pdf-liq').getContext('2d'), {
+                    if (chartPdfAnualInstance) chartPdfAnualInstance.destroy();
+                    chartPdfAnualInstance = new Chart(document.getElementById('chart-pdf-anual').getContext('2d'), {
                         type: 'bar',
-                        data: { labels: labelsPdf, datasets: [{ data: arrLiq.length > 0 ? arrLiq : [0], backgroundColor: '#0f766e', borderRadius: 4 }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
+                        data: {
+                            labels: mesesLabels,
+                            datasets: seccionRepo === 'produccion' ? [
+                                { label: 'Gas Bruto Acumulado (MPC)', data: agGas, backgroundColor: '#1e3a8a', borderRadius: 4 },
+                                { label: 'Líquidos Acumulados (bbls)', data: agLiq, backgroundColor: '#0f766e', borderRadius: 4 }
+                            ] : [
+                                { label: 'Gasoducto Entregado (MPC)', data: agFiscGas, backgroundColor: '#1e3a8a', borderRadius: 4 },
+                                { label: 'Petróleo Entregado (bbls)', data: agFiscLiq, backgroundColor: '#0f766e', borderRadius: 4 }
+                            ]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: true } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
                     });
 
-                    if (chartPdfGasInstance) chartPdfGasInstance.destroy();
-                    chartPdfGasInstance = new Chart(document.getElementById('chart-pdf-gas').getContext('2d'), {
-                        type: 'bar',
-                        data: { labels: labelsPdf, datasets: [{ data: arrGas.length > 0 ? arrGas : [0], backgroundColor: '#1e3a8a', borderRadius: 4 }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
-                    });
-
-                    if (chartPdfGlpInstance) chartPdfGlpInstance.destroy();
-                    chartPdfGlpInstance = new Chart(document.getElementById('chart-pdf-glp').getContext('2d'), {
-                        type: 'bar',
-                        data: { labels: labelsPdf, datasets: [{ data: arrGlp.length > 0 ? arrGlp : [0], backgroundColor: '#b45309', borderRadius: 4 }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
-                    });
                 } else {
-                    if (chartPdfFisc1Instance) chartPdfFisc1Instance.destroy();
-                    chartPdfFisc1Instance = new Chart(document.getElementById('chart-pdf-fisc1').getContext('2d'), {
-                        type: 'bar',
-                        data: { labels: labelsPdf, datasets: [{ data: arrFisc1.length > 0 ? arrFisc1 : [0], backgroundColor: '#1e3a8a', borderRadius: 4 }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
-                    });
+                    // Modo Normal (Diario, Semanal, Mensual)
+                    contAnual.classList.add('hidden');
 
-                    if (chartPdfFisc2Instance) chartPdfFisc2Instance.destroy();
-                    chartPdfFisc2Instance = new Chart(document.getElementById('chart-pdf-fisc2').getContext('2d'), {
-                        type: 'bar',
-                        data: { labels: labelsPdf, datasets: [{ data: arrFisc2.length > 0 ? arrFisc2 : [0], backgroundColor: '#0f766e', borderRadius: 4 }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
-                    });
+                    if (seccionRepo === 'produccion') {
+                        contProd.classList.remove('hidden');
+                        contFisc.classList.add('hidden');
+                        tituloSeccion.innerText = "1. Gráficas de Producción Bruta (Oferta Física)";
+                    } else {
+                        contProd.classList.add('hidden');
+                        contFisc.classList.remove('hidden');
+                        tituloSeccion.innerText = "2. Gráficas de Fiscalización & Balance";
+                    }
 
-                    if (chartPdfFisc3Instance) chartPdfFisc3Instance.destroy();
-                    chartPdfFisc3Instance = new Chart(document.getElementById('chart-pdf-fisc3').getContext('2d'), {
-                        type: 'bar',
-                        data: { labels: labelsPdf, datasets: [{ data: arrFisc3.length > 0 ? arrFisc3 : [0], backgroundColor: '#b45309', borderRadius: 4 }] },
-                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
-                    });
+                    let arrLiq = [], arrGas = [], arrGlp = [], arrFisc1 = [], arrFisc2 = [], arrFisc3 = [];
+                    let labelsRespaldo = [];
+
+                    if (data && data.length > 0) {
+                        data.forEach(r => {
+                            const liq = Number(r.vol_liquidos_bpd) || 0;
+                            const gas = Number(r.vol_gas_mmmcd) || 0;
+                            arrLiq.push(liq);
+                            arrGas.push(gas);
+                            arrGlp.push(liq * 0.15);
+                            arrFisc1.push(gas * 0.85);
+                            arrFisc2.push(liq * 0.95);
+                            arrFisc3.push((liq * 0.15) * 0.90);
+                            labelsRespaldo.push(r.fecha_operativa ? r.fecha_operativa.substring(5) : '');
+                        });
+                    }
+
+                    const labelsPdf = labelsRespaldo.length > 0 ? labelsRespaldo : diasLabels;
+
+                    if (seccionRepo === 'produccion') {
+                        if (chartPdfLiqInstance) chartPdfLiqInstance.destroy();
+                        chartPdfLiqInstance = new Chart(document.getElementById('chart-pdf-liq').getContext('2d'), {
+                            type: 'bar',
+                            data: { labels: labelsPdf, datasets: [{ data: arrLiq.length > 0 ? arrLiq : [0], backgroundColor: '#0f766e', borderRadius: 4 }] },
+                            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
+                        });
+
+                        if (chartPdfGasInstance) chartPdfGasInstance.destroy();
+                        chartPdfGasInstance = new Chart(document.getElementById('chart-pdf-gas').getContext('2d'), {
+                            type: 'bar',
+                            data: { labels: labelsPdf, datasets: [{ data: arrGas.length > 0 ? arrGas : [0], backgroundColor: '#1e3a8a', borderRadius: 4 }] },
+                            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
+                        });
+
+                        if (chartPdfGlpInstance) chartPdfGlpInstance.destroy();
+                        chartPdfGlpInstance = new Chart(document.getElementById('chart-pdf-glp').getContext('2d'), {
+                            type: 'bar',
+                            data: { labels: labelsPdf, datasets: [{ data: arrGlp.length > 0 ? arrGlp : [0], backgroundColor: '#b45309', borderRadius: 4 }] },
+                            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
+                        });
+                    } else {
+                        if (chartPdfFisc1Instance) chartPdfFisc1Instance.destroy();
+                        chartPdfFisc1Instance = new Chart(document.getElementById('chart-pdf-fisc1').getContext('2d'), {
+                            type: 'bar',
+                            data: { labels: labelsPdf, datasets: [{ data: arrFisc1.length > 0 ? arrFisc1 : [0], backgroundColor: '#1e3a8a', borderRadius: 4 }] },
+                            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
+                        });
+
+                        if (chartPdfFisc2Instance) chartPdfFisc2Instance.destroy();
+                        chartPdfFisc2Instance = new Chart(document.getElementById('chart-pdf-fisc2').getContext('2d'), {
+                            type: 'bar',
+                            data: { labels: labelsPdf, datasets: [{ data: arrFisc2.length > 0 ? arrFisc2 : [0], backgroundColor: '#0f766e', borderRadius: 4 }] },
+                            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
+                        });
+
+                        if (chartPdfFisc3Instance) chartPdfFisc3Instance.destroy();
+                        chartPdfFisc3Instance = new Chart(document.getElementById('chart-pdf-fisc3').getContext('2d'), {
+                            type: 'bar',
+                            data: { labels: labelsPdf, datasets: [{ data: arrFisc3.length > 0 ? arrFisc3 : [0], backgroundColor: '#b45309', borderRadius: 4 }] },
+                            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
+                        });
+                    }
                 }
 
             } catch (err) {
@@ -1396,14 +1547,13 @@
             const idCampoNum = mapaCampos[campoID];
             if (!idCampoNum) { alert("Campo seleccionado no es válido."); return; }
             
-            // Función robusta para garantizar que el valor siempre sea numérico
             const getVal = (id) => {
                 const node = document.getElementById(id);
                 if (!node) return 0;
                 const val = node.value.trim();
                 if (val === "") return 0;
                 const num = parseFloat(val);
-                return isNaN(num) ? 0 : num;
+                return isNaN(num) ? 0 : num; // <-- Se quitó el Math.round, todo se guarda exacto.
             };
 
             const wti = getVal('input-wti');
@@ -1418,14 +1568,12 @@
             btn.disabled = true;
 
             try {
-                // Payload seguro: SOLO los campos que originalmente tenía tu base de datos
                 const payloadUpdate = {
                     vol_gas_mmmcd: gasProd,
                     vol_liquidos_bpd: finalLiquido,
                     precio_wti_usd: wti
                 };
 
-                // 1. Verificar existencia usando un campo que sabemos que existe en tu BD (fecha_operativa)
                 const { data: existeData, error: errCheck } = await clienteSupabase
                     .from('produccion_diaria')
                     .select('fecha_operativa')
@@ -1437,7 +1585,6 @@
                 }
 
                 if (existeData && existeData.length > 0) {
-                    // ACTUALIZAR (El registro ya existe)
                     const { error: errUpd } = await clienteSupabase
                         .from('produccion_diaria')
                         .update(payloadUpdate)
@@ -1446,7 +1593,6 @@
                     
                     if (errUpd) throw new Error("Fallo al actualizar: " + errUpd.message);
                 } else {
-                    // INSERTAR (El registro no existe, agregamos los identificadores al payload)
                     const payloadInsert = {
                         ...payloadUpdate,
                         id_campo: idCampoNum,
@@ -1470,12 +1616,8 @@
                 await actualizarReportePDFReal();
             } catch (err) {
                 console.error("Error detallado devuelto por Supabase:", err);
-                
-                // Extraer el mensaje técnico para mostrarlo en pantalla. Si dice "numeric field overflow", 
-                // significa que el número es muy largo para la base de datos (ej: el 9934).
                 const exactError = err.message || JSON.stringify(err) || "Error de red desconocido";
-                alert(`Error en la base de datos:\n\n${exactError}\n\nNota: Verifica si los números ingresados no son demasiado grandes para los límites de tu tabla (ej: 9934 en lugar de 9.934).`);
-                
+                alert(`Error en la base de datos:\n\n${exactError}`);
             } finally {
                 btn.innerHTML = '<i class="fas fa-database"></i> Validar y Guardar Parte Diario en Supabase';
                 btn.disabled = false;
@@ -1543,6 +1685,33 @@
             showToast();
         }
 
+        async function obtenerTipoCambioOficial() {
+            const tcEl = document.getElementById('val-tc');
+            try {
+                const res = await fetch('https://apibcb.cucu.bo/api/v1/tc/oficial');
+                if(res.ok) {
+                    const data = await res.json();
+                    if(data.tc_oficial && data.tc_oficial.compra) {
+                        const rate = typeof data.tc_oficial.compra === 'number' ? data.tc_oficial.compra : parseFloat(data.tc_oficial.compra.toString().replace(',', '.'));
+                        tcEl.innerText = rate.toFixed(2);
+                        return;
+                    }
+                }
+                throw new Error("API inaccesible");
+            } catch (error) {
+                try {
+                    const proxyRes = await fetch('https://api.allorigins.win/get?url=' + encodeURIComponent('https://www.bcb.gob.bo/'));
+                    const proxyData = await proxyRes.json();
+                    const match = proxyData.contents.match(/Bolivianos por dólar estadounidense.*?(\d{1,2}[,.]\d{2})/is);
+                    if (match && match[1]) {
+                        tcEl.innerText = match[1].replace(',', '.');
+                    }
+                } catch (proxyError) {
+                    console.error("Fallback BCB fallido", proxyError);
+                }
+            }
+        }
+
         // CONFIGURACIÓN POR DEFECTO
         document.getElementById('dashboard-input-dia').value = '2026-09-06';
         document.getElementById('dashboard-input-mes').value = '2026-06';
@@ -1551,6 +1720,7 @@
         document.getElementById('report-fecha-unica').value = '2026-09-06';
 
         iniciarReloj();
+        obtenerTipoCambioOficial();
         initCharts();
         verificarSesion();
     </script>
