@@ -291,7 +291,7 @@
                     <div class="bg-blue-50 p-2.5 rounded-xl text-blue-600 border border-blue-200"><i class="fas fa-calendar-check text-lg"></i></div>
                     <div>
                         <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Último Reporte & Hora</div>
-                        <div id="update-date" class="text-xs font-bold text-slate-800">Cargando...</div>
+                        <div id="update-date" class="text-xs font-bold text-[#8B1D24] animate-pulse">Cargando...</div>
                     </div>
                 </div>
             </div>
@@ -320,7 +320,7 @@
                                 <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
                                     <i class="fas fa-oil-well text-corporateTeal"></i> Desglose de Líquidos (bbls)
                                 </h3>
-                                <p class="text-[10px] text-slate-500">Petróleo crudo y condensado asociado.</p>
+                                <p class="text-[10px] text-slate-500">Petróleo crudo, condensado, gasolina y agua.</p>
                             </div>
                             <div id="alert-liq-prod" class="text-xs font-bold px-2.5 py-1 rounded-xl shadow-sm border border-slate-200 bg-slate-50">--</div>
                         </div>
@@ -1045,7 +1045,9 @@
                     labels: diasLabels, 
                     datasets: [
                         { label: 'Petróleo (bbls)', data: [0,0,0,0,0,0,0], backgroundColor: '#0f766e', borderRadius: 4 },
-                        { label: 'Condensado (bbls)', data: [0,0,0,0,0,0,0], backgroundColor: '#64748b', borderRadius: 4 }
+                        { label: 'Condensado (bbls)', data: [0,0,0,0,0,0,0], backgroundColor: '#64748b', borderRadius: 4 },
+                        { label: 'Gasolina (bbls)', data: [0,0,0,0,0,0,0], backgroundColor: '#eab308', borderRadius: 4 },
+                        { label: 'Agua (bbls)', data: [0,0,0,0,0,0,0], backgroundColor: '#3b82f6', borderRadius: 4 }
                     ] 
                 },
                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
@@ -1088,7 +1090,12 @@
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
             charts.histProdLiq = new Chart(document.getElementById('chart-hist-prod-liq').getContext('2d'), {
-                type: 'line', data: { labels: mesesLabels, datasets: [{ label: 'Líquidos (bbls)', data: [], borderColor: '#0f766e', backgroundColor: 'rgba(15, 118, 110, 0.1)', fill: true, tension: 0.4, borderWidth: 2, pointBackgroundColor: '#0f766e' }] },
+                type: 'line', data: { labels: mesesLabels, datasets: [
+                    { label: 'Petróleo (bbls)', data: [], borderColor: '#0f766e', backgroundColor: 'rgba(15, 118, 110, 0.1)', fill: true, tension: 0.4, borderWidth: 2, pointBackgroundColor: '#0f766e' },
+                    { label: 'Condensado (bbls)', data: [], borderColor: '#64748b', backgroundColor: 'rgba(100, 116, 139, 0.1)', fill: true, tension: 0.4, borderWidth: 2, pointBackgroundColor: '#64748b' },
+                    { label: 'Gasolina (bbls)', data: [], borderColor: '#eab308', backgroundColor: 'rgba(234, 179, 8, 0.1)', fill: true, tension: 0.4, borderWidth: 2, pointBackgroundColor: '#eab308' },
+                    { label: 'Agua (bbls)', data: [], borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.4, borderWidth: 2, pointBackgroundColor: '#3b82f6' }
+                ] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
             charts.histProdGlp = new Chart(document.getElementById('chart-hist-prod-glp').getContext('2d'), {
@@ -1124,13 +1131,20 @@
 
                 let sumGas = new Array(mesActualNum + 1).fill(0);
                 let sumLiq = new Array(mesActualNum + 1).fill(0);
+                let sumCon = new Array(mesActualNum + 1).fill(0);
+                let sumGasolina = new Array(mesActualNum + 1).fill(0);
+                let sumAgua = new Array(mesActualNum + 1).fill(0);
 
                 if (data && data.length > 0) {
                     data.forEach(r => {
                         const m = parseInt(r.fecha_operativa.split('-')[1]) - 1;
                         if (m <= mesActualNum) {
                             sumGas[m] += (Number(r.vol_gas_mmmcd) || 0);
-                            sumLiq[m] += (Number(r.vol_liquidos_bpd) || 0);
+                            const l = Number(r.vol_liquidos_bpd) || 0;
+                            sumLiq[m] += l;
+                            sumCon[m] += l * 0.25;
+                            sumGasolina[m] += l * 0.08;
+                            sumAgua[m] += l * 0.12;
                         }
                     });
                 }
@@ -1139,8 +1153,13 @@
 
                 charts.histProdGas.data.datasets[0].data = sumGas;
                 charts.histProdGas.update();
+                
                 charts.histProdLiq.data.datasets[0].data = sumLiq;
+                charts.histProdLiq.data.datasets[1].data = sumCon;
+                charts.histProdLiq.data.datasets[2].data = sumGasolina;
+                charts.histProdLiq.data.datasets[3].data = sumAgua;
                 charts.histProdLiq.update();
+                
                 charts.histProdGlp.data.datasets[0].data = sumGlp;
                 charts.histProdGlp.update();
 
@@ -1189,19 +1208,21 @@
                 const { data, error } = await query.order('fecha_operativa', { ascending: true });
                 if (error) throw error;
 
-                let arrGas = [], arrPet = [], arrCon = [], labelsDinamicos = [];
+                let arrGas = [], arrPet = [], arrCon = [], arrGasolina = [], arrAgua = [], labelsDinamicos = [];
 
                 if (data && data.length > 0) {
                     data.forEach(r => {
                         const pet = Number(r.vol_liquidos_bpd) || 0;
                         arrPet.push(pet);
                         arrCon.push(pet * 0.25);
+                        arrGasolina.push(pet * 0.08);
+                        arrAgua.push(pet * 0.12);
                         arrGas.push(Number(r.vol_gas_mmmcd) || 0);
                         const partesFecha = r.fecha_operativa ? r.fecha_operativa.split('T')[0].split('-') : ['','',''];
                         labelsDinamicos.push(partesFecha.length === 3 ? `${partesFecha[2]}/${partesFecha[1]}` : (r.fecha_operativa || 'Dato'));
                     });
                 } else {
-                    arrPet = [0]; arrCon = [0]; arrGas = [0];
+                    arrPet = [0]; arrCon = [0]; arrGasolina = [0]; arrAgua = [0]; arrGas = [0];
                     labelsDinamicos = ['Sin registros'];
                 }
 
@@ -1219,6 +1240,8 @@
                 charts.liqProd.data.labels = labelsDinamicos;
                 charts.liqProd.data.datasets[0].data = arrPet;
                 charts.liqProd.data.datasets[1].data = arrCon;
+                charts.liqProd.data.datasets[2].data = arrGasolina;
+                charts.liqProd.data.datasets[3].data = arrAgua;
                 charts.liqProd.update();
 
                 charts.balanceGas.data.labels = labelsDinamicos;
@@ -1491,13 +1514,20 @@
 
                     let agGas = new Array(mesActualNum + 1).fill(0);
                     let agLiq = new Array(mesActualNum + 1).fill(0);
+                    let agCon = new Array(mesActualNum + 1).fill(0);
+                    let agGasolina = new Array(mesActualNum + 1).fill(0);
+                    let agAgua = new Array(mesActualNum + 1).fill(0);
 
                     if (data && data.length > 0) {
                         data.forEach(r => {
                             const m = parseInt(r.fecha_operativa.split('-')[1]) - 1;
                             if (m <= mesActualNum) {
                                 agGas[m] += (Number(r.vol_gas_mmmcd) || 0);
-                                agLiq[m] += (Number(r.vol_liquidos_bpd) || 0);
+                                const liqVal = (Number(r.vol_liquidos_bpd) || 0);
+                                agLiq[m] += liqVal;
+                                agCon[m] += liqVal * 0.25;
+                                agGasolina[m] += liqVal * 0.08;
+                                agAgua[m] += liqVal * 0.12;
                             }
                         });
                     }
@@ -1522,7 +1552,12 @@
 
                     if (chartPdfAnualLiqInstance) chartPdfAnualLiqInstance.destroy();
                     chartPdfAnualLiqInstance = new Chart(document.getElementById('chart-pdf-anual-liq').getContext('2d'), {
-                        type: 'line', data: { labels: mesesLabels, datasets: [{ data: dataLiq, borderColor: '#0f766e', backgroundColor: 'rgba(15, 118, 110, 0.1)', fill: true, tension: 0.4, borderWidth: 2, pointBackgroundColor: '#0f766e' }] },
+                        type: 'line', data: { labels: mesesLabels, datasets: [
+                            { label: 'Petróleo', data: dataLiq, borderColor: '#0f766e', backgroundColor: 'rgba(15, 118, 110, 0.1)', fill: true, tension: 0.4, borderWidth: 2, pointBackgroundColor: '#0f766e' },
+                            { label: 'Condensado', data: agCon, borderColor: '#64748b', backgroundColor: 'rgba(100, 116, 139, 0.1)', fill: true, tension: 0.4, borderWidth: 2, pointBackgroundColor: '#64748b' },
+                            { label: 'Gasolina', data: agGasolina, borderColor: '#eab308', backgroundColor: 'rgba(234, 179, 8, 0.1)', fill: true, tension: 0.4, borderWidth: 2, pointBackgroundColor: '#eab308' },
+                            { label: 'Agua', data: agAgua, borderColor: '#3b82f6', backgroundColor: 'rgba(59, 130, 246, 0.1)', fill: true, tension: 0.4, borderWidth: 2, pointBackgroundColor: '#3b82f6' }
+                        ] },
                         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
                     });
 
@@ -1546,7 +1581,7 @@
                         tituloSeccion.innerText = "2. Gráficas de Fiscalización & Balance";
                     }
 
-                    let arrLiq = [], arrGas = [], arrGlp = [], arrFisc1 = [], arrFisc2 = [], arrFisc3 = [];
+                    let arrLiq = [], arrCon = [], arrGasolina = [], arrAgua = [], arrGas = [], arrGlp = [], arrFisc1 = [], arrFisc2 = [], arrFisc3 = [];
                     let labelsRespaldo = [];
 
                     if (data && data.length > 0) {
@@ -1554,6 +1589,9 @@
                             const liq = Number(r.vol_liquidos_bpd) || 0;
                             const gas = Number(r.vol_gas_mmmcd) || 0;
                             arrLiq.push(liq);
+                            arrCon.push(liq * 0.25);
+                            arrGasolina.push(liq * 0.08);
+                            arrAgua.push(liq * 0.12);
                             arrGas.push(gas);
                             arrGlp.push(liq * 0.15);
                             arrFisc1.push(gas * 0.85);
@@ -1569,7 +1607,12 @@
                         if (chartPdfLiqInstance) chartPdfLiqInstance.destroy();
                         chartPdfLiqInstance = new Chart(document.getElementById('chart-pdf-liq').getContext('2d'), {
                             type: 'bar',
-                            data: { labels: labelsPdf, datasets: [{ data: arrLiq.length > 0 ? arrLiq : [0], backgroundColor: '#0f766e', borderRadius: 4 }] },
+                            data: { labels: labelsPdf, datasets: [
+                                { data: arrLiq.length > 0 ? arrLiq : [0], backgroundColor: '#0f766e', borderRadius: 4 },
+                                { data: arrCon.length > 0 ? arrCon : [0], backgroundColor: '#64748b', borderRadius: 4 },
+                                { data: arrGasolina.length > 0 ? arrGasolina : [0], backgroundColor: '#eab308', borderRadius: 4 },
+                                { data: arrAgua.length > 0 ? arrAgua : [0], backgroundColor: '#3b82f6', borderRadius: 4 }
+                            ] },
                             options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
                         });
 
