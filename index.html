@@ -730,15 +730,15 @@
                             </div>
                             <div class="grid grid-cols-1 gap-4">
                                 <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                                    <span class="text-xs font-bold text-sky-700 block mb-2" id="rep-anual-label-gas">Gas (MPC)</span>
+                                    <span class="text-xs font-bold text-sky-700 block mb-2 text-center md:text-left" id="rep-anual-label-gas">Gas (MPC)</span>
                                     <div class="chart-container"><canvas id="chart-pdf-anual-gas"></canvas></div>
                                 </div>
                                 <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                                    <span class="text-xs font-bold text-emerald-700 block mb-2" id="rep-anual-label-liq">Líquidos (bbls)</span>
+                                    <span class="text-xs font-bold text-emerald-700 block mb-2 text-center md:text-left" id="rep-anual-label-liq">Líquidos (bbls)</span>
                                     <div class="chart-container"><canvas id="chart-pdf-anual-liq"></canvas></div>
                                 </div>
                                 <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                                    <span class="text-xs font-bold text-amber-700 block mb-2" id="rep-anual-label-glp">GLP (m³)</span>
+                                    <span class="text-xs font-bold text-amber-700 block mb-2 text-center md:text-left" id="rep-anual-label-glp">GLP (m³)</span>
                                     <div class="chart-container"><canvas id="chart-pdf-anual-glp"></canvas></div>
                                 </div>
                             </div>
@@ -1060,30 +1060,30 @@
                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
 
-            // NUEVAS GRÁFICAS DEL HISTORIAL ANUAL ACUMULADO (SEPARADAS)
+            // NUEVAS GRÁFICAS DEL HISTORIAL ANUAL ACUMULADO (SEPARADAS Y TIPO LINEA)
             charts.histProdGas = new Chart(document.getElementById('chart-hist-prod-gas').getContext('2d'), {
-                type: 'bar', data: { labels: mesesLabels, datasets: [{ label: 'Gas Bruto (MPC)', data: [], backgroundColor: '#1e3a8a', borderRadius: 4 }] },
+                type: 'line', data: { labels: mesesLabels, datasets: [{ label: 'Gas Bruto (MPC)', data: [], borderColor: '#1e3a8a', backgroundColor: 'rgba(30, 58, 138, 0.1)', fill: true, tension: 0.4, borderWidth: 2, pointBackgroundColor: '#1e3a8a' }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
             charts.histProdLiq = new Chart(document.getElementById('chart-hist-prod-liq').getContext('2d'), {
-                type: 'bar', data: { labels: mesesLabels, datasets: [{ label: 'Líquidos (bbls)', data: [], backgroundColor: '#0f766e', borderRadius: 4 }] },
+                type: 'line', data: { labels: mesesLabels, datasets: [{ label: 'Líquidos (bbls)', data: [], borderColor: '#0f766e', backgroundColor: 'rgba(15, 118, 110, 0.1)', fill: true, tension: 0.4, borderWidth: 2, pointBackgroundColor: '#0f766e' }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
             charts.histProdGlp = new Chart(document.getElementById('chart-hist-prod-glp').getContext('2d'), {
-                type: 'bar', data: { labels: mesesLabels, datasets: [{ label: 'GLP (m³)', data: [], backgroundColor: '#b45309', borderRadius: 4 }] },
+                type: 'line', data: { labels: mesesLabels, datasets: [{ label: 'GLP (m³)', data: [], borderColor: '#b45309', backgroundColor: 'rgba(180, 83, 9, 0.1)', fill: true, tension: 0.4, borderWidth: 2, pointBackgroundColor: '#b45309' }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
 
             charts.histFiscGas = new Chart(document.getElementById('chart-hist-fisc-gas').getContext('2d'), {
-                type: 'bar', data: { labels: mesesLabels, datasets: [{ label: 'Gasoducto (MPC)', data: [], backgroundColor: '#1e3a8a', borderRadius: 4 }] },
+                type: 'line', data: { labels: mesesLabels, datasets: [{ label: 'Gasoducto (MPC)', data: [], borderColor: '#1e3a8a', backgroundColor: 'rgba(30, 58, 138, 0.1)', fill: true, tension: 0.4, borderWidth: 2, pointBackgroundColor: '#1e3a8a' }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
             charts.histFiscLiq = new Chart(document.getElementById('chart-hist-fisc-liq').getContext('2d'), {
-                type: 'bar', data: { labels: mesesLabels, datasets: [{ label: 'Petróleo Entregado (bbls)', data: [], backgroundColor: '#0f766e', borderRadius: 4 }] },
+                type: 'line', data: { labels: mesesLabels, datasets: [{ label: 'Petróleo Entregado (bbls)', data: [], borderColor: '#0f766e', backgroundColor: 'rgba(15, 118, 110, 0.1)', fill: true, tension: 0.4, borderWidth: 2, pointBackgroundColor: '#0f766e' }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
             charts.histFiscGlp = new Chart(document.getElementById('chart-hist-fisc-glp').getContext('2d'), {
-                type: 'bar', data: { labels: mesesLabels, datasets: [{ label: 'Despacho GLP (m³)', data: [], backgroundColor: '#b45309', borderRadius: 4 }] },
+                type: 'line', data: { labels: mesesLabels, datasets: [{ label: 'Despacho GLP (m³)', data: [], borderColor: '#b45309', backgroundColor: 'rgba(180, 83, 9, 0.1)', fill: true, tension: 0.4, borderWidth: 2, pointBackgroundColor: '#b45309' }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
         }
@@ -1142,7 +1142,8 @@
                 let query = clienteSupabase.from('produccion_diaria').select('*').eq('id_campo', campoId).range(0, 4999);
 
                 if (tipoFiltro === 'dia' || tipoFiltro === 'sem') {
-                    const fechaSel = document.getElementById('dashboard-input-dia').value || '2026-09-06';
+                    const inputVal = document.getElementById('dashboard-input-dia').value;
+                    const fechaSel = inputVal || new Date().toISOString().split('T')[0];
                     if (tipoFiltro === 'dia') {
                         const f = new Date(fechaSel);
                         const fInicio = new Date(f); 
@@ -1154,7 +1155,7 @@
                         query = query.gte('fecha_operativa', fInicio.toISOString().split('T')[0]).lte('fecha_operativa', fechaSel);
                     }
                 } else if (tipoFiltro === 'mes') {
-                    const mesSel = document.getElementById('dashboard-input-mes').value || '2026-06';
+                    const mesSel = document.getElementById('dashboard-input-mes').value || new Date().toISOString().substring(0, 7);
                     const [y, m] = mesSel.split('-');
                     const ultimoDia = new Date(y, m, 0).getDate();
                     query = query.gte('fecha_operativa', `${y}-${m}-01`).lte('fecha_operativa', `${y}-${m}-${ultimoDia}`);
@@ -1255,6 +1256,41 @@
             updateAlert('alert-entrega-glp', arrEntGlp[len - 1], arrEntGlp[len - 2], 'm³');
         }
 
+        async function obtenerUltimaFechaConHora() {
+            const dateEl = document.getElementById('update-date');
+            try {
+                const { data } = await clienteSupabase
+                    .from('produccion_diaria')
+                    .select('fecha_operativa, created_at, updated_at')
+                    .order('fecha_operativa', { ascending: false }) // ORDENAR POR FECHA OPERATIVA DESC
+                    .limit(1);
+
+                if (data && data.length > 0) {
+                    const ultimaFecha = data[0].fecha_operativa;
+                    
+                    // Actualizar inputs con la última fecha reportada
+                    const inputDia = document.getElementById('dashboard-input-dia');
+                    if (inputDia) inputDia.value = ultimaFecha;
+                    const inputRepUnica = document.getElementById('report-fecha-unica');
+                    if (inputRepUnica) inputRepUnica.value = ultimaFecha;
+                    
+                    const [y, m, d] = ultimaFecha.split('-');
+                    const f = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
+                    const fechaFmt = f.toLocaleDateString('es-BO', { day: 'numeric', month: 'short' }).toUpperCase();
+                    
+                    let horaFmt = "--:--";
+                    const marcaTiempo = data[0].updated_at || data[0].created_at;
+                    if (marcaTiempo) {
+                        const hObj = new Date(marcaTiempo);
+                        horaFmt = hObj.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit', hour12: false });
+                    }
+                    dateEl.innerText = `${fechaFmt} — ${horaFmt} hrs`;
+                } else { 
+                    dateEl.innerText = 'Sin registros'; 
+                }
+            } catch (e) { dateEl.innerText = 'No disponible'; }
+        }
+
         async function actualizarHistorialYTablero() {
             try {
                 const { data, error } = await clienteSupabase
@@ -1292,8 +1328,8 @@
                     });
                 }
             } catch (err) { console.error(err); }
+            await obtenerUltimaFechaConHora();
             await cargarDatosDesdeSupabasePorFiltro();
-            obtenerUltimaFechaConHora();
         }
 
         function cargarRegistroParaEditar(fecha, idCampo, gas, liq) {
@@ -1305,31 +1341,6 @@
             document.getElementById('liq-petroleo').value = liq;
             window.scrollTo({ top: 0, behavior: 'smooth' });
             showToastMessage(`Cargado para edición: ${fecha} (${campoKey.toUpperCase()})`);
-        }
-
-        async function obtenerUltimaFechaConHora() {
-            const dateEl = document.getElementById('update-date');
-            try {
-                const { data } = await clienteSupabase
-                    .from('produccion_diaria')
-                    .select('fecha_operativa, created_at, updated_at')
-                    .order('updated_at', { ascending: false })
-                    .limit(1);
-
-                if (data && data.length > 0) {
-                    const [y, m, d] = data[0].fecha_operativa.split('-');
-                    const f = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
-                    const fechaFmt = f.toLocaleDateString('es-BO', { day: 'numeric', month: 'short' }).toUpperCase();
-                    
-                    let horaFmt = "--:--";
-                    const marcaTiempo = data[0].updated_at || data[0].created_at;
-                    if (marcaTiempo) {
-                        const hObj = new Date(marcaTiempo);
-                        horaFmt = hObj.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit', hour12: false });
-                    }
-                    dateEl.innerText = `${fechaFmt} — ${horaFmt} hrs`;
-                } else { dateEl.innerText = 'Sin registros'; }
-            } catch (e) { dateEl.innerText = 'No disponible'; }
         }
 
         function actualizarControlesCalendario() {
@@ -1378,13 +1389,13 @@
             let query = clienteSupabase.from('produccion_diaria').select('*').eq('id_campo', campoId).range(0, 4999);
 
             if (tipoReporte === 'dia') {
-                const valFec = document.getElementById('report-fecha-unica').value || '2026-09-06';
+                const valFec = document.getElementById('report-fecha-unica').value || new Date().toISOString().split('T')[0];
                 const [y, m, d] = valFec.split('-');
                 const fObj = new Date(y, m - 1, d);
                 textoPeriodo = `(Período: ${fObj.toLocaleDateString('es-BO', { day: 'numeric', month: 'long', year: 'numeric' })})`;
                 query = query.eq('fecha_operativa', valFec);
             } else if (tipoReporte === 'mes') {
-                const mesVal = document.getElementById('report-mes-val').value || '2026-09';
+                const mesVal = document.getElementById('report-mes-val').value || new Date().toISOString().substring(0, 7);
                 const [y, m] = mesVal.split('-');
                 const fObj = new Date(y, m - 1, 1);
                 const mesNom = fObj.toLocaleDateString('es-BO', { month: 'long', year: 'numeric' });
@@ -1392,8 +1403,8 @@
                 const ultimoDia = new Date(y, m, 0).getDate();
                 query = query.gte('fecha_operativa', `${y}-${m}-01`).lte('fecha_operativa', `${y}-${m}-${ultimoDia}`);
             } else if (tipoReporte === 'sem') {
-                const fIni = document.getElementById('report-fecha-inicio').value || '2026-09-01';
-                const fFin = document.getElementById('report-fecha-fin').value || '2026-09-06';
+                const fIni = document.getElementById('report-fecha-inicio').value || new Date().toISOString().split('T')[0];
+                const fFin = document.getElementById('report-fecha-fin').value || new Date().toISOString().split('T')[0];
                 textoPeriodo = `(Período Semanal: ${fIni} al ${fFin})`;
                 query = query.gte('fecha_operativa', fIni).lte('fecha_operativa', fFin);
             } else if (tipoReporte === 'anual') {
@@ -1441,19 +1452,19 @@
 
                     if (chartPdfAnualGasInstance) chartPdfAnualGasInstance.destroy();
                     chartPdfAnualGasInstance = new Chart(document.getElementById('chart-pdf-anual-gas').getContext('2d'), {
-                        type: 'bar', data: { labels: mesesLabels, datasets: [{ data: dataGas, backgroundColor: seccionRepo === 'produccion' ? '#1e3a8a' : '#1e3a8a', borderRadius: 4 }] },
+                        type: 'line', data: { labels: mesesLabels, datasets: [{ data: dataGas, borderColor: seccionRepo === 'produccion' ? '#1e3a8a' : '#1e3a8a', backgroundColor: 'rgba(30, 58, 138, 0.1)', fill: true, tension: 0.4, borderWidth: 2, pointBackgroundColor: '#1e3a8a' }] },
                         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
                     });
 
                     if (chartPdfAnualLiqInstance) chartPdfAnualLiqInstance.destroy();
                     chartPdfAnualLiqInstance = new Chart(document.getElementById('chart-pdf-anual-liq').getContext('2d'), {
-                        type: 'bar', data: { labels: mesesLabels, datasets: [{ data: dataLiq, backgroundColor: '#0f766e', borderRadius: 4 }] },
+                        type: 'line', data: { labels: mesesLabels, datasets: [{ data: dataLiq, borderColor: '#0f766e', backgroundColor: 'rgba(15, 118, 110, 0.1)', fill: true, tension: 0.4, borderWidth: 2, pointBackgroundColor: '#0f766e' }] },
                         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
                     });
 
                     if (chartPdfAnualGlpInstance) chartPdfAnualGlpInstance.destroy();
                     chartPdfAnualGlpInstance = new Chart(document.getElementById('chart-pdf-anual-glp').getContext('2d'), {
-                        type: 'bar', data: { labels: mesesLabels, datasets: [{ data: dataGlp, backgroundColor: '#b45309', borderRadius: 4 }] },
+                        type: 'line', data: { labels: mesesLabels, datasets: [{ data: dataGlp, borderColor: '#b45309', backgroundColor: 'rgba(180, 83, 9, 0.1)', fill: true, tension: 0.4, borderWidth: 2, pointBackgroundColor: '#b45309' }] },
                         options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#e2e8f0' }, min: 0 } } }
                     });
 
@@ -1777,12 +1788,13 @@
             }
         }
 
-        // CONFIGURACIÓN POR DEFECTO
-        document.getElementById('dashboard-input-dia').value = '2026-09-06';
-        document.getElementById('dashboard-input-mes').value = '2026-06';
-        document.getElementById('report-mes-val').value = '2026-09';
-        document.getElementById('input-fecha').value = new Date().toISOString().split('T')[0];
-        document.getElementById('report-fecha-unica').value = '2026-09-06';
+        // CONFIGURACIÓN POR DEFECTO MÍNIMA
+        const todayStr = new Date().toISOString().split('T')[0];
+        document.getElementById('dashboard-input-dia').value = todayStr;
+        document.getElementById('dashboard-input-mes').value = todayStr.substring(0, 7);
+        document.getElementById('report-mes-val').value = todayStr.substring(0, 7);
+        document.getElementById('input-fecha').value = todayStr;
+        document.getElementById('report-fecha-unica').value = todayStr;
 
         iniciarReloj();
         obtenerTipoCambioOficial();
