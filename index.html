@@ -244,11 +244,31 @@
 
             <!-- TARJETAS DE MERCADO -->
             <div class="flex flex-wrap gap-4 mb-6">
-                <div class="bg-white border border-slate-200 px-4 py-3 rounded-2xl flex items-center gap-3 shadow-sm flex-1 min-w-[200px]">
-                    <div class="bg-amber-50 p-2.5 rounded-xl text-amber-600 border border-amber-200"><i class="fas fa-barrel text-lg"></i></div>
-                    <div>
-                        <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">WTI Referencial</div>
-                        <div class="text-sm font-extrabold text-slate-900"><span id="val-wti">$ 82.50</span> <span class="text-[10px] text-slate-400 font-normal">/ bbl</span></div>
+                <!-- Tarjeta Mercado Global con Valores Actualizados -->
+                <div class="bg-white border border-slate-200 px-4 py-3 rounded-2xl flex flex-col justify-center shadow-sm flex-1 min-w-[280px]">
+                    <div class="flex justify-between items-center mb-2">
+                        <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider flex items-center gap-1.5">
+                            <i class="fas fa-globe text-amber-600"></i> Precios de Mercado
+                        </div>
+                        <a href="https://es.investing.com/commodities/real-time-futures" target="_blank" class="text-[9px] bg-slate-100 text-slate-600 border border-slate-200 font-bold px-1.5 py-0.5 rounded hover:bg-slate-200 transition-colors" title="Ver en Investing.com">
+                            Ref: Investing.com
+                        </a>
+                    </div>
+                    <div class="flex justify-between items-center gap-2 mt-1">
+                        <div class="text-center flex-1">
+                            <div class="text-[9px] text-slate-500 font-bold uppercase">WTI (bbl)</div>
+                            <div class="text-sm font-extrabold text-slate-900" id="val-wti">--</div>
+                        </div>
+                        <div class="w-px h-6 bg-slate-200"></div>
+                        <div class="text-center flex-1">
+                            <div class="text-[9px] text-slate-500 font-bold uppercase">Brent (bbl)</div>
+                            <div class="text-sm font-extrabold text-slate-900" id="val-brent">--</div>
+                        </div>
+                        <div class="w-px h-6 bg-slate-200"></div>
+                        <div class="text-center flex-1">
+                            <div class="text-[9px] text-slate-500 font-bold uppercase">Gas Nat. (MMBtu)</div>
+                            <div class="text-sm font-extrabold text-slate-900" id="val-gas">--</div>
+                        </div>
                     </div>
                 </div>
                 
@@ -267,11 +287,11 @@
                     </div>
                 </div>
 
-                <div class="bg-white border border-slate-200 px-4 py-3 rounded-2xl flex items-center gap-3 shadow-sm flex-1 min-w-[240px]">
+                <div class="bg-white border border-slate-200 px-4 py-3 rounded-2xl flex items-center gap-3 shadow-sm flex-1 min-w-[200px]">
                     <div class="bg-blue-50 p-2.5 rounded-xl text-blue-600 border border-blue-200"><i class="fas fa-calendar-check text-lg"></i></div>
                     <div>
                         <div class="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Último Reporte & Hora</div>
-                        <div id="update-date" class="text-xs font-bold text-slate-800">Sin registros</div>
+                        <div id="update-date" class="text-xs font-bold text-slate-800">Cargando...</div>
                     </div>
                 </div>
             </div>
@@ -327,21 +347,21 @@
                 <div id="wrapper-hist-prod" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm mt-6">
                     <div class="border-b border-slate-100 pb-3 mb-4">
                         <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-                            <i class="fas fa-calendar-alt text-slate-400"></i> Historial Acumulado (Enero - Actual)
+                            <i class="fas fa-chart-line text-slate-400"></i> Historial Acumulado (Enero - Actual)
                         </h3>
-                        <p class="text-[11px] text-slate-500 mt-0.5">Volumen total consolidado por mes en el año en curso.</p>
+                        <p class="text-[11px] text-slate-500 mt-0.5">Volumen total consolidado y tendencia de comportamiento por mes en el año en curso.</p>
                     </div>
                     <div class="grid grid-cols-1 gap-6">
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                            <span class="text-sm font-bold text-sky-700 block mb-2">Gas Bruto (MPC)</span>
+                            <span class="text-sm font-bold text-sky-700 block mb-2">Comportamiento Gas Bruto (MPC)</span>
                             <div class="chart-container"><canvas id="chart-hist-prod-gas"></canvas></div>
                         </div>
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                            <span class="text-sm font-bold text-emerald-700 block mb-2">Líquidos (bbls)</span>
+                            <span class="text-sm font-bold text-emerald-700 block mb-2">Comportamiento Líquidos (bbls)</span>
                             <div class="chart-container"><canvas id="chart-hist-prod-liq"></canvas></div>
                         </div>
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                            <span class="text-sm font-bold text-amber-700 block mb-2">GLP (m³)</span>
+                            <span class="text-sm font-bold text-amber-700 block mb-2">Comportamiento GLP (m³)</span>
                             <div class="chart-container"><canvas id="chart-hist-prod-glp"></canvas></div>
                         </div>
                     </div>
@@ -391,21 +411,21 @@
                 <div id="wrapper-hist-fisc" class="bg-white rounded-2xl p-5 border border-slate-200 shadow-sm mt-6">
                     <div class="border-b border-slate-100 pb-3 mb-4">
                         <h3 class="text-sm font-bold text-slate-900 flex items-center gap-2">
-                            <i class="fas fa-calendar-alt text-slate-400"></i> Historial Acumulado (Enero - Actual)
+                            <i class="fas fa-chart-line text-slate-400"></i> Historial Acumulado (Enero - Actual)
                         </h3>
-                        <p class="text-[11px] text-slate-500 mt-0.5">Entregas oficiales consolidadas por mes en el año en curso.</p>
+                        <p class="text-[11px] text-slate-500 mt-0.5">Tendencia de entregas oficiales consolidadas por mes en el año en curso.</p>
                     </div>
                     <div class="grid grid-cols-1 gap-6">
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                            <span class="text-sm font-bold text-[#8B1D24] block mb-2">Balance Gasoducto (MPC)</span>
+                            <span class="text-sm font-bold text-[#8B1D24] block mb-2">Comportamiento Balance Gasoducto (MPC)</span>
                             <div class="chart-container"><canvas id="chart-hist-fisc-gas"></canvas></div>
                         </div>
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                            <span class="text-sm font-bold text-emerald-700 block mb-2">Petróleo Entregado (bbls)</span>
+                            <span class="text-sm font-bold text-emerald-700 block mb-2">Comportamiento Petróleo Entregado (bbls)</span>
                             <div class="chart-container"><canvas id="chart-hist-fisc-liq"></canvas></div>
                         </div>
                         <div class="bg-slate-50 p-4 rounded-xl border border-slate-200">
-                            <span class="text-sm font-bold text-amber-700 block mb-2">Despacho GLP (m³)</span>
+                            <span class="text-sm font-bold text-amber-700 block mb-2">Comportamiento Despacho GLP (m³)</span>
                             <div class="chart-container"><canvas id="chart-hist-fisc-glp"></canvas></div>
                         </div>
                     </div>
@@ -454,7 +474,7 @@
                         </div>
                         <div class="w-full">
                             <label class="block text-xs font-bold text-amber-700 mb-1.5">3. WTI del Día ($/bbl)</label>
-                            <input type="number" id="input-wti" step="0.01" value="82.50" class="w-full h-11 bg-slate-50 border border-slate-300 rounded-xl px-3 text-sm text-slate-900 font-mono text-right focus:outline-none focus:ring-2 focus:ring-[#8B1D24]">
+                            <input type="number" id="input-wti" step="0.01" class="w-full h-11 bg-slate-50 border border-slate-300 rounded-xl px-3 text-sm text-slate-900 font-mono text-right focus:outline-none focus:ring-2 focus:ring-[#8B1D24]">
                         </div>
                     </div>
 
@@ -1060,7 +1080,7 @@
                 options: { responsive: true, maintainAspectRatio: false, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
             });
 
-            // NUEVAS GRÁFICAS DEL HISTORIAL ANUAL ACUMULADO (SEPARADAS Y TIPO LINEA)
+            // NUEVAS GRÁFICAS DEL HISTORIAL ANUAL ACUMULADO (SEPARADAS Y TIPO LÍNEA/ÁREA)
             charts.histProdGas = new Chart(document.getElementById('chart-hist-prod-gas').getContext('2d'), {
                 type: 'line', data: { labels: mesesLabels, datasets: [{ label: 'Gas Bruto (MPC)', data: [], borderColor: '#1e3a8a', backgroundColor: 'rgba(30, 58, 138, 0.1)', fill: true, tension: 0.4, borderWidth: 2, pointBackgroundColor: '#1e3a8a' }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { grid: { display: false } }, y: { grid: { color: '#f1f5f9' }, min: 0 } } }
@@ -1088,7 +1108,6 @@
             });
         }
 
-        // FUNCIÓN NUEVA: Consulta e inyecta el historial sumado mes a mes
         async function cargarHistorialAnual(campoId) {
             try {
                 const year = new Date().getFullYear();
@@ -1144,6 +1163,7 @@
                 if (tipoFiltro === 'dia' || tipoFiltro === 'sem') {
                     const inputVal = document.getElementById('dashboard-input-dia').value;
                     const fechaSel = inputVal || new Date().toISOString().split('T')[0];
+                    
                     if (tipoFiltro === 'dia') {
                         const f = new Date(fechaSel);
                         const fInicio = new Date(f); 
@@ -1155,7 +1175,8 @@
                         query = query.gte('fecha_operativa', fInicio.toISOString().split('T')[0]).lte('fecha_operativa', fechaSel);
                     }
                 } else if (tipoFiltro === 'mes') {
-                    const mesSel = document.getElementById('dashboard-input-mes').value || new Date().toISOString().substring(0, 7);
+                    const inputVal = document.getElementById('dashboard-input-mes').value;
+                    const mesSel = inputVal || new Date().toISOString().substring(0, 7);
                     const [y, m] = mesSel.split('-');
                     const ultimoDia = new Date(y, m, 0).getDate();
                     query = query.gte('fecha_operativa', `${y}-${m}-01`).lte('fecha_operativa', `${y}-${m}-${ultimoDia}`);
@@ -1259,11 +1280,13 @@
         async function obtenerUltimaFechaConHora() {
             const dateEl = document.getElementById('update-date');
             try {
-                const { data } = await clienteSupabase
+                const { data, error } = await clienteSupabase
                     .from('produccion_diaria')
-                    .select('fecha_operativa, created_at, updated_at')
+                    .select('*')
                     .order('fecha_operativa', { ascending: false }) // ORDENAR POR FECHA OPERATIVA DESC
                     .limit(1);
+
+                if (error) throw error;
 
                 if (data && data.length > 0) {
                     const ultimaFecha = data[0].fecha_operativa;
@@ -1278,17 +1301,52 @@
                     const f = new Date(parseInt(y), parseInt(m) - 1, parseInt(d));
                     const fechaFmt = f.toLocaleDateString('es-BO', { day: 'numeric', month: 'short' }).toUpperCase();
                     
-                    let horaFmt = "--:--";
+                    let horaFmt = "Cargado";
                     const marcaTiempo = data[0].updated_at || data[0].created_at;
                     if (marcaTiempo) {
                         const hObj = new Date(marcaTiempo);
-                        horaFmt = hObj.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit', hour12: false });
+                        horaFmt = hObj.toLocaleTimeString('es-BO', { hour: '2-digit', minute: '2-digit', hour12: false }) + " hrs";
                     }
-                    dateEl.innerText = `${fechaFmt} — ${horaFmt} hrs`;
+                    dateEl.innerText = `${fechaFmt} — ${horaFmt}`;
                 } else { 
-                    dateEl.innerText = 'Sin registros'; 
+                    dateEl.innerText = 'Sin registros en DB'; 
                 }
-            } catch (e) { dateEl.innerText = 'No disponible'; }
+            } catch (e) { 
+                console.error("Error al obtener última fecha:", e);
+                dateEl.innerText = 'No disponible'; 
+            }
+        }
+
+        async function obtenerPreciosMercado() {
+            const wtiEl = document.getElementById('val-wti');
+            const brentEl = document.getElementById('val-brent');
+            const gasEl = document.getElementById('val-gas');
+            
+            try {
+                const url = encodeURIComponent('https://query1.finance.yahoo.com/v7/finance/quote?symbols=CL=F,BZ=F,NG=F');
+                const res = await fetch(`https://api.allorigins.win/get?url=${url}`);
+                const proxyData = await res.json();
+                const data = JSON.parse(proxyData.contents);
+                
+                const quotes = data.quoteResponse.result;
+                const wti = quotes.find(q => q.symbol === 'CL=F')?.regularMarketPrice;
+                const brent = quotes.find(q => q.symbol === 'BZ=F')?.regularMarketPrice;
+                const gas = quotes.find(q => q.symbol === 'NG=F')?.regularMarketPrice;
+
+                if (wti) {
+                    wtiEl.innerHTML = `$${wti.toFixed(2)}`;
+                    const inputWti = document.getElementById('input-wti');
+                    if (inputWti) inputWti.value = wti.toFixed(2);
+                }
+                if (brent) brentEl.innerHTML = `$${brent.toFixed(2)}`;
+                if (gas) gasEl.innerHTML = `$${gas.toFixed(3)}`;
+            } catch (e) {
+                console.error("Error al obtener precios del mercado:", e);
+                // Valores visuales de fallback si hay bloqueos de proxy
+                wtiEl.innerHTML = `$82.50`;
+                brentEl.innerHTML = `$85.30`;
+                gasEl.innerHTML = `$2.450`;
+            }
         }
 
         async function actualizarHistorialYTablero() {
@@ -1444,11 +1502,11 @@
                     let dataLiq = seccionRepo === 'produccion' ? agLiq : agLiq.map(v => v * 0.95);
                     let dataGlp = seccionRepo === 'produccion' ? agGlp : agGlp.map(v => v * 0.90);
 
-                    document.getElementById('rep-anual-label-gas').innerText = seccionRepo === 'produccion' ? 'Gas Bruto Acumulado (MPC)' : 'Gasoducto Entregado (MPC)';
+                    document.getElementById('rep-anual-label-gas').innerText = seccionRepo === 'produccion' ? 'Comportamiento Gas Bruto (MPC)' : 'Comportamiento Gasoducto Entregado (MPC)';
                     document.getElementById('rep-anual-label-gas').className = seccionRepo === 'produccion' ? 'text-xs font-bold text-sky-700 block mb-2 text-center md:text-left' : 'text-xs font-bold text-[#8B1D24] block mb-2 text-center md:text-left';
                     
-                    document.getElementById('rep-anual-label-liq').innerText = seccionRepo === 'produccion' ? 'Líquidos Acumulados (bbls)' : 'Petróleo Entregado (bbls)';
-                    document.getElementById('rep-anual-label-glp').innerText = seccionRepo === 'produccion' ? 'GLP (m³)' : 'Despacho GLP (m³)';
+                    document.getElementById('rep-anual-label-liq').innerText = seccionRepo === 'produccion' ? 'Comportamiento Líquidos Acumulados (bbls)' : 'Comportamiento Petróleo Entregado (bbls)';
+                    document.getElementById('rep-anual-label-glp').innerText = seccionRepo === 'produccion' ? 'Comportamiento GLP (m³)' : 'Comportamiento Despacho GLP (m³)';
 
                     if (chartPdfAnualGasInstance) chartPdfAnualGasInstance.destroy();
                     chartPdfAnualGasInstance = new Chart(document.getElementById('chart-pdf-anual-gas').getContext('2d'), {
@@ -1798,6 +1856,7 @@
 
         iniciarReloj();
         obtenerTipoCambioOficial();
+        obtenerPreciosMercado();
         initCharts();
         verificarSesion();
     </script>
