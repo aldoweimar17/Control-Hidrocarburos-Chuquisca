@@ -906,7 +906,9 @@
         };
 
         const diasLabels = ['Lun', 'Mar', 'Mie', 'Jue', 'Vie', 'Sab', 'Dom'];
-        const mesesLabels = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+        const mesesCompletos = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+        const mesActualNum = new Date().getMonth();
+        const mesesLabels = mesesCompletos.slice(0, mesActualNum + 1);
         
         let currentField = 'monteagudo';
         let currentUserRole = 'operador';
@@ -1120,14 +1122,16 @@
 
                 if (error) throw error;
 
-                let sumGas = new Array(12).fill(0);
-                let sumLiq = new Array(12).fill(0);
+                let sumGas = new Array(mesActualNum + 1).fill(0);
+                let sumLiq = new Array(mesActualNum + 1).fill(0);
 
                 if (data && data.length > 0) {
                     data.forEach(r => {
                         const m = parseInt(r.fecha_operativa.split('-')[1]) - 1;
-                        sumGas[m] += (Number(r.vol_gas_mmmcd) || 0);
-                        sumLiq[m] += (Number(r.vol_liquidos_bpd) || 0);
+                        if (m <= mesActualNum) {
+                            sumGas[m] += (Number(r.vol_gas_mmmcd) || 0);
+                            sumLiq[m] += (Number(r.vol_liquidos_bpd) || 0);
+                        }
                     });
                 }
 
@@ -1485,14 +1489,16 @@
                     contAnual.classList.remove('hidden');
                     tituloSeccion.innerText = seccionRepo === 'produccion' ? "1. Gráficas Históricas de Producción Bruta" : "2. Gráficas Históricas de Fiscalización";
 
-                    let agGas = new Array(12).fill(0);
-                    let agLiq = new Array(12).fill(0);
+                    let agGas = new Array(mesActualNum + 1).fill(0);
+                    let agLiq = new Array(mesActualNum + 1).fill(0);
 
                     if (data && data.length > 0) {
                         data.forEach(r => {
                             const m = parseInt(r.fecha_operativa.split('-')[1]) - 1;
-                            agGas[m] += (Number(r.vol_gas_mmmcd) || 0);
-                            agLiq[m] += (Number(r.vol_liquidos_bpd) || 0);
+                            if (m <= mesActualNum) {
+                                agGas[m] += (Number(r.vol_gas_mmmcd) || 0);
+                                agLiq[m] += (Number(r.vol_liquidos_bpd) || 0);
+                            }
                         });
                     }
 
